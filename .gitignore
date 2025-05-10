@@ -1,0 +1,191 @@
+# Visual Studio files
+.vs/
+*.user
+*.userosscache
+*.suo
+*.userprefs
+*.dbmdl
+*.dbproj.schemaview
+*.jfm
+*.pfx
+*.publishsettings
+orleans.codegen.cs
+
+# Build results
+[Dd]ebug/
+[Dd]ebugPublic/
+[Rr]elease/
+[Rr]eleases/
+x64/
+x86/
+[Aa][Rr][Mm]/
+[Aa][Rr][Mm]64/
+bld/
+[Bb]in/
+[Oo]bj/
+[Ll]og/
+[Ll]ogs/
+
+# Object files and directories
+obj/
+**/obj/
+*.obj
+*.iobj
+*.pdb
+*.ipdb
+*.ilk
+*.pch
+
+# Visual Studio Code
+.vscode/
+*.code-workspace
+.history/
+
+# Rider
+.idea/
+*.sln.iml
+
+# Unity/RimWorld
+*.csproj
+*.unityproj
+*.sln
+*.booproj
+*.svd
+*.userprefs
+*.pidb
+*.pdb
+*.mdb
+*.opendb
+*.VC.db
+
+# RimWorld specific
+*.rws
+*.rws.*
+*.rws.old
+*.rws.new
+*.rws.tmp
+*.rws.bak
+*.rws.auto
+*.rws.auto.*
+*.rws.auto.old
+*.rws.auto.new
+*.rws.auto.tmp
+*.rws.auto.bak
+
+# Mod specific
+About/PublishedFileId.txt
+About/Preview.png
+About/Preview.png.meta
+About/Preview.png.old
+About/Preview.png.new
+About/Preview.png.tmp
+About/Preview.png.bak
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Temporary files
+*.tmp
+*.temp
+*.swp
+*~.nib
+local.properties
+*.orig
+*.bak
+*.old
+*.new
+
+# Debug logs
+*.log
+*.tlog
+*.log.*
+
+# Aider specific
+.aider*
+
+# NuGet
+packages/
+*.nupkg
+*.snupkg
+**/packages/*
+!**/packages/build/
+*.nuget.props
+*.nuget.targets
+
+# Test Results
+[Tt]est[Rr]esult*/
+[Bb]uild[Ll]og.*
+
+# .NET Core
+project.lock.json
+project.fragment.lock.json
+artifacts/
+
+# Files built by Visual Studio
+*_i.c
+*_p.c
+*_h.h
+*.ilk
+*.meta
+*.obj
+*.iobj
+*.pch
+*.pdb
+*.ipdb
+*.pgc
+*.pgd
+*.rsp
+*.sbr
+*.tlb
+*.tli
+*.tlh
+*.tmp
+*.tmp_proj
+*_wpftmp.csproj
+*.log
+*.vspscc
+*.vssscc
+.builds
+*.pidb
+*.svclog
+*.scc
+
+# Visual Studio profiler
+*.psess
+*.vsp
+*.vspx
+*.sap
+
+# Visual Studio code coverage results
+*.coverage
+*.coveragexml
+
+# Windows image file caches
+Thumbs.db
+ehthumbs.db
+
+# Folder config file
+Desktop.ini
+
+# Recycle Bin used on file shares
+$RECYCLE.BIN/
+
+# VS Code directories
+.vscode/
+.history/
+
+# Windows Installer files
+*.cab
+*.msi
+*.msix
+*.msm
+*.msp
+
+# Windows shortcuts
+*.lnk

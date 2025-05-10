@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LanguageData>
+
+  <!-- Main Labels & Info -->
+  <RimMercenaries_HireMercenariesTitle>Нанять наёмников</RimMercenaries_HireMercenariesTitle>
+  <RimMercenaries_Negotiator>Переговорщик: {0} (Социальный навык {1})</RimMercenaries_Negotiator>
+  <RimMercenaries_RefreshList>Обновить список</RimMercenaries_RefreshList>
+  <RimMercenaries_RefreshCooldown>Нельзя так быстро снова обновить список.</RimMercenaries_RefreshCooldown>
+  <RimMercenaries_RefreshListTooltip>Обновить список доступных наёмников.</RimMercenaries_RefreshListTooltip>
+  <RimMercenaries_NoMercenariesAvailable>В настоящее время нет доступных наёмников. Проверьте позже или обновите список.</RimMercenaries_NoMercenariesAvailable>
+  <RimMercenaries_Price>Цена: {0}</RimMercenaries_Price>
+  <RimMercenaries_HireButton>Нанять</RimMercenaries_HireButton>
+  <RimMercenaries_NoNegotiator>Должен быть доступен переговорщик (колонист, способный разговаривать).</RimMercenaries_NoNegotiator>
+  <RimMercenaries_NoPower>Консоль наёмников отключена из‑за отсутствия питания.</RimMercenaries_NoPower>
+  <RimMercenaries_NotEnoughSilver>Недостаточно серебра. Требуется {0}.</RimMercenaries_NotEnoughSilver>
+  <RimMercenaries_MercenaryHired>Наёмник {0} нанят {1} за {2}.</RimMercenaries_MercenaryHired>
+  <RimMercenaries_MercenaryHiredLabel>Нанято: {0}</RimMercenaries_MercenaryHiredLabel>
+  <RimMercenaries_MercenaryHiredDesc>
+    По итогам переговоров {1}, {0} согласился присоединиться к колонии за {2}. Скоро они прибудут дроп‑подом.
+  </RimMercenaries_MercenaryHiredDesc>
+  <RimMercenaries_MercenariesReady>Список доступных наёмников готов</RimMercenaries_MercenariesReady>
+  <RimMercenaries_NextMercenaryUpdate>Следующее обновление списка наёмников через: {0}</RimMercenaries_NextMercenaryUpdate>
+
+  <!-- Comm Console Integration -->
+  <RimMercenaries_MercenaryNetwork>Сеть наёмников</RimMercenaries_MercenaryNetwork>
+  <RimMercenaries_CallMercenaryNetwork>Связаться с Сетью наёмников</RimMercenaries_CallMercenaryNetwork>
+  <RimMercenaries_ContactMercenaryNetwork>Связаться с Сетью наёмников</RimMercenaries_ContactMercenaryNetwork>
+  <RimMercenaries_MercenaryNetworkInfo>Свяжитесь с сетью наёмников, чтобы нанять бойцов за серебро.</RimMercenaries_MercenaryNetworkInfo>
+
+  <!-- Xenotype Filtering -->
+  <RimMercenaries_FilterXenotype>Фильтр по ксенотипу:</RimMercenaries_FilterXenotype>
+  <RimMercenaries_XenotypeAny>Любой</RimMercenaries_XenotypeAny>
+  <RimMercenaries_RegenerateXenotype>Перегенерировать список</RimMercenaries_RegenerateXenotype>
+
+  <!-- Build Types -->
+  <RimMercenaries_Build1Title>Налётчик</RimMercenaries_Build1Title>
+  <RimMercenaries_Build1Desc>Базовые бойцы с минимальной подготовкой.</RimMercenaries_Build1Desc>
+  <RimMercenaries_Build2Title>Боец</RimMercenaries_Build2Title>
+  <RimMercenaries_Build2Desc>Хорошо подготовленные наёмники с улучшенными боевыми навыками.</RimMercenaries_Build2Desc>
+  <RimMercenaries_Build3Title>Ветеран</RimMercenaries_Build3Title>
+  <RimMercenaries_Build3Desc>Высококвалифицированные воины, часто обладающие знаниями полевого медика.</RimMercenaries_Build3Desc>
+
+  <!-- Tooltips -->
+  <RimMercenaries_SkillsShort>Стрельба: [0] [1], Ближний бой: [2] [3]</RimMercenaries_SkillsShort>
+  <RimMercenaries_TooltipXenotype>Ксенотип: {0}</RimMercenaries_TooltipXenotype>
+  <RimMercenaries_XenotypeUnknown>Неизвестный ксенотип</RimMercenaries_XenotypeUnknown>
+
+  <!-- Health Descriptors -->
+  <RimMercenaries_HealthHealthy>Здоровый</RimMercenaries_HealthHealthy>
+  <RimMercenaries_HealthInjured>Раненый</RimMercenaries_HealthInjured>
+  <RimMercenaries_HealthPermanentInjury>Постоянная травма</RimMercenaries_HealthPermanentInjury>
+  <RimMercenaries_HealthDowned>Повержен</RimMercenaries_HealthDowned>
+  <RimMercenaries_HealthNotPerfect>Неидеальное состояние здоровья</RimMercenaries_HealthNotPerfect>
+
+  <!-- Shared Terms from Base Game -->
+  <None>Нет</None>
+  <Traits>Черты характера</Traits>
+  <Skills>Навыки</Skills>
+  <Health>Здоровье</Health>
+  <Apparel>Одежда</Apparel>
+  <Equipment>Снаряжение</Equipment>
+  <Incapable>Неспособен</Incapable>
+  <AgeBiological>Возраст {0}</AgeBiological>
+  <Unknown>Неизвестно</Unknown>
+
+  <RimMercenaries_RefreshReady>Готово к обновлению</RimMercenaries_RefreshReady>
+  <RimMercenaries_NextRefresh>Следующее обновление через: {0}</RimMercenaries_NextRefresh>
+  <RimMercenaries_HireBudget>Бюджет найма: {0} / {1}</RimMercenaries_HireBudget>
+  <RimMercenaries_Theme>Тема: </RimMercenaries_Theme>
+
+</LanguageData>
