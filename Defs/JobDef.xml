@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Defs>
+  <JobDef>
+    <defName>UseMercenaryConsole</defName>
+    <driverClass>RimMercenaries.JobDriver_UseMercenaryConsole</driverClass>
+    <reportString>contacting mercenary network.</reportString>
+    <joyDuration>200</joyDuration>
+    <joyMaxParticipants>1</joyMaxParticipants>
+    <casualInterruptible>false</casualInterruptible>
+    <alwaysShowWeapon>false</alwaysShowWeapon>
+  </JobDef>
+</Defs> 

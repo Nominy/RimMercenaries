@@ -69,4 +69,15 @@
   <RimMercenaries_HireBudget>Hire budget: {0} / {1}</RimMercenaries_HireBudget>
   <RimMercenaries_Theme>Theme: </RimMercenaries_Theme>
 
+  <RimMercenaries_NoSafeDropLocationFound>No safe drop location found for mercenary landing. Hiring cancelled.</RimMercenaries_NoSafeDropLocationFound>
+  <RimMercenaries_HireBudgetReachedTier>Cannot hire more tier {0} mercenaries. Remaining: {1}</RimMercenaries_HireBudgetReachedTier>
+
+  <!-- Loading Indicator -->
+  <!--
+  <RimMercenaries_GeneratingMercenaries>Generating mercenaries...</RimMercenaries_GeneratingMercenaries>
+  <RimMercenaries_GeneratingForXenotype>Generating for xenotype: {0}</RimMercenaries_GeneratingForXenotype>
+  <RimMercenaries_LoadingTime>Time elapsed: {0}s</RimMercenaries_LoadingTime>
+  <RimMercenaries_ForceRefresh>Force Refresh</RimMercenaries_ForceRefresh>
+  -->
+
 </LanguageData>

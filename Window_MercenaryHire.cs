@@ -118,7 +118,7 @@ namespace RimMercenaries
 
             DrawControls(controlsRect);
             currentY += controlsHeight + Margin;
-    
+
             float scrollStartY = controlsRect.yMax + Margin;
             float scrollHeight = (contentRect.y + contentRect.height) - scrollStartY;
             Rect outRect = new Rect(contentRect.x, scrollStartY, contentRect.width, scrollHeight);

@@ -68,4 +68,15 @@
   <RimMercenaries_HireBudget>Бюджет найма: {0} / {1}</RimMercenaries_HireBudget>
   <RimMercenaries_Theme>Тема: </RimMercenaries_Theme>
 
+  <RimMercenaries_NoSafeDropLocationFound>Не найдено безопасного места для посадки наёмника. Найм отменён.</RimMercenaries_NoSafeDropLocationFound>
+  <RimMercenaries_HireBudgetReachedTier>Невозможно нанять больше наёмников уровня {0}. Осталось: {1}</RimMercenaries_HireBudgetReachedTier>
+
+  <!-- Loading Indicator -->
+  <!--
+  <RimMercenaries_GeneratingMercenaries>Генерация наёмников...</RimMercenaries_GeneratingMercenaries>
+  <RimMercenaries_GeneratingForXenotype>Генерация для ксенотипа: {0}</RimMercenaries_GeneratingForXenotype>
+  <RimMercenaries_LoadingTime>Прошло времени: {0} сек.</RimMercenaries_LoadingTime>
+  <RimMercenaries_ForceRefresh>Принудительное обновление</RimMercenaries_ForceRefresh>
+  -->
+
 </LanguageData>

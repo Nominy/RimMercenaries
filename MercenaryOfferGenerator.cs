@@ -111,22 +111,26 @@ namespace RimMercenaries
             var excludedSkills = new HashSet<SkillDef> { SkillDefOf.Shooting, SkillDefOf.Melee };
             if (build.MedicineLevel.HasValue) excludedSkills.Add(SkillDefOf.Medicine);
 
+            // Check if this is a tier 3 mercenary
+            bool isTier3 = build == MercenaryBuilds.Builds[3];
+            Passion primarySkillPassion = isTier3 ? Passion.Major : Passion.Minor;
+
             foreach (var skill in pawn.skills.skills)
             {
                 if (skill.def == SkillDefOf.Shooting)
                 {
                     skill.Level = build.ShootingLevel;
-                    skill.passion = Passion.Minor;
+                    skill.passion = primarySkillPassion;
                 }
                 else if (skill.def == SkillDefOf.Melee)
                 {
                     skill.Level = build.MeleeLevel;
-                    skill.passion = Passion.Minor;
+                    skill.passion = primarySkillPassion;
                 }
                 else if (skill.def == SkillDefOf.Medicine && build.MedicineLevel.HasValue)
                 {
                     skill.Level = build.MedicineLevel.Value;
-                    skill.passion = Passion.Minor;
+                    skill.passion = primarySkillPassion;
                 }
                 else if (!excludedSkills.Contains(skill.def))
                 {

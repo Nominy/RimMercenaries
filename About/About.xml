@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ModMetaData>
+	<name>RimMercenaries - Hire Professional Warriors</name>
+	<author>NaftSan</author>
+	<supportedVersions>
+		<li>1.4</li>
+		<li>1.5</li>
+	</supportedVersions>
+	<packageId>naftsan.rimmercenaries</packageId>
+	<description>Adds a mercenary network to the Comms Console, allowing you to hire skilled fighters for silver.
+
+&lt;color=#1a8aff&gt;&lt;b&gt;Features:&lt;/b&gt;&lt;/color&gt;
+• Hire mercenaries through your colony's Comms Console
+• Three tiers of mercenaries with different skill levels and costs:
+  - &lt;color=#c9b45b&gt;Raiders&lt;/color&gt;: Basic fighters with minimal training (450-750 silver)
+  - &lt;color=#c9b45b&gt;Fighters&lt;/color&gt;: Well-rounded mercenaries with improved combat skills (950-1300 silver)
+  - &lt;color=#c9b45b&gt;Veterans&lt;/color&gt;: Elite warriors with high combat skills and medical knowledge (1850-2500 silver)
+• Mercenaries arrive via drop pod shortly after hiring
+• Periodically refreshed mercenary roster (every 15 days)
+• Each refresh gives access to 10 Raiders, 5 Fighters, and 2 Veterans
+
+&lt;color=#1a8aff&gt;&lt;b&gt;Biotech Support:&lt;/b&gt;&lt;/color&gt;
+• Filter available mercenaries by xenotype
+• Pre-generated batches for common xenotypes to reduce loading time
+
+&lt;color=#1a8aff&gt;&lt;b&gt;How to Use:&lt;/b&gt;&lt;/color&gt;
+1. Build a powered Comms Console
+2. Assign a colonist with Social skill as negotiator
+3. Contact the "Mercenary Network"
+4. Browse available mercenaries and hire those that fit your needs
+
+Compatible with existing saves. Can be safely added to or removed from ongoing games.
+
+&lt;color=#ff8c1a&gt;Note: Requires a skilled negotiator (a colonist capable of social interaction) to contact the mercenary network.&lt;/color&gt;</description>
+	<modDependencies>
+		<li>
+			<packageId>brrainz.harmony</packageId>
+			<displayName>Harmony</displayName>
+			<steamWorkshopUrl>steam://url/CommunityFilePage/2009463077</steamWorkshopUrl>
+			<downloadUrl>https://github.com/pardeike/HarmonyRimWorld/releases/latest</downloadUrl>
+		</li>
+	</modDependencies>
+	<loadAfter>
+		<li>brrainz.harmony</li>
+	</loadAfter>
+</ModMetaData> 

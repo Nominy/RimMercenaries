@@ -5,6 +5,7 @@ using UnityEngine;
 using Verse;
 using HarmonyLib;
 using System.Reflection;
+using Verse.AI;
 
 namespace RimMercenaries
 {
@@ -12,18 +13,21 @@ namespace RimMercenaries
     public static class RimMercenaries
     {
         public static XenotypeDef selectedXenotypeDef = null;
+        public static JobDef UseMercenaryConsoleJobDef;
 
         static RimMercenaries()
         {
             var harmony = new Harmony("rimmercenaries.commsconsolepatch");
             harmony.PatchAll(Assembly.GetExecutingAssembly());
 
+            // Cache the job def for better performance
+            UseMercenaryConsoleJobDef = DefDatabase<JobDef>.GetNamed("UseMercenaryConsole");
+
             Log.Message("[RimMercenaries] Mod Initialized. Added Mercenary functionality to Comms Console.");
         }
 
-        public static void OpenMercenaryHireWindow(Building commsConsole)
+        public static void OpenMercenaryHireWindow(Building commsConsole, Pawn negotiator)
         {
-            var negotiator = FindBestNegotiator(commsConsole.Map);
             if (negotiator == null)
             {
                 Messages.Message("RimMercenaries_NoNegotiator".Translate(), commsConsole, MessageTypeDefOf.RejectInput, false);
@@ -37,22 +41,9 @@ namespace RimMercenaries
                 return;
             }
 
+            // This will only refresh if needed
             MercenaryManager.TryRefreshMercenaries(commsConsole.Map);
             Find.WindowStack.Add(new Window_MercenaryHire(commsConsole, negotiator));
-        }
-
-        private static Pawn FindBestNegotiator(Map map)
-        {
-            if (map == null) return null;
-
-            return map.mapPawns.FreeColonistsSpawned
-                     .Where(p => p.RaceProps.Humanlike &&
-                                !p.Dead &&
-                                !p.Downed &&
-                                p.health.capacities.CapableOf(PawnCapacityDefOf.Talking) &&
-                                p.Awake())
-                     .OrderByDescending(p => p.skills.GetSkill(SkillDefOf.Social).Level)
-                     .FirstOrDefault();
         }
     }
 
@@ -67,6 +58,26 @@ namespace RimMercenaries
         }
     }
 
+    [HarmonyPatch(typeof(Game), "LoadGame")]
+    public static class Game_LoadGame_Patch
+    {
+        public static void Postfix()
+        {
+            // Delay mercenary generation until the map is fully loaded
+            LongEventHandler.ExecuteWhenFinished(() => {
+                if (Current.Game != null && Current.Game.Maps != null && Current.Game.Maps.Any())
+                {
+                    var map = Current.Game.Maps.First();
+                    // Generate the current batch and start generating the next batch
+                    MercenaryManager.TryRefreshMercenaries(map);
+                }
+            });
+        }
+    }
+    
+
+
+    [StaticConstructorOnStartup]
     public class MercenaryCommTarget : ICommunicable
     {
         private static readonly Texture2D mercIcon = FactionDefOf.Pirate.FactionIcon;
@@ -103,7 +114,9 @@ namespace RimMercenaries
             Building_CommsConsole console = negotiator.Map.listerBuildings.AllBuildingsColonistOfClass<Building_CommsConsole>().FirstOrDefault();
             if (console != null)
             {
-                RimMercenaries.OpenMercenaryHireWindow(console);
+                // Create a job for the pawn to go to the console
+                Job job = JobMaker.MakeJob(RimMercenaries.UseMercenaryConsoleJobDef, console);
+                negotiator.jobs.TryTakeOrderedJob(job, JobTag.Misc);
             }
         }
 
@@ -129,7 +142,11 @@ namespace RimMercenaries
             
             FloatMenuOption option = new FloatMenuOption(
                 optionLabel,
-                () => RimMercenaries.OpenMercenaryHireWindow(console),
+                () => {
+                    // Create a job for the pawn to go to the console
+                    Job job = JobMaker.MakeJob(RimMercenaries.UseMercenaryConsoleJobDef, console);
+                    negotiator.jobs.TryTakeOrderedJob(job, JobTag.Misc);
+                },
                 mercIcon,
                 iconColor,
                 MenuOptionPriority.Default
