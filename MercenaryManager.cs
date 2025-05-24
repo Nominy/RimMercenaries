@@ -9,221 +9,64 @@ namespace RimMercenaries
 {
     public static class MercenaryManager
     {
-        private static Dictionary<XenotypeDef, List<MercenaryOffer>> xenotypeBatches = new Dictionary<XenotypeDef, List<MercenaryOffer>>();
-        private static Dictionary<int, int> globalTierCounters = new Dictionary<int, int> { { 1, 10 }, { 2, 5 }, { 3, 2 } };
-        private static List<MercenaryOffer> availableMercenaries = new List<MercenaryOffer>();
-        private static int lastMercenaryRefreshTick = -99999;
-        public static int RefreshIntervalTicks = 3600000;
-        public static int LastRefreshTick => lastMercenaryRefreshTick;
-        
-        // Reserve batches for instant switching
-        private static Dictionary<XenotypeDef, List<MercenaryOffer>> reserveBatches = new Dictionary<XenotypeDef, List<MercenaryOffer>>();
-        private static bool isGeneratingReserve = false;
+        // Static wrapper that accesses the current game's MercenaryGameComponent
+        private static MercenaryGameComponent GetComponent()
+        {
+            if (Current.Game == null) return null;
+            return Current.Game.GetComponent<MercenaryGameComponent>();
+        }
+
+        public static int RefreshIntervalTicks => MercenaryGameComponent.RefreshIntervalTicks;
+        public static int LastRefreshTick => GetComponent()?.LastRefreshTick ?? -99999;
 
         public static void ExposeData()
         {
-            Scribe_Collections.Look(ref availableMercenaries, "availableMercenaries", LookMode.Deep);
-            Scribe_Values.Look(ref lastMercenaryRefreshTick, "lastMercenaryRefreshTick");
-            
-            if (Scribe.mode == LoadSaveMode.PostLoadInit)
-            {
-                availableMercenaries?.RemoveAll(offer => offer == null || offer.pawn == null);
-                if (availableMercenaries == null)
-                    availableMercenaries = new List<MercenaryOffer>();
-                if (xenotypeBatches == null)
-                    xenotypeBatches = new Dictionary<XenotypeDef, List<MercenaryOffer>>();
-                if (reserveBatches == null)
-                    reserveBatches = new Dictionary<XenotypeDef, List<MercenaryOffer>>();
-            }
+            // This is no longer needed since the GameComponent handles all save/load operations
+            // Keeping this method for backward compatibility in case it's called from somewhere
         }
 
         public static List<MercenaryOffer> GetAvailableMercenaries(XenotypeDef selectedXenotypeDef = null)
         {
-            if (selectedXenotypeDef != null && !xenotypeBatches.ContainsKey(selectedXenotypeDef))
-            {
-                // Try to use reserve batch first
-                if (reserveBatches.TryGetValue(selectedXenotypeDef, out List<MercenaryOffer> reserved))
-                {
-                    xenotypeBatches[selectedXenotypeDef] = reserved;
-                    reserveBatches.Remove(selectedXenotypeDef);
-                    availableMercenaries = reserved;
-                    
-                    // Generate the next reserve batch for this xenotype
-                    GenerateReserveBatchForXenotype(Find.CurrentMap, selectedXenotypeDef);
-                }
-                else
-                {
-                    // Fall back to synchronous generation if reserve batch isn't available
-                    GenerateMercenariesForXenotype(Find.CurrentMap, selectedXenotypeDef);
-                    
-                    // Start generating the reserve batch for next time
-                    GenerateReserveBatchForXenotype(Find.CurrentMap, selectedXenotypeDef);
-                }
-            }
-            else if (xenotypeBatches == null || !xenotypeBatches.Any())
-            {
-                var baseliner = DefDatabase<XenotypeDef>.AllDefsListForReading.FirstOrDefault(x => x.defName == "Baseliner");
-                if (baseliner != null)
-                {
-                    // Try to use reserve batch first
-                    if (reserveBatches.TryGetValue(baseliner, out List<MercenaryOffer> reserved))
-                    {
-                        xenotypeBatches[baseliner] = reserved;
-                        reserveBatches.Remove(baseliner);
-                        availableMercenaries = reserved;
-                        
-                        // Generate the next reserve batch
-                        GenerateReserveBatchForXenotype(Find.CurrentMap, baseliner);
-                    }
-                    else
-                    {
-                        // Fall back to synchronous generation
-                        GenerateMercenariesForXenotype(Find.CurrentMap, baseliner);
-                        
-                        // Generate reserve batch
-                        GenerateReserveBatchForXenotype(Find.CurrentMap, baseliner);
-                    }
-                }
-            }
-
-            if (xenotypeBatches == null)
-                xenotypeBatches = new Dictionary<XenotypeDef, List<MercenaryOffer>>();
-
-            foreach (var batch in xenotypeBatches.Values)
-                batch.RemoveAll(o => o.pawn == null || o.pawn.Destroyed || o.pawn.Dead);
-
-            var keyToUse = selectedXenotypeDef ?? DefDatabase<XenotypeDef>.AllDefsListForReading.FirstOrDefault(x => x.defName == "Baseliner");
-            if (keyToUse != null && xenotypeBatches.TryGetValue(keyToUse, out var selectedBatch))
-            {
-                availableMercenaries = selectedBatch;
-                return selectedBatch;
-            }
+            var component = GetComponent();
+            if (component == null) return new List<MercenaryOffer>();
             
-            return availableMercenaries ?? new List<MercenaryOffer>();
+            return component.GetAvailableMercenariesForUI(selectedXenotypeDef);
         }
 
-        private static void GenerateMercenariesForXenotype(Map map, XenotypeDef xenotype)
+        public static int GetRemainingTierCount(int tier) 
         {
-            if (xenotype == null) return;
-
-            var offers = new List<MercenaryOffer>();
-            
-            foreach (var tier in globalTierCounters.Keys)
-            {
-                for (int i = 0; i < globalTierCounters[tier]; i++)
-                {
-                    var offer = MercenaryOfferGenerator.GenerateOffer(map, tier, xenotype);
-                    if (offer != null)
-                        offers.Add(offer);
-                }
-            }
-            
-            xenotypeBatches[xenotype] = offers;
-            availableMercenaries = offers;
-            lastMercenaryRefreshTick = Find.TickManager.TicksGame;
+            var component = GetComponent();
+            return component?.GlobalTierCounters.TryGetValue(tier, out var count) == true ? count : 0;
         }
-        
-        private static void GenerateReserveBatchForXenotype(Map map, XenotypeDef xenotype)
+
+        public static Dictionary<int, int> GetAllRemainingTierCounts() 
         {
-            if (xenotype == null || reserveBatches.ContainsKey(xenotype) || isGeneratingReserve)
-                return;
-                
-            isGeneratingReserve = true;
-            
-            LongEventHandler.QueueLongEvent(() => 
-            {
-                try
-                {
-                    Map currentMap = map;
-                    if (currentMap == null && Find.Maps.Any())
-                        currentMap = Find.Maps.First();
-                        
-                    if (currentMap != null)
-                    {
-                        var offers = new List<MercenaryOffer>();
-                        
-                        foreach (var tier in globalTierCounters.Keys)
-                        {
-                            for (int i = 0; i < globalTierCounters[tier]; i++)
-                            {
-                                var offer = MercenaryOfferGenerator.GenerateOffer(currentMap, tier, xenotype);
-                                if (offer != null)
-                                    offers.Add(offer);
-                            }
-                        }
-                        
-                        reserveBatches[xenotype] = offers;
-                    }
-                }
-                finally
-                {
-                    isGeneratingReserve = false;
-                }
-            }, "GeneratingReserveMercenaries", false, null, true);
+            var component = GetComponent();
+            return component?.GlobalTierCounters != null ? new Dictionary<int, int>(component.GlobalTierCounters) : new Dictionary<int, int>();
         }
 
-        public static int GetRemainingTierCount(int tier) => globalTierCounters.TryGetValue(tier, out var count) ? count : 0;
+        public static bool HasBeenInitialized() 
+        {
+            var component = GetComponent();
+            return component?.HasBeenInitialized ?? false;
+        }
 
-        public static Dictionary<int, int> GetAllRemainingTierCounts() => new Dictionary<int, int>(globalTierCounters);
+        public static void ForceInitialization(Map map)
+        {
+            var component = GetComponent();
+            component?.ForceInitialization(map);
+        }
 
         public static void TryRefreshMercenaries(Map map)
         {
-            // Only refresh if enough time has passed or we don't have any mercenaries
-            if (Find.TickManager.TicksGame >= lastMercenaryRefreshTick + RefreshIntervalTicks || xenotypeBatches == null || !xenotypeBatches.Any())
-            {
-                // Clear existing mercenaries
-                foreach (var batch in xenotypeBatches.Values)
-                    foreach (var offer in batch)
-                        if (offer?.pawn != null)
-                            MercenaryOffer.DiscardPawnIfNeeded(offer.pawn);
-
-                xenotypeBatches.Clear();
-                availableMercenaries.Clear();
-
-                globalTierCounters[1] = 10;
-                globalTierCounters[2] = 5;
-                globalTierCounters[3] = 2;
-
-                // Get the default xenotype
-                var baseliner = DefDatabase<XenotypeDef>.AllDefsListForReading.FirstOrDefault(x => x.defName == "Baseliner");
-                if (baseliner != null)
-                {
-                    // Use reserve batch if available
-                    if (reserveBatches.TryGetValue(baseliner, out List<MercenaryOffer> reserved))
-                    {
-                        xenotypeBatches[baseliner] = reserved;
-                        reserveBatches.Remove(baseliner);
-                        availableMercenaries = reserved;
-                    }
-                    else
-                    {
-                        // Fall back to synchronous generation
-                        GenerateMercenariesForXenotype(map, baseliner);
-                    }
-                    
-                    // Always generate the next reserve batch
-                    GenerateReserveBatchForXenotype(map, baseliner);
-                    
-                    // Also pre-generate batches for common xenotypes if Biotech is active
-                    if (ModsConfig.BiotechActive)
-                    {
-                        var commonXenotypes = new List<string> { "Hussar", "Sanguophage", "Pigskin", "Neanderthal" };
-                        foreach (var xenotypeName in commonXenotypes)
-                        {
-                            var xenotype = DefDatabase<XenotypeDef>.AllDefsListForReading.FirstOrDefault(x => x.defName == xenotypeName);
-                            if (xenotype != null && !reserveBatches.ContainsKey(xenotype))
-                            {
-                                GenerateReserveBatchForXenotype(map, xenotype);
-                            }
-                        }
-                    }
-                }
-            }
+            var component = GetComponent();
+            component?.TryRefreshMercenaries(map);
         }
 
         public static bool TryHireMercenary(Map map, IntVec3 dropCell, Pawn negotiator, MercenaryOffer offer)
         {
-            if (offer?.pawn == null) return false;
+            var component = GetComponent();
+            if (component == null || offer?.pawn == null) return false;
 
             int tier = 1;
             if (offer.buildType != null)
@@ -238,9 +81,9 @@ namespace RimMercenaries
                 }
             }
 
-            if (!globalTierCounters.ContainsKey(tier) || globalTierCounters[tier] <= 0)
+            if (!component.GlobalTierCounters.ContainsKey(tier) || component.GlobalTierCounters[tier] <= 0)
             {
-                Messages.Message($"RimMercenaries_HireBudgetReachedTier".Translate(tier, globalTierCounters[tier]), MessageTypeDefOf.RejectInput, false);
+                Messages.Message($"RimMercenaries_HireBudgetReachedTier".Translate(tier, component.GlobalTierCounters[tier]), MessageTypeDefOf.RejectInput, false);
                 return false;
             }
 
@@ -318,7 +161,7 @@ namespace RimMercenaries
 
             SoundStarter.PlayOneShot(SoundDefOf.ExecuteTrade, new TargetInfo(finalDropCell, map));
 
-            foreach (var batch in xenotypeBatches.Values)
+            foreach (var batch in component.XenotypeBatches.Values)
             {
                 var toRemove = batch.FirstOrDefault(o => o == offer);
                 if (toRemove != null)
@@ -347,13 +190,13 @@ namespace RimMercenaries
                 }
             }
 
-            availableMercenaries.Remove(offer);
-            globalTierCounters[tier]--;
+            component.AvailableMercenaries.Remove(offer);
+            component.GlobalTierCounters[tier]--;
 
-            if (globalTierCounters[tier] <= 0)
+            if (component.GlobalTierCounters[tier] <= 0)
             {
-                foreach (var batch in xenotypeBatches.Values)
-                {
+                foreach (var batch in component.XenotypeBatches.Values)
+                            {
                     batch.RemoveAll(o => {
                         int t = 1;
                         if (o.buildType != null)

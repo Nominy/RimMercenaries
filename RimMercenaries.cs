@@ -58,22 +58,7 @@ namespace RimMercenaries
         }
     }
 
-    [HarmonyPatch(typeof(Game), "LoadGame")]
-    public static class Game_LoadGame_Patch
-    {
-        public static void Postfix()
-        {
-            // Delay mercenary generation until the map is fully loaded
-            LongEventHandler.ExecuteWhenFinished(() => {
-                if (Current.Game != null && Current.Game.Maps != null && Current.Game.Maps.Any())
-                {
-                    var map = Current.Game.Maps.First();
-                    // Generate the current batch and start generating the next batch
-                    MercenaryManager.TryRefreshMercenaries(map);
-                }
-            });
-        }
-    }
+    // GameComponent now handles initialization, so this patch is no longer needed
     
 
 
