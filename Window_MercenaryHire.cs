@@ -77,6 +77,8 @@ namespace RimMercenaries
             this.currentOffers = new List<MercenaryOffer>(MercenaryManager.GetAvailableMercenaries(RimMercenaries.selectedXenotypeDef));
         }
 
+
+
         private int GetRemainingTierCount(int tier)
         {
             return MercenaryManager.GetRemainingTierCount(tier);
@@ -190,6 +192,46 @@ namespace RimMercenaries
                 DrawSkillTooltipAtMouse(hoveredPawnForSkills);
                 hoveredPawnForSkills = null;
             }
+
+            // Draw non-combatant warning overlay in top-right corner
+            if (ModsConfig.BiotechActive && RimMercenaries.selectedXenotypeDef != null && 
+                MercenaryOfferGenerator.IsNonCombatantXenotype(RimMercenaries.selectedXenotypeDef))
+            {
+                var warningText = "RimMercenaries_NonCombatantWarning".Translate();
+                var warningWidth = 400f; // Fixed width for the warning
+                var warningHeight = Text.CalcHeight(warningText, warningWidth);
+                
+                // Position in top-right corner with some margin from edges
+                var warningX = inRect.xMax - warningWidth - 20f;
+                var warningY = inRect.y + 20f;
+                var warningRect = new Rect(warningX, warningY, warningWidth, warningHeight);
+                
+                // Draw semi-transparent background
+                var bgColor = new Color(0f, 0f, 0f, 0.7f);
+                Widgets.DrawBoxSolid(warningRect, bgColor);
+                
+                // Draw red border
+                var borderColor = GUI.color;
+                GUI.color = Color.red;
+                Widgets.DrawBox(warningRect);
+                GUI.color = borderColor;
+                
+                // Save current color and font
+                var oldColor = GUI.color;
+                var oldFont = Text.Font;
+                
+                // Set warning style - red letters
+                GUI.color = Color.red;
+                Text.Font = GameFont.Small;
+                Text.Anchor = TextAnchor.MiddleCenter;
+                
+                Widgets.Label(warningRect, warningText);
+                
+                // Restore original settings
+                GUI.color = oldColor;
+                Text.Font = oldFont;
+                Text.Anchor = TextAnchor.UpperLeft;
+            }
         }
 
         private float CalculateControlsHeight()
@@ -256,7 +298,7 @@ namespace RimMercenaries
                 if (Widgets.ButtonText(dropdownButtonRect, buttonLabel))
                 {
                     var options = DefDatabase<XenotypeDef>.AllDefs
-                        .Where(x => x.canGenerateAsCombatant)
+                        .Where(x => x.canGenerateAsCombatant || MercenaryOfferGenerator.IsNonCombatantXenotype(x))
                         .OrderBy(x => x.LabelCap.ToString())
                         .Select(xenotype => new FloatMenuOption(
                             xenotype.LabelCap,
@@ -282,7 +324,10 @@ namespace RimMercenaries
 
                     Find.WindowStack.Add(new FloatMenu(options));
                 }
+                currentX += dropdownButtonRect.width + Margin;
             }
+            
+
         }
 
         private void DrawOfferColumn(Rect columnRect, List<MercenaryOffer> offers, List<float> cellHeights, Pawn negotiator, List<MercenaryOffer> toRemove, float colWidth, float columnHeaderHeight)

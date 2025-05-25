@@ -48,6 +48,10 @@ namespace RimMercenaries
 
             for (int attempt = 0; attempt < 10; attempt++)
             {
+                // For xenotypes that are inherently non-combatant (like Highmates), allow violence-disabled pawns
+                // For other xenotypes, require violence capability to avoid spawning defective mercenaries
+                bool allowNonCombatant = forcedXenotype != null && IsNonCombatantXenotype(forcedXenotype);
+                
                 var request = new PawnGenerationRequest(
                     kind: PawnKindDefOf.Colonist,
                     faction: null,
@@ -57,7 +61,7 @@ namespace RimMercenaries
                     allowDead: false,
                     allowDowned: false,
                     canGeneratePawnRelations: true,
-                    mustBeCapableOfViolence: forcedXenotype?.canGenerateAsCombatant ?? true,
+                    mustBeCapableOfViolence: !allowNonCombatant,
                     colonistRelationChanceFactor: 0f,
                     forceAddFreeWarmLayerIfNeeded: false,
                     allowGay: true,
@@ -150,6 +154,24 @@ namespace RimMercenaries
                 EnsureTraits(pawn, BadTraits, Rand.RangeInclusive(1, 2), GoodTraits);
             else if (build == MercenaryBuilds.Builds[3])
                 EnsureTraits(pawn, GoodTraits, Rand.RangeInclusive(1, 2), BadTraits);
+        }
+
+        /// <summary>
+        /// Checks if a xenotype is intentionally designed as non-combatant by looking for the ViolenceDisabled gene.
+        /// This automatically identifies xenotypes like Highmates that are meant to be non-combatant.
+        /// </summary>
+        /// <param name="xenotype">The xenotype to check</param>
+        /// <returns>True if the xenotype has the ViolenceDisabled gene, false otherwise</returns>
+        public static bool IsNonCombatantXenotype(XenotypeDef xenotype)
+        {
+            // Check if the xenotype has the "Violence disabled" gene
+            // This automatically identifies xenotypes that are intentionally designed as non-combatants
+            if (xenotype?.genes != null)
+            {
+                return xenotype.genes.Any(geneDef => geneDef.defName == "ViolenceDisabled");
+            }
+            
+            return false;
         }
 
         private static void EnsureTraits(Pawn pawn, List<TraitDef> desiredTraits, int targetCount, List<TraitDef> forbiddenTraits)

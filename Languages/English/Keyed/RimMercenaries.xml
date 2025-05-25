@@ -32,6 +32,7 @@
   <RimMercenaries_FilterXenotype>Filter by Xenotype:</RimMercenaries_FilterXenotype>
   <RimMercenaries_XenotypeAny>Any</RimMercenaries_XenotypeAny>
   <RimMercenaries_RegenerateXenotype>Regenerate List</RimMercenaries_RegenerateXenotype>
+  <RimMercenaries_NonCombatantWarning>⚠ WARNING: This xenotype is incapable of violence and cannot engage in combat!</RimMercenaries_NonCombatantWarning>
 
   <!-- Build Types -->
   <RimMercenaries_Build1Title>Raider</RimMercenaries_Build1Title>

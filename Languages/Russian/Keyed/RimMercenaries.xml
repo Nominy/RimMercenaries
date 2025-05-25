@@ -31,6 +31,7 @@
   <RimMercenaries_FilterXenotype>Фильтр по ксенотипу:</RimMercenaries_FilterXenotype>
   <RimMercenaries_XenotypeAny>Любой</RimMercenaries_XenotypeAny>
   <RimMercenaries_RegenerateXenotype>Перегенерировать список</RimMercenaries_RegenerateXenotype>
+  <RimMercenaries_NonCombatantWarning>⚠ ВНИМАНИЕ: Этот ксенотип не способен к насилию и не может участвовать в бою!</RimMercenaries_NonCombatantWarning>
 
   <!-- Build Types -->
   <RimMercenaries_Build1Title>Налётчик</RimMercenaries_Build1Title>
