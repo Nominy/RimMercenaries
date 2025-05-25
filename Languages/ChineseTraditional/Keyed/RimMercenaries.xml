@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LanguageData>
+
+  <!-- Main Labels & Info -->
+  <RimMercenaries_HireMercenariesTitle>僱傭兵團</RimMercenaries_HireMercenariesTitle>
+  <RimMercenaries_Negotiator>談判者：{0}（社交 {1}）</RimMercenaries_Negotiator>
+  <RimMercenaries_RefreshList>重新整理清單</RimMercenaries_RefreshList>
+  <RimMercenaries_RefreshCooldown>無法這麼快再次重新整理清單。</RimMercenaries_RefreshCooldown>
+  <RimMercenaries_RefreshListTooltip>重新整理可用僱傭兵清單。</RimMercenaries_RefreshListTooltip>
+  <RimMercenaries_NoMercenariesAvailable>目前沒有可用的僱傭兵。請稍後再查看或重新整理清單。</RimMercenaries_NoMercenariesAvailable>
+  <RimMercenaries_Price>價格：{0}</RimMercenaries_Price>
+  <RimMercenaries_HireButton>僱傭</RimMercenaries_HireButton>
+  <RimMercenaries_NoNegotiator>必須有一位有能力的談判者（能夠說話的殖民者）。</RimMercenaries_NoNegotiator>
+  <RimMercenaries_NoPower>僱傭兵控制台需要電力。</RimMercenaries_NoPower>
+  <RimMercenaries_NotEnoughSilver>銀幣不足。需要 {0}。</RimMercenaries_NotEnoughSilver>
+  <RimMercenaries_MercenaryHired>{1} 以 {2} 的價格僱傭了僱傭兵 {0}</RimMercenaries_MercenaryHired>
+  <RimMercenaries_MercenaryHiredLabel>{0} 已僱傭</RimMercenaries_MercenaryHiredLabel>
+  <RimMercenaries_MercenaryHiredDesc>
+    經過 {1} 的談判，{0} 同意以 {2} 的報酬加入殖民地。
+    他們將很快通過投放艙抵達。
+  </RimMercenaries_MercenaryHiredDesc>
+  <RimMercenaries_MercenariesReady>可用僱傭兵聯絡人已就緒</RimMercenaries_MercenariesReady>
+  <RimMercenaries_NextMercenaryUpdate>下次僱傭兵聯絡人更新時間：{0}</RimMercenaries_NextMercenaryUpdate>
+
+  <!-- Comm Console Integration -->
+  <RimMercenaries_MercenaryNetwork>僱傭兵網絡</RimMercenaries_MercenaryNetwork>
+  <RimMercenaries_CallMercenaryNetwork>呼叫僱傭兵網絡</RimMercenaries_CallMercenaryNetwork>
+  <RimMercenaries_ContactMercenaryNetwork>聯絡僱傭兵網絡</RimMercenaries_ContactMercenaryNetwork>
+  <RimMercenaries_MercenaryNetworkInfo>聯絡僱傭兵網絡以用銀幣僱傭僱傭兵。</RimMercenaries_MercenaryNetworkInfo>
+
+  <!-- Xenotype Filtering -->
+  <RimMercenaries_FilterXenotype>按異種類型篩選：</RimMercenaries_FilterXenotype>
+  <RimMercenaries_XenotypeAny>任何</RimMercenaries_XenotypeAny>
+  <RimMercenaries_RegenerateXenotype>重新生成清單</RimMercenaries_RegenerateXenotype>
+  <RimMercenaries_NonCombatantWarning>⚠ 警告：此異種類型無法進行暴力行為，不能參與戰鬥！</RimMercenaries_NonCombatantWarning>
+
+  <!-- Build Types -->
+  <RimMercenaries_Build1Title>襲擊者</RimMercenaries_Build1Title>
+  <RimMercenaries_Build1Desc>接受過最基本訓練的戰鬥人員。</RimMercenaries_Build1Desc>
+  <RimMercenaries_Build2Title>戰士</RimMercenaries_Build2Title>
+  <RimMercenaries_Build2Desc>全面發展的僱傭兵，具有改良的戰鬥技能。</RimMercenaries_Build2Desc>
+  <RimMercenaries_Build3Title>老兵</RimMercenaries_Build3Title>
+  <RimMercenaries_Build3Desc>技藝精湛的戰士，通常具有戰地醫療知識。</RimMercenaries_Build3Desc>
+
+  <!-- Tooltips -->
+  <RimMercenaries_SkillsShort>射擊：[0] [1]，近戰：[2] [3]</RimMercenaries_SkillsShort>
+  <RimMercenaries_TooltipXenotype>異種類型：{0}</RimMercenaries_TooltipXenotype>
+  <RimMercenaries_XenotypeUnknown>未知異種類型</RimMercenaries_XenotypeUnknown>
+
+  <!-- Health Descriptors -->
+  <RimMercenaries_HealthHealthy>健康</RimMercenaries_HealthHealthy>
+  <RimMercenaries_HealthInjured>受傷</RimMercenaries_HealthInjured>
+  <RimMercenaries_HealthPermanentInjury>永久傷害</RimMercenaries_HealthPermanentInjury>
+  <RimMercenaries_HealthDowned>倒下</RimMercenaries_HealthDowned>
+  <RimMercenaries_HealthNotPerfect>健康狀況不佳</RimMercenaries_HealthNotPerfect>
+
+  <!-- Shared Terms from Base Game -->
+  <None>無</None>
+  <Traits>特質</Traits>
+  <Skills>技能</Skills>
+  <Health>健康</Health>
+  <Apparel>服裝</Apparel>
+  <Equipment>裝備</Equipment>
+  <Incapable>無法勝任</Incapable>
+  <AgeBiological>年齡 {0}</AgeBiological>
+  <Unknown>未知</Unknown>
+
+  <RimMercenaries_RefreshReady>準備重新整理</RimMercenaries_RefreshReady>
+  <RimMercenaries_NextRefresh>下次重新整理時間：{0}</RimMercenaries_NextRefresh>
+  <RimMercenaries_HireBudget>僱傭預算：{0} / {1}</RimMercenaries_HireBudget>
+  <RimMercenaries_Theme>主題：</RimMercenaries_Theme>
+  <RimMercenaries_ThemeDefault>預設</RimMercenaries_ThemeDefault>
+  <RimMercenaries_ThemeDeepPurple>深紫色</RimMercenaries_ThemeDeepPurple>
+  <RimMercenaries_ThemeDeepBlue>深藍色</RimMercenaries_ThemeDeepBlue>
+  <RimMercenaries_ThemeDeepGreen>深綠色</RimMercenaries_ThemeDeepGreen>
+  <RimMercenaries_ThemeDeepYellow>深黃色</RimMercenaries_ThemeDeepYellow>
+  <RimMercenaries_TierLabel>等級 {0}：{1}/{2}</RimMercenaries_TierLabel>
+
+  <RimMercenaries_NoSafeDropLocationFound>找不到安全的僱傭兵降落地點。僱傭已取消。</RimMercenaries_NoSafeDropLocationFound>
+  <RimMercenaries_HireBudgetReachedTier>無法僱傭更多 {0} 級僱傭兵。剩餘：{1}</RimMercenaries_HireBudgetReachedTier>
+
+  <!-- Loading Indicator -->
+  <!--
+  <RimMercenaries_GeneratingMercenaries>正在生成僱傭兵...</RimMercenaries_GeneratingMercenaries>
+  <RimMercenaries_GeneratingForXenotype>正在為異種類型生成：{0}</RimMercenaries_GeneratingForXenotype>
+  <RimMercenaries_LoadingTime>已用時間：{0}秒</RimMercenaries_LoadingTime>
+  <RimMercenaries_ForceRefresh>強制重新整理</RimMercenaries_ForceRefresh>
+  -->
+
+</LanguageData> 

@@ -48,49 +48,75 @@ namespace RimMercenaries
 
             for (int attempt = 0; attempt < 10; attempt++)
             {
-                // For xenotypes that are inherently non-combatant (like Highmates), allow violence-disabled pawns
-                // For other xenotypes, require violence capability to avoid spawning defective mercenaries
-                bool allowNonCombatant = forcedXenotype != null && IsNonCombatantXenotype(forcedXenotype);
-                
-                var request = new PawnGenerationRequest(
-                    kind: PawnKindDefOf.Colonist,
-                    faction: null,
-                    context: PawnGenerationContext.NonPlayer,
-                    tile: map?.Tile ?? -1,
-                    forceGenerateNewPawn: true,
-                    allowDead: false,
-                    allowDowned: false,
-                    canGeneratePawnRelations: true,
-                    mustBeCapableOfViolence: !allowNonCombatant,
-                    colonistRelationChanceFactor: 0f,
-                    forceAddFreeWarmLayerIfNeeded: false,
-                    allowGay: true,
-                    allowFood: true,
-                    inhabitant: false,
-                    certainlyBeenInCryptosleep: false,
-                    developmentalStages: DevelopmentalStage.Adult,
-                    forcedXenotype: forcedXenotype,
-                    forcedCustomXenotype: null,
-                    allowedXenotypes: allowedXenotypes,
-                    forceBaselinerChance: 0f,
-                    fixedIdeo: Faction.OfPlayer.ideos.PrimaryIdeo,
-                    biologicalAgeRange: new FloatRange(17f, 55f)
-                );
-
-                var pawn = PawnGenerator.GeneratePawn(request);
-                if (pawn == null) continue;
-
-                if (forcedXenotype != null && (pawn.genes == null || pawn.genes.Xenotype != forcedXenotype))
+                Pawn pawn = null;
+                try
                 {
-                    MercenaryOffer.DiscardPawnIfNeeded(pawn);
+                    // For xenotypes that are inherently non-combatant (like Highmates), allow violence-disabled pawns
+                    // For other xenotypes, require violence capability to avoid spawning defective mercenaries
+                    bool allowNonCombatant = forcedXenotype != null && IsNonCombatantXenotype(forcedXenotype);
+                    
+                    var request = new PawnGenerationRequest(
+                        kind: PawnKindDefOf.Colonist,
+                        faction: null,
+                        context: PawnGenerationContext.NonPlayer,
+                        tile: map?.Tile ?? -1,
+                        forceGenerateNewPawn: true,
+                        allowDead: false,
+                        allowDowned: false,
+                        canGeneratePawnRelations: true,
+                        mustBeCapableOfViolence: !allowNonCombatant,
+                        colonistRelationChanceFactor: 0f,
+                        forceAddFreeWarmLayerIfNeeded: false,
+                        allowGay: true,
+                        allowFood: true,
+                        inhabitant: false,
+                        certainlyBeenInCryptosleep: false,
+                        developmentalStages: DevelopmentalStage.Adult,
+                        forcedXenotype: forcedXenotype,
+                        forcedCustomXenotype: null,
+                        allowedXenotypes: allowedXenotypes,
+                        forceBaselinerChance: 0f,
+                        fixedIdeo: Faction.OfPlayer.ideos.PrimaryIdeo,
+                        biologicalAgeRange: new FloatRange(17f, 55f)
+                    );
+
+                    pawn = PawnGenerator.GeneratePawn(request);
+                    if (pawn == null) continue;
+
+                    // Ensure the pawn's skills are properly initialized before checking xenotype
+                    if (pawn.skills?.skills == null)
+                    {
+                        Log.Warning($"[RimMercenaries] Generated pawn {pawn.LabelShortCap} has null skills, discarding and retrying");
+                        MercenaryOffer.DiscardPawnIfNeeded(pawn);
+                        continue;
+                    }
+
+                    if (forcedXenotype != null && (pawn.genes == null || pawn.genes.Xenotype != forcedXenotype))
+                    {
+                        MercenaryOffer.DiscardPawnIfNeeded(pawn);
+                        continue;
+                    }
+
+                    ApplyMercenaryBuild(pawn, build);
+                    return new MercenaryOffer(pawn, MercenaryOffer.CalculatePrice(pawn, build), build);
+                }
+                catch (System.Exception ex)
+                {
+                    // Log the error but don't let it break the generation process
+                    Log.Warning($"[RimMercenaries] Exception during pawn generation attempt {attempt + 1}/10 for xenotype {forcedXenotype?.defName ?? "none"}: {ex.Message}");
+                    
+                    // Clean up the pawn if it was created but had issues
+                    if (pawn != null)
+                    {
+                        MercenaryOffer.DiscardPawnIfNeeded(pawn);
+                    }
+                    
+                    // Continue to next attempt
                     continue;
                 }
-
-                ApplyMercenaryBuild(pawn, build);
-                return new MercenaryOffer(pawn, MercenaryOffer.CalculatePrice(pawn, build), build);
             }
 
-            Log.Warning("RimMercenaries: Failed to generate valid mercenary after 10 attempts");
+            Log.Warning($"[RimMercenaries] Failed to generate valid mercenary after 10 attempts for xenotype {forcedXenotype?.defName ?? "none"}");
             return null;
         }
 
@@ -110,7 +136,11 @@ namespace RimMercenaries
 
         private static void ApplyMercenaryBuild(Pawn pawn, MercenaryBuild build)
         {
-            if (pawn.skills == null) return;
+            if (pawn.skills?.skills == null) 
+            {
+                Log.Warning($"[RimMercenaries] Cannot apply mercenary build to {pawn.LabelShortCap} - skills are null");
+                return;
+            }
 
             var excludedSkills = new HashSet<SkillDef> { SkillDefOf.Shooting, SkillDefOf.Melee };
             if (build.MedicineLevel.HasValue) excludedSkills.Add(SkillDefOf.Medicine);
@@ -119,28 +149,37 @@ namespace RimMercenaries
             bool isTier3 = build == MercenaryBuilds.Builds[3];
             Passion primarySkillPassion = isTier3 ? Passion.Major : Passion.Minor;
 
-            foreach (var skill in pawn.skills.skills)
+            try
             {
-                if (skill.def == SkillDefOf.Shooting)
+                foreach (var skill in pawn.skills.skills)
                 {
-                    skill.Level = build.ShootingLevel;
-                    skill.passion = primarySkillPassion;
+                    if (skill?.def == null) continue; // Skip null skills
+                    
+                    if (skill.def == SkillDefOf.Shooting)
+                    {
+                        skill.Level = build.ShootingLevel;
+                        skill.passion = primarySkillPassion;
+                    }
+                    else if (skill.def == SkillDefOf.Melee)
+                    {
+                        skill.Level = build.MeleeLevel;
+                        skill.passion = primarySkillPassion;
+                    }
+                    else if (skill.def == SkillDefOf.Medicine && build.MedicineLevel.HasValue)
+                    {
+                        skill.Level = build.MedicineLevel.Value;
+                        skill.passion = primarySkillPassion;
+                    }
+                    else if (!excludedSkills.Contains(skill.def))
+                    {
+                        skill.Level = Rand.RangeInclusive(0, build.OtherSkillMax);
+                        skill.passion = Passion.None;
+                    }
                 }
-                else if (skill.def == SkillDefOf.Melee)
-                {
-                    skill.Level = build.MeleeLevel;
-                    skill.passion = primarySkillPassion;
-                }
-                else if (skill.def == SkillDefOf.Medicine && build.MedicineLevel.HasValue)
-                {
-                    skill.Level = build.MedicineLevel.Value;
-                    skill.passion = primarySkillPassion;
-                }
-                else if (!excludedSkills.Contains(skill.def))
-                {
-                    skill.Level = Rand.RangeInclusive(0, build.OtherSkillMax);
-                    skill.passion = Passion.None;
-                }
+            }
+            catch (System.Exception ex)
+            {
+                Log.Warning($"[RimMercenaries] Exception while applying mercenary build to {pawn.LabelShortCap}: {ex.Message}");
             }
 
             ApplyTierTraits(pawn, build);

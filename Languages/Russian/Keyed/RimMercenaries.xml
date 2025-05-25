@@ -68,6 +68,12 @@
   <RimMercenaries_NextRefresh>Следующее обновление через: {0}</RimMercenaries_NextRefresh>
   <RimMercenaries_HireBudget>Бюджет найма: {0} / {1}</RimMercenaries_HireBudget>
   <RimMercenaries_Theme>Тема: </RimMercenaries_Theme>
+  <RimMercenaries_ThemeDefault>По умолчанию</RimMercenaries_ThemeDefault>
+  <RimMercenaries_ThemeDeepPurple>Глубокий фиолетовый</RimMercenaries_ThemeDeepPurple>
+  <RimMercenaries_ThemeDeepBlue>Глубокий синий</RimMercenaries_ThemeDeepBlue>
+  <RimMercenaries_ThemeDeepGreen>Глубокий зелёный</RimMercenaries_ThemeDeepGreen>
+  <RimMercenaries_ThemeDeepYellow>Глубокий жёлтый</RimMercenaries_ThemeDeepYellow>
+  <RimMercenaries_TierLabel>Уровень {0}: {1}/{2}</RimMercenaries_TierLabel>
 
   <RimMercenaries_NoSafeDropLocationFound>Не найдено безопасного места для посадки наёмника. Найм отменён.</RimMercenaries_NoSafeDropLocationFound>
   <RimMercenaries_HireBudgetReachedTier>Невозможно нанять больше наёмников уровня {0}. Осталось: {1}</RimMercenaries_HireBudgetReachedTier>

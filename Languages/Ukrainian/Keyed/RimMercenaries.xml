@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LanguageData>
+
+  <!-- Main Labels & Info -->
+  <RimMercenaries_HireMercenariesTitle>Найняти найманців</RimMercenaries_HireMercenariesTitle>
+  <RimMercenaries_Negotiator>Переговорник: {0} (Соціальні навички {1})</RimMercenaries_Negotiator>
+  <RimMercenaries_RefreshList>Оновити список</RimMercenaries_RefreshList>
+  <RimMercenaries_RefreshCooldown>Неможливо оновити список так швидко.</RimMercenaries_RefreshCooldown>
+  <RimMercenaries_RefreshListTooltip>Оновити список доступних найманців.</RimMercenaries_RefreshListTooltip>
+  <RimMercenaries_NoMercenariesAvailable>Наразі немає доступних найманців. Перевірте пізніше або оновіть список.</RimMercenaries_NoMercenariesAvailable>
+  <RimMercenaries_Price>Ціна: {0}</RimMercenaries_Price>
+  <RimMercenaries_HireButton>Найняти</RimMercenaries_HireButton>
+  <RimMercenaries_NoNegotiator>Потрібен здібний переговорник (колоніст, який може говорити).</RimMercenaries_NoNegotiator>
+  <RimMercenaries_NoPower>Консоль найманців потребує живлення.</RimMercenaries_NoPower>
+  <RimMercenaries_NotEnoughSilver>Недостатньо срібла. Потрібно {0}.</RimMercenaries_NotEnoughSilver>
+  <RimMercenaries_MercenaryHired>Найманець {0} найнятий {1} за {2}</RimMercenaries_MercenaryHired>
+  <RimMercenaries_MercenaryHiredLabel>{0} найнято</RimMercenaries_MercenaryHiredLabel>
+  <RimMercenaries_MercenaryHiredDesc>
+    Після переговорів з {1}, {0} погодився приєднатися до колонії за плату {2}.
+    Вони прибудуть через десантну капсулу незабаром.
+  </RimMercenaries_MercenaryHiredDesc>
+  <RimMercenaries_MercenariesReady>Доступні контакти найманців готові</RimMercenaries_MercenariesReady>
+  <RimMercenaries_NextMercenaryUpdate>Наступне оновлення контактів найманців через: {0}</RimMercenaries_NextMercenaryUpdate>
+
+  <!-- Comm Console Integration -->
+  <RimMercenaries_MercenaryNetwork>Мережа найманців</RimMercenaries_MercenaryNetwork>
+  <RimMercenaries_CallMercenaryNetwork>Зв'язатися з мережею найманців</RimMercenaries_CallMercenaryNetwork>
+  <RimMercenaries_ContactMercenaryNetwork>Контакт з мережею найманців</RimMercenaries_ContactMercenaryNetwork>
+  <RimMercenaries_MercenaryNetworkInfo>Зв'яжіться з мережею найманців, щоб найняти найманців за срібло.</RimMercenaries_MercenaryNetworkInfo>
+
+  <!-- Xenotype Filtering -->
+  <RimMercenaries_FilterXenotype>Фільтр за ксенотипом:</RimMercenaries_FilterXenotype>
+  <RimMercenaries_XenotypeAny>Будь-який</RimMercenaries_XenotypeAny>
+  <RimMercenaries_RegenerateXenotype>Перегенерувати список</RimMercenaries_RegenerateXenotype>
+  <RimMercenaries_NonCombatantWarning>⚠ УВАГА: Цей ксенотип не здатний до насильства і не може брати участь у бою!</RimMercenaries_NonCombatantWarning>
+
+  <!-- Build Types -->
+  <RimMercenaries_Build1Title>Рейдер</RimMercenaries_Build1Title>
+  <RimMercenaries_Build1Desc>Базові бійці з мінімальною підготовкою.</RimMercenaries_Build1Desc>
+  <RimMercenaries_Build2Title>Боєць</RimMercenaries_Build2Title>
+  <RimMercenaries_Build2Desc>Універсальні найманці з покращеними бойовими навичками.</RimMercenaries_Build2Desc>
+  <RimMercenaries_Build3Title>Ветеран</RimMercenaries_Build3Title>
+  <RimMercenaries_Build3Desc>Високо кваліфіковані воїни, часто з знаннями польової медицини.</RimMercenaries_Build3Desc>
+
+  <!-- Tooltips -->
+  <RimMercenaries_SkillsShort>Стрільба: [0] [1], Ближній бій: [2] [3]</RimMercenaries_SkillsShort>
+  <RimMercenaries_TooltipXenotype>Ксенотип: {0}</RimMercenaries_TooltipXenotype>
+  <RimMercenaries_XenotypeUnknown>Невідомий ксенотип</RimMercenaries_XenotypeUnknown>
+
+  <!-- Health Descriptors -->
+  <RimMercenaries_HealthHealthy>Здоровий</RimMercenaries_HealthHealthy>
+  <RimMercenaries_HealthInjured>Поранений</RimMercenaries_HealthInjured>
+  <RimMercenaries_HealthPermanentInjury>Постійна травма</RimMercenaries_HealthPermanentInjury>
+  <RimMercenaries_HealthDowned>Знепритомнілий</RimMercenaries_HealthDowned>
+  <RimMercenaries_HealthNotPerfect>Неідеальне здоров'я</RimMercenaries_HealthNotPerfect>
+
+  <!-- Shared Terms from Base Game -->
+  <None>Немає</None>
+  <Traits>Риси</Traits>
+  <Skills>Навички</Skills>
+  <Health>Здоров'я</Health>
+  <Apparel>Одяг</Apparel>
+  <Equipment>Спорядження</Equipment>
+  <Incapable>Нездатний</Incapable>
+  <AgeBiological>Вік {0}</AgeBiological>
+  <Unknown>Невідомо</Unknown>
+
+  <RimMercenaries_RefreshReady>Готово до оновлення</RimMercenaries_RefreshReady>
+  <RimMercenaries_NextRefresh>Наступне оновлення через: {0}</RimMercenaries_NextRefresh>
+  <RimMercenaries_HireBudget>Бюджет найму: {0} / {1}</RimMercenaries_HireBudget>
+  <RimMercenaries_Theme>Тема: </RimMercenaries_Theme>
+  <RimMercenaries_ThemeDefault>За замовчуванням</RimMercenaries_ThemeDefault>
+  <RimMercenaries_ThemeDeepPurple>Глибокий фіолетовий</RimMercenaries_ThemeDeepPurple>
+  <RimMercenaries_ThemeDeepBlue>Глибокий синій</RimMercenaries_ThemeDeepBlue>
+  <RimMercenaries_ThemeDeepGreen>Глибокий зелений</RimMercenaries_ThemeDeepGreen>
+  <RimMercenaries_ThemeDeepYellow>Глибокий жовтий</RimMercenaries_ThemeDeepYellow>
+  <RimMercenaries_TierLabel>Рівень {0}: {1}/{2}</RimMercenaries_TierLabel>
+
+  <RimMercenaries_NoSafeDropLocationFound>Не знайдено безпечного місця для висадки найманця. Найм скасовано.</RimMercenaries_NoSafeDropLocationFound>
+  <RimMercenaries_HireBudgetReachedTier>Неможливо найняти більше найманців {0} рівня. Залишилося: {1}</RimMercenaries_HireBudgetReachedTier>
+
+  <!-- Loading Indicator -->
+  <!--
+  <RimMercenaries_GeneratingMercenaries>Генерація найманців...</RimMercenaries_GeneratingMercenaries>
+  <RimMercenaries_GeneratingForXenotype>Генерація для ксенотипу: {0}</RimMercenaries_GeneratingForXenotype>
+  <RimMercenaries_LoadingTime>Минуло часу: {0}с</RimMercenaries_LoadingTime>
+  <RimMercenaries_ForceRefresh>Примусове оновлення</RimMercenaries_ForceRefresh>
+  -->
+
+</LanguageData> 

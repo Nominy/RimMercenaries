@@ -25,13 +25,13 @@ namespace RimMercenaries
         private static readonly Color DeepGreen = new Color(0.1f, 0.4f, 0.2f, 0.8f); 
         private static readonly Color DeepYellow = new Color(0.5f, 0.4f, 0.1f, 0.8f); 
 
-        private static readonly List<(string name, Color color)> themes = new List<(string, Color)>()
+        private static readonly List<(string translationKey, Color color)> themes = new List<(string, Color)>()
         {
-            ("Default", DefaultBgColor),
-            ("Deep Purple", DeepPurple),
-            ("Deep Blue", DeepBlue),
-            ("Deep Green", DeepGreen),
-            ("Deep Yellow", DeepYellow)
+            ("RimMercenaries_ThemeDefault", DefaultBgColor),
+            ("RimMercenaries_ThemeDeepPurple", DeepPurple),
+            ("RimMercenaries_ThemeDeepBlue", DeepBlue),
+            ("RimMercenaries_ThemeDeepGreen", DeepGreen),
+            ("RimMercenaries_ThemeDeepYellow", DeepYellow)
         };
         private static int selectedThemeIndex = 0;
 
@@ -240,9 +240,9 @@ namespace RimMercenaries
             var refreshHeight = Text.CalcHeight(refreshText, 200f);
             var tierCountText = $"Tier 1: 10/10   Tier 2: 5/5   Tier 3: 2/2";
             var tierHeight = Text.CalcHeight(tierCountText, 400f);
-            var themeButtonHeight = Text.CalcHeight("Theme: " + themes[selectedThemeIndex].name, 150f) + 8f;
+            var themeButtonHeight = Text.CalcHeight("RimMercenaries_Theme".Translate() + themes[selectedThemeIndex].translationKey.Translate(), 150f) + 8f;
             var xenotypeLabelHeight = ModsConfig.BiotechActive ? Text.CalcHeight("RimMercenaries_FilterXenotype".Translate(), 120f) : 0f;
-            var dropdownButtonHeight = ModsConfig.BiotechActive ? Text.CalcHeight("Baseliner", DropdownWidth) + 8f : 0f;
+            var dropdownButtonHeight = ModsConfig.BiotechActive ? Text.CalcHeight("RimMercenaries_XenotypeAny".Translate(), DropdownWidth) + 8f : 0f;
 
             return Mathf.Max(refreshHeight, tierHeight, themeButtonHeight, xenotypeLabelHeight, dropdownButtonHeight, 32f);
         }
@@ -263,7 +263,10 @@ namespace RimMercenaries
             currentX += refreshInfoRect.width + Margin;
 
             var tierCounts = MercenaryManager.GetAllRemainingTierCounts();
-            var tierCountText = $"Tier 1: {tierCounts[1]}/10   Tier 2: {tierCounts[2]}/5   Tier 3: {tierCounts[3]}/2";
+            var tier1Text = "RimMercenaries_TierLabel".Translate(1, tierCounts[1], 10);
+            var tier2Text = "RimMercenaries_TierLabel".Translate(2, tierCounts[2], 5);
+            var tier3Text = "RimMercenaries_TierLabel".Translate(3, tierCounts[3], 2);
+            var tierCountText = $"{tier1Text}   {tier2Text}   {tier3Text}";
             var tierW = 400f;
             var tierH = Text.CalcHeight(tierCountText, tierW);
             var tierCountRect = new Rect(currentX, controlsRect.y + (controlsRect.height - tierH) / 2, tierW, tierH);
@@ -271,9 +274,10 @@ namespace RimMercenaries
             currentX += tierCountRect.width + Margin;
 
             var themeButtonW = 150f;
-            var themeButtonH = Text.CalcHeight("Theme: " + themes[selectedThemeIndex].name, themeButtonW) + 8f;
+            var themeButtonText = "RimMercenaries_Theme".Translate() + themes[selectedThemeIndex].translationKey.Translate();
+            var themeButtonH = Text.CalcHeight(themeButtonText, themeButtonW) + 8f;
             var themeButtonRect = new Rect(currentX, controlsRect.y + (controlsRect.height - themeButtonH) / 2, themeButtonW, themeButtonH);
-            if (Widgets.ButtonText(themeButtonRect, "Theme: " + themes[selectedThemeIndex].name))
+            if (Widgets.ButtonText(themeButtonRect, themeButtonText))
             {
                 selectedThemeIndex = (selectedThemeIndex + 1) % themes.Count;
                 SoundDefOf.Tick_High.PlayOneShotOnCamera();
@@ -289,11 +293,12 @@ namespace RimMercenaries
                 Widgets.Label(xenotypeLabelRect, xenotypeLabel);
                 currentX += xenotypeLabelRect.width + Margin / 2;
 
-                var dropdownButtonH = Text.CalcHeight("Baseliner", DropdownWidth) + 8f;
-                var dropdownButtonRect = new Rect(currentX, controlsRect.y + (controlsRect.height - dropdownButtonH) / 2, DropdownWidth, dropdownButtonH);
+                var defaultXenotype = DefDatabase<XenotypeDef>.AllDefsListForReading.FirstOrDefault(x => x.defName == "Baseliner");
                 var buttonLabel = RimMercenaries.selectedXenotypeDef?.LabelCap ?? 
-                                DefDatabase<XenotypeDef>.AllDefsListForReading.FirstOrDefault(x => x.defName == "Baseliner")?.LabelCap ?? 
-                                "Baseliner";
+                                defaultXenotype?.LabelCap ?? 
+                                "RimMercenaries_XenotypeAny".Translate();
+                var dropdownButtonH = Text.CalcHeight(buttonLabel, DropdownWidth) + 8f;
+                var dropdownButtonRect = new Rect(currentX, controlsRect.y + (controlsRect.height - dropdownButtonH) / 2, DropdownWidth, dropdownButtonH);
 
                 if (Widgets.ButtonText(dropdownButtonRect, buttonLabel))
                 {
@@ -306,7 +311,7 @@ namespace RimMercenaries
                             {
                                 if (RimMercenaries.selectedXenotypeDef != xenotype)
                                 {
-                                    RimMercenaries.selectedXenotypeDef = xenotype;
+                                    RimMercenaries.SetSelectedXenotype(xenotype);
                                     RefreshOfferList();
                                 }
                             },

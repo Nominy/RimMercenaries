@@ -26,6 +26,21 @@ namespace RimMercenaries
             Log.Message("[RimMercenaries] Mod Initialized. Added Mercenary functionality to Comms Console.");
         }
 
+        /// <summary>
+        /// Safely sets the selected xenotype, with validation to ensure it exists and is valid
+        /// </summary>
+        public static void SetSelectedXenotype(XenotypeDef xenotype)
+        {
+            if (xenotype != null && !DefDatabase<XenotypeDef>.AllDefsListForReading.Contains(xenotype))
+            {
+                Log.Warning($"[RimMercenaries] Attempted to select invalid xenotype {xenotype.defName}, resetting to null");
+                selectedXenotypeDef = null;
+                return;
+            }
+            
+            selectedXenotypeDef = xenotype;
+        }
+
         public static void OpenMercenaryHireWindow(Building commsConsole, Pawn negotiator)
         {
             if (negotiator == null)

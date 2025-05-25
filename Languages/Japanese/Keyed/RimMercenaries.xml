@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LanguageData>
+
+  <!-- Main Labels & Info -->
+  <RimMercenaries_HireMercenariesTitle>傭兵を雇う</RimMercenaries_HireMercenariesTitle>
+  <RimMercenaries_Negotiator>交渉者：{0}（社交スキル {1}）</RimMercenaries_Negotiator>
+  <RimMercenaries_RefreshList>リストを更新</RimMercenaries_RefreshList>
+  <RimMercenaries_RefreshCooldown>リストの更新が早すぎます。</RimMercenaries_RefreshCooldown>
+  <RimMercenaries_RefreshListTooltip>利用可能な傭兵のリストを更新します。</RimMercenaries_RefreshListTooltip>
+  <RimMercenaries_NoMercenariesAvailable>現在利用可能な傭兵はいません。後でもう一度確認するか、リストを更新してください。</RimMercenaries_NoMercenariesAvailable>
+  <RimMercenaries_Price>価格：{0}</RimMercenaries_Price>
+  <RimMercenaries_HireButton>雇用</RimMercenaries_HireButton>
+  <RimMercenaries_NoNegotiator>有能な交渉者（話すことができる入植者）が必要です。</RimMercenaries_NoNegotiator>
+  <RimMercenaries_NoPower>傭兵コンソールには電力が必要です。</RimMercenaries_NoPower>
+  <RimMercenaries_NotEnoughSilver>シルバーが不足しています。{0}が必要です。</RimMercenaries_NotEnoughSilver>
+  <RimMercenaries_MercenaryHired>{1}が{2}で傭兵{0}を雇いました</RimMercenaries_MercenaryHired>
+  <RimMercenaries_MercenaryHiredLabel>{0}を雇用しました</RimMercenaries_MercenaryHiredLabel>
+  <RimMercenaries_MercenaryHiredDesc>
+    {1}との交渉の結果、{0}は{2}の報酬でコロニーに参加することに同意しました。
+    彼らはまもなくドロップポッドで到着します。
+  </RimMercenaries_MercenaryHiredDesc>
+  <RimMercenaries_MercenariesReady>利用可能な傭兵の連絡先が準備完了</RimMercenaries_MercenariesReady>
+  <RimMercenaries_NextMercenaryUpdate>次の傭兵連絡先更新まで：{0}</RimMercenaries_NextMercenaryUpdate>
+
+  <!-- Comm Console Integration -->
+  <RimMercenaries_MercenaryNetwork>傭兵ネットワーク</RimMercenaries_MercenaryNetwork>
+  <RimMercenaries_CallMercenaryNetwork>傭兵ネットワークに連絡</RimMercenaries_CallMercenaryNetwork>
+  <RimMercenaries_ContactMercenaryNetwork>傭兵ネットワークに接触</RimMercenaries_ContactMercenaryNetwork>
+  <RimMercenaries_MercenaryNetworkInfo>傭兵ネットワークに連絡してシルバーで傭兵を雇います。</RimMercenaries_MercenaryNetworkInfo>
+
+  <!-- Xenotype Filtering -->
+  <RimMercenaries_FilterXenotype>ゼノタイプでフィルター：</RimMercenaries_FilterXenotype>
+  <RimMercenaries_XenotypeAny>すべて</RimMercenaries_XenotypeAny>
+  <RimMercenaries_RegenerateXenotype>リストを再生成</RimMercenaries_RegenerateXenotype>
+  <RimMercenaries_NonCombatantWarning>⚠ 警告：このゼノタイプは暴力行為ができず、戦闘に参加できません！</RimMercenaries_NonCombatantWarning>
+
+  <!-- Build Types -->
+  <RimMercenaries_Build1Title>レイダー</RimMercenaries_Build1Title>
+  <RimMercenaries_Build1Desc>最小限の訓練を受けた基本的な戦闘員。</RimMercenaries_Build1Desc>
+  <RimMercenaries_Build2Title>ファイター</RimMercenaries_Build2Title>
+  <RimMercenaries_Build2Desc>向上した戦闘スキルを持つバランスの取れた傭兵。</RimMercenaries_Build2Desc>
+  <RimMercenaries_Build3Title>ベテラン</RimMercenaries_Build3Title>
+  <RimMercenaries_Build3Desc>高度なスキルを持つ戦士で、しばしば野戦医療の知識を持つ。</RimMercenaries_Build3Desc>
+
+  <!-- Tooltips -->
+  <RimMercenaries_SkillsShort>射撃：[0] [1]、格闘：[2] [3]</RimMercenaries_SkillsShort>
+  <RimMercenaries_TooltipXenotype>ゼノタイプ：{0}</RimMercenaries_TooltipXenotype>
+  <RimMercenaries_XenotypeUnknown>不明なゼノタイプ</RimMercenaries_XenotypeUnknown>
+
+  <!-- Health Descriptors -->
+  <RimMercenaries_HealthHealthy>健康</RimMercenaries_HealthHealthy>
+  <RimMercenaries_HealthInjured>負傷</RimMercenaries_HealthInjured>
+  <RimMercenaries_HealthPermanentInjury>永続的な怪我</RimMercenaries_HealthPermanentInjury>
+  <RimMercenaries_HealthDowned>倒れている</RimMercenaries_HealthDowned>
+  <RimMercenaries_HealthNotPerfect>完全ではない健康状態</RimMercenaries_HealthNotPerfect>
+
+  <!-- Shared Terms from Base Game -->
+  <None>なし</None>
+  <Traits>特性</Traits>
+  <Skills>スキル</Skills>
+  <Health>健康</Health>
+  <Apparel>衣服</Apparel>
+  <Equipment>装備</Equipment>
+  <Incapable>不可能</Incapable>
+  <AgeBiological>年齢 {0}</AgeBiological>
+  <Unknown>不明</Unknown>
+
+  <RimMercenaries_RefreshReady>更新準備完了</RimMercenaries_RefreshReady>
+  <RimMercenaries_NextRefresh>次の更新まで：{0}</RimMercenaries_NextRefresh>
+  <RimMercenaries_HireBudget>雇用予算：{0} / {1}</RimMercenaries_HireBudget>
+  <RimMercenaries_Theme>テーマ：</RimMercenaries_Theme>
+  <RimMercenaries_ThemeDefault>デフォルト</RimMercenaries_ThemeDefault>
+  <RimMercenaries_ThemeDeepPurple>ディープパープル</RimMercenaries_ThemeDeepPurple>
+  <RimMercenaries_ThemeDeepBlue>ディープブルー</RimMercenaries_ThemeDeepBlue>
+  <RimMercenaries_ThemeDeepGreen>ディープグリーン</RimMercenaries_ThemeDeepGreen>
+  <RimMercenaries_ThemeDeepYellow>ディープイエロー</RimMercenaries_ThemeDeepYellow>
+  <RimMercenaries_TierLabel>ティア{0}：{1}/{2}</RimMercenaries_TierLabel>
+
+  <RimMercenaries_NoSafeDropLocationFound>傭兵の着陸に安全な場所が見つかりません。雇用をキャンセルしました。</RimMercenaries_NoSafeDropLocationFound>
+  <RimMercenaries_HireBudgetReachedTier>これ以上ティア{0}の傭兵を雇うことはできません。残り：{1}</RimMercenaries_HireBudgetReachedTier>
+
+  <!-- Loading Indicator -->
+  <!--
+  <RimMercenaries_GeneratingMercenaries>傭兵を生成中...</RimMercenaries_GeneratingMercenaries>
+  <RimMercenaries_GeneratingForXenotype>ゼノタイプ用に生成中：{0}</RimMercenaries_GeneratingForXenotype>
+  <RimMercenaries_LoadingTime>経過時間：{0}秒</RimMercenaries_LoadingTime>
+  <RimMercenaries_ForceRefresh>強制更新</RimMercenaries_ForceRefresh>
+  -->
+
+</LanguageData> 

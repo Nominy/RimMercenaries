@@ -69,6 +69,12 @@
   <RimMercenaries_NextRefresh>Next refresh in: {0}</RimMercenaries_NextRefresh>
   <RimMercenaries_HireBudget>Hire budget: {0} / {1}</RimMercenaries_HireBudget>
   <RimMercenaries_Theme>Theme: </RimMercenaries_Theme>
+  <RimMercenaries_ThemeDefault>Default</RimMercenaries_ThemeDefault>
+  <RimMercenaries_ThemeDeepPurple>Deep Purple</RimMercenaries_ThemeDeepPurple>
+  <RimMercenaries_ThemeDeepBlue>Deep Blue</RimMercenaries_ThemeDeepBlue>
+  <RimMercenaries_ThemeDeepGreen>Deep Green</RimMercenaries_ThemeDeepGreen>
+  <RimMercenaries_ThemeDeepYellow>Deep Yellow</RimMercenaries_ThemeDeepYellow>
+  <RimMercenaries_TierLabel>Tier {0}: {1}/{2}</RimMercenaries_TierLabel>
 
   <RimMercenaries_NoSafeDropLocationFound>No safe drop location found for mercenary landing. Hiring cancelled.</RimMercenaries_NoSafeDropLocationFound>
   <RimMercenaries_HireBudgetReachedTier>Cannot hire more tier {0} mercenaries. Remaining: {1}</RimMercenaries_HireBudgetReachedTier>

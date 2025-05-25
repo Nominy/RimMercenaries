@@ -68,6 +68,16 @@ namespace RimMercenaries
             
             Log.Message($"[RimMercenaries] FinalizeInit called for save. HasBeenInitialized: {hasBeenInitialized}");
             
+            // Validate the currently selected xenotype to ensure it's still valid
+            if (ModsConfig.BiotechActive && RimMercenaries.selectedXenotypeDef != null)
+            {
+                if (!DefDatabase<XenotypeDef>.AllDefsListForReading.Contains(RimMercenaries.selectedXenotypeDef))
+                {
+                    Log.Warning($"[RimMercenaries] Previously selected xenotype {RimMercenaries.selectedXenotypeDef.defName} is no longer valid, resetting to default");
+                    RimMercenaries.selectedXenotypeDef = DefDatabase<XenotypeDef>.AllDefsListForReading.FirstOrDefault(x => x.defName == "Baseliner");
+                }
+            }
+            
             // Initialize mercenaries if this is a new game or if they haven't been initialized yet
             if (Current.Game?.Maps != null && Current.Game.Maps.Count > 0)
             {
@@ -259,14 +269,27 @@ namespace RimMercenaries
                         {
                             for (int i = 0; i < globalTierCounters[tier]; i++)
                             {
-                                var offer = MercenaryOfferGenerator.GenerateOffer(currentMap, tier, xenotype);
-                                if (offer != null)
-                                    offers.Add(offer);
+                                try
+                                {
+                                    var offer = MercenaryOfferGenerator.GenerateOffer(currentMap, tier, xenotype);
+                                    if (offer != null)
+                                        offers.Add(offer);
+                                }
+                                catch (System.Exception ex)
+                                {
+                                    Log.Warning($"[RimMercenaries] Exception while generating reserve mercenary {i+1} for tier {tier}, xenotype {xenotype?.defName ?? "none"}: {ex.Message}");
+                                    // Continue with next mercenary
+                                }
                             }
                         }
                         
                         reserveBatches[xenotype] = offers;
+                        Log.Message($"[RimMercenaries] Generated {offers.Count} reserve mercenaries for xenotype {xenotype?.defName ?? "none"}");
                     }
+                }
+                catch (System.Exception ex)
+                {
+                    Log.Error($"[RimMercenaries] Critical error while generating reserve batch for xenotype {xenotype?.defName ?? "none"}: {ex.Message}");
                 }
                 finally
                 {
