@@ -131,25 +131,31 @@ namespace RimMercenaries
                 globalTierCounters[2] = 5;
                 globalTierCounters[3] = 2;
 
-                // Get the default xenotype
-                var baseliner = DefDatabase<XenotypeDef>.AllDefsListForReading.FirstOrDefault(x => x.defName == "Baseliner");
-                if (baseliner != null)
+                // Handle xenotype logic based on whether Biotech is active
+                XenotypeDef defaultXenotype = null;
+                if (ModsConfig.BiotechActive)
+                {
+                    defaultXenotype = DefDatabase<XenotypeDef>.AllDefsListForReading.FirstOrDefault(x => x.defName == "Baseliner");
+                }
+                
+                // Generate mercenaries (with or without xenotype)
+                if (ModsConfig.BiotechActive && defaultXenotype != null)
                 {
                     // Use reserve batch if available
-                    if (reserveBatches.TryGetValue(baseliner, out List<MercenaryOffer> reserved))
+                    if (reserveBatches.TryGetValue(defaultXenotype, out List<MercenaryOffer> reserved))
                     {
-                        xenotypeBatches[baseliner] = reserved;
-                        reserveBatches.Remove(baseliner);
+                        xenotypeBatches[defaultXenotype] = reserved;
+                        reserveBatches.Remove(defaultXenotype);
                         availableMercenaries = reserved;
                     }
                     else
                     {
                         // Fall back to synchronous generation
-                        GenerateMercenariesForXenotype(map, baseliner);
+                        GenerateMercenariesForXenotype(map, defaultXenotype);
                     }
                     
                     // Always generate the next reserve batch
-                    GenerateReserveBatchForXenotype(map, baseliner);
+                    GenerateReserveBatchForXenotype(map, defaultXenotype);
                     
                     // Also pre-generate batches for common xenotypes if Biotech is active
                     if (ModsConfig.BiotechActive)
@@ -165,29 +171,69 @@ namespace RimMercenaries
                         }
                     }
                 }
+                else if (ModsConfig.BiotechActive)
+                {
+                    Log.Error("[RimMercenaries] ERROR: Could not find Baseliner xenotype! This will prevent mercenary generation.");
+                }
+                else
+                {
+                    // No Biotech - generate mercenaries without xenotype filtering
+                    GenerateMercenariesForXenotype(map, null);
+                }
             }
         }
 
         private void GenerateMercenariesForXenotype(Map map, XenotypeDef xenotype)
         {
-            if (xenotype == null) return;
+            if (xenotype == null && ModsConfig.BiotechActive) 
+            {
+                Log.Error("[RimMercenaries] ERROR: Cannot generate mercenaries - xenotype is null but Biotech is active!");
+                return;
+            }
+
+            if (map == null)
+            {
+                Log.Error("[RimMercenaries] ERROR: Cannot generate mercenaries - map is null!");
+                return;
+            }
 
             var offers = new List<MercenaryOffer>();
             
             foreach (var tier in globalTierCounters.Keys)
             {
-                for (int i = 0; i < globalTierCounters[tier]; i++)
+                int tierCount = globalTierCounters[tier];
+                
+                for (int i = 0; i < tierCount; i++)
                 {
-                    var offer = MercenaryOfferGenerator.GenerateOffer(map, tier, xenotype);
-                    if (offer != null)
-                        offers.Add(offer);
+                    try
+                    {
+                        var offer = MercenaryOfferGenerator.GenerateOffer(map, tier, xenotype);
+                        if (offer != null)
+                        {
+                            offers.Add(offer);
+                        }
+                        else
+                        {
+                            Log.Warning($"[RimMercenaries] Failed to generate mercenary {i+1}/{tierCount} for tier {tier} - MercenaryOfferGenerator.GenerateOffer returned null");
+                        }
+                    }
+                    catch (System.Exception ex)
+                    {
+                        Log.Error($"[RimMercenaries] Exception while generating mercenary {i+1}/{tierCount} for tier {tier}: {ex.Message}\n{ex.StackTrace}");
+                    }
                 }
             }
             
-            xenotypeBatches[xenotype] = offers;
+            if (xenotype != null)
+            {
+                xenotypeBatches[xenotype] = offers;
+            }
+            
             availableMercenaries = offers;
             lastMercenaryRefreshTick = Find.TickManager.TicksGame;
             hasBeenInitialized = true;
+            
+            Log.Message($"[RimMercenaries] Generated {offers.Count} mercenaries for {(xenotype?.defName ?? "no xenotype (no Biotech)")}");
         }
 
         private void GenerateReserveBatchForXenotype(Map map, XenotypeDef xenotype)
@@ -271,27 +317,35 @@ namespace RimMercenaries
             }
             else if (xenotypeBatches == null || !xenotypeBatches.Any())
             {
-                var baseliner = DefDatabase<XenotypeDef>.AllDefsListForReading.FirstOrDefault(x => x.defName == "Baseliner");
-                if (baseliner != null)
+                if (ModsConfig.BiotechActive)
                 {
-                    // Try to use reserve batch first
-                    if (reserveBatches.TryGetValue(baseliner, out List<MercenaryOffer> reserved))
+                    var baseliner = DefDatabase<XenotypeDef>.AllDefsListForReading.FirstOrDefault(x => x.defName == "Baseliner");
+                    if (baseliner != null)
                     {
-                        xenotypeBatches[baseliner] = reserved;
-                        reserveBatches.Remove(baseliner);
-                        availableMercenaries = reserved;
-                        
-                        // Generate the next reserve batch
-                        GenerateReserveBatchForXenotype(Find.CurrentMap, baseliner);
+                        // Try to use reserve batch first
+                        if (reserveBatches.TryGetValue(baseliner, out List<MercenaryOffer> reserved))
+                        {
+                            xenotypeBatches[baseliner] = reserved;
+                            reserveBatches.Remove(baseliner);
+                            availableMercenaries = reserved;
+                            
+                            // Generate the next reserve batch
+                            GenerateReserveBatchForXenotype(Find.CurrentMap, baseliner);
+                        }
+                        else
+                        {
+                            // Fall back to synchronous generation
+                            GenerateMercenariesForXenotype(Find.CurrentMap, baseliner);
+                            
+                            // Generate reserve batch
+                            GenerateReserveBatchForXenotype(Find.CurrentMap, baseliner);
+                        }
                     }
-                    else
-                    {
-                        // Fall back to synchronous generation
-                        GenerateMercenariesForXenotype(Find.CurrentMap, baseliner);
-                        
-                        // Generate reserve batch
-                        GenerateReserveBatchForXenotype(Find.CurrentMap, baseliner);
-                    }
+                }
+                else
+                {
+                    // No Biotech - generate mercenaries without xenotype
+                    GenerateMercenariesForXenotype(Find.CurrentMap, null);
                 }
             }
 
@@ -301,11 +355,16 @@ namespace RimMercenaries
             foreach (var batch in xenotypeBatches.Values)
                 batch.RemoveAll(o => o.pawn == null || o.pawn.Destroyed || o.pawn.Dead);
 
-            var keyToUse = selectedXenotypeDef ?? DefDatabase<XenotypeDef>.AllDefsListForReading.FirstOrDefault(x => x.defName == "Baseliner");
-            if (keyToUse != null && xenotypeBatches.TryGetValue(keyToUse, out var selectedBatch))
+            XenotypeDef keyToUse = null;
+            if (ModsConfig.BiotechActive)
             {
-                availableMercenaries = selectedBatch;
-                return selectedBatch;
+                keyToUse = selectedXenotypeDef ?? DefDatabase<XenotypeDef>.AllDefsListForReading.FirstOrDefault(x => x.defName == "Baseliner");
+                
+                if (keyToUse != null && xenotypeBatches.TryGetValue(keyToUse, out var selectedBatch))
+                {
+                    availableMercenaries = selectedBatch;
+                    return selectedBatch;
+                }
             }
             
             return availableMercenaries ?? new List<MercenaryOffer>();
