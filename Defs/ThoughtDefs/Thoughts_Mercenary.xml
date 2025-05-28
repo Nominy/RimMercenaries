@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Defs>
+
+  <!-- Mercenary burden thought - applied to the mercenary themselves -->
+  <ThoughtDef>
+    <defName>RimMercenaries_BurdenOfMercenary</defName>
+    <thoughtClass>Thought_Memory</thoughtClass>
+    <durationDays>-1</durationDays>
+    <stackLimit>1</stackLimit>
+    <stages>
+      <li>
+        <label>burden of mercenary</label>
+        <description>It's not pleasant to risk your life for those who don't care about you.</description>
+        <baseMoodEffect>-3</baseMoodEffect>
+      </li>
+    </stages>
+  </ThoughtDef>
+
+  <!-- Thought when a mercenary dies - applied to other colonists -->
+  <ThoughtDef>
+    <defName>RimMercenaries_MercenaryDied</defName>
+    <thoughtClass>Thought_Memory</thoughtClass>
+    <durationDays>5</durationDays>
+    <stackLimit>5</stackLimit>
+    <stackLimitForSameOtherPawn>1</stackLimitForSameOtherPawn>
+    <stages>
+      <li>
+        <label>mercenary died</label>
+        <description>One of our hired mercenaries died. They weren't really one of us, but it's still a loss.</description>
+        <baseMoodEffect>-1</baseMoodEffect>
+      </li>
+    </stages>
+  </ThoughtDef>
+
+  <!-- Acceptance by settlement thought - applied to the former mercenary when they become a settler -->
+  <ThoughtDef>
+    <defName>RimMercenaries_AcceptedBySettlement</defName>
+    <thoughtClass>Thought_Memory</thoughtClass>
+    <durationDays>10</durationDays>
+    <stackLimit>1</stackLimit>
+    <stages>
+      <li>
+        <label>am I at home?</label>
+        <description>I am not used to feel important to others. Can't I call this place my home?</description>
+        <baseMoodEffect>+12</baseMoodEffect>
+      </li>
+    </stages>
+  </ThoughtDef>
+
+</Defs> 

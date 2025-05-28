@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Defs>
+  <IncidentDef>
+    <defName>RimMercenaries_MercenaryAccepted</defName>
+    <label>mercenary accepted</label>
+    <category>Misc</category>
+    <targetTags>
+      <li>Map_PlayerHome</li>
+    </targetTags>
+    <letterText>RimMercenaries_MercenaryAcceptedEventText</letterText>
+    <letterLabel>RimMercenaries_MercenaryAcceptedEventLabel</letterLabel>
+    <letterDef>PositiveEvent</letterDef>
+    <baseChance>0</baseChance>
+    <earliestDay>0</earliestDay>
+    <minRefireDays>0</minRefireDays>
+    <minThreatPoints>0</minThreatPoints>
+  </IncidentDef>
+</Defs>

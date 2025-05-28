@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LanguageData>
+
+  <!-- Mercenary burden thought - applied to the mercenary themselves -->
+  <RimMercenaries_BurdenOfMercenary.stages.0.label>雇佣兵的负担</RimMercenaries_BurdenOfMercenary.stages.0.label>
+  <RimMercenaries_BurdenOfMercenary.stages.0.description>为那些不关心你的人冒生命危险并不愉快。</RimMercenaries_BurdenOfMercenary.stages.0.description>
+
+  <!-- Thought when a mercenary dies - applied to other colonists -->
+  <RimMercenaries_MercenaryDied.stages.0.label>雇佣兵死亡</RimMercenaries_MercenaryDied.stages.0.label>
+  <RimMercenaries_MercenaryDied.stages.0.description>我们雇佣的一名雇佣兵死了。他们并不真正是我们中的一员，但这仍然是一个损失。</RimMercenaries_MercenaryDied.stages.0.description>
+
+  <!-- Acceptance by settlement thought - applied to the former mercenary when they become a settler -->
+  <RimMercenaries_AcceptedBySettlement.stages.0.label>我在家吗？</RimMercenaries_AcceptedBySettlement.stages.0.label>
+  <RimMercenaries_AcceptedBySettlement.stages.0.description>我不习惯感觉自己对别人很重要。我能称这个地方为家吗？</RimMercenaries_AcceptedBySettlement.stages.0.description>
+
+</LanguageData> 

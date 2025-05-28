@@ -79,6 +79,15 @@
   <RimMercenaries_NoSafeDropLocationFound>No safe drop location found for mercenary landing. Hiring cancelled.</RimMercenaries_NoSafeDropLocationFound>
   <RimMercenaries_HireBudgetReachedTier>Cannot hire more tier {0} mercenaries. Remaining: {1}</RimMercenaries_HireBudgetReachedTier>
 
+  <!-- Mercenary Status System -->
+  <RimMercenaries_MercenaryBecameSettler>{0} has been accepted as a true member of the settlement!</RimMercenaries_MercenaryBecameSettler>
+  <RimMercenaries_MercenaryStatusEligibleIn>Eligible for settlement acceptance in: {0}</RimMercenaries_MercenaryStatusEligibleIn>
+  <RimMercenaries_MercenaryStatusEligible>Eligible for settlement acceptance</RimMercenaries_MercenaryStatusEligible>
+
+  <!-- Mercenary Acceptance Event -->
+  <RimMercenaries_MercenaryAcceptedEventLabel>Mercenary Accepted</RimMercenaries_MercenaryAcceptedEventLabel>
+  <RimMercenaries_MercenaryAcceptedEventText>After spending time with the settlement, {0} has formed strong bonds with the colonists and decided to become a permanent member of the community.\n\nThe mercenary's burden has been lifted, and they now feel truly accepted among their new family. They are no longer just a hired gun, but a valued member of the settlement.</RimMercenaries_MercenaryAcceptedEventText>
+
   <!-- Loading Indicator -->
   <!--
   <RimMercenaries_GeneratingMercenaries>Generating mercenaries...</RimMercenaries_GeneratingMercenaries>

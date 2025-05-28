@@ -215,29 +215,29 @@ namespace RimMercenaries
 
         private static void EnsureTraits(Pawn pawn, List<TraitDef> desiredTraits, int targetCount, List<TraitDef> forbiddenTraits)
         {
-            var currentTraits = pawn.story.traits.allTraits
-                .Where(t => desiredTraits.Contains(t.def))
-                .ToList();
+            // Clear all existing traits first
+            pawn.story.traits.allTraits.Clear();
 
-            while (currentTraits.Count > targetCount)
-            {
-                pawn.story.traits.RemoveTrait(currentTraits.Pop());
-            }
-
+            // Get available traits from the pool
             var availableTraits = TraitPool
                 .Where(kvp => desiredTraits.Contains(kvp.Key) && 
-                             !forbiddenTraits.Contains(kvp.Key) &&
-                             !pawn.story.traits.allTraits.Any(t => t.def == kvp.Key || kvp.Key.ConflictsWith(t.def)))
+                             !forbiddenTraits.Contains(kvp.Key))
                 .SelectMany(kvp => kvp.Value.Select(degree => new Trait(kvp.Key, degree)))
                 .ToList();
 
             availableTraits.Shuffle();
 
-            while (currentTraits.Count < targetCount && availableTraits.Any())
+            // Add traits up to the target count
+            int traitsAdded = 0;
+            while (traitsAdded < targetCount && availableTraits.Any())
             {
                 var trait = availableTraits.Pop();
-                if (!pawn.story.traits.allTraits.Any(t => trait.def.ConflictsWith(t.def)))
+                // Check for conflicts with already added traits
+                if (!pawn.story.traits.allTraits.Any(t => trait.def.ConflictsWith(t.def) || t.def == trait.def))
+                {
                     pawn.story.traits.GainTrait(trait);
+                    traitsAdded++;
+                }
             }
         }
     }

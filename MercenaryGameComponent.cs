@@ -7,6 +7,23 @@ using Verse.Sound;
 
 namespace RimMercenaries
 {
+    /// <summary>
+    /// Helper class for saving/loading xenotype batches
+    /// </summary>
+    public class XenotypeBatchSaveData : IExposable
+    {
+        public string xenotypeDefName;
+        public List<MercenaryOffer> offers;
+
+        public XenotypeBatchSaveData() { }
+
+        public void ExposeData()
+        {
+            Scribe_Values.Look(ref xenotypeDefName, "xenotypeDefName");
+            Scribe_Collections.Look(ref offers, "offers", LookMode.Deep);
+        }
+    }
+
     public class MercenaryGameComponent : GameComponent
     {
         // Instance data - each save will have its own independent mercenary data
@@ -39,15 +56,62 @@ namespace RimMercenaries
         {
             base.ExposeData();
             
-            Scribe_Collections.Look(ref availableMercenaries, "availableMercenaries", LookMode.Deep);
+            // Don't save availableMercenaries separately - we'll reconstruct it from xenotype batches
+            // Scribe_Collections.Look(ref availableMercenaries, "availableMercenaries", LookMode.Deep);
+            Scribe_Collections.Look(ref globalTierCounters, "globalTierCounters", LookMode.Value, LookMode.Value);
             Scribe_Values.Look(ref lastMercenaryRefreshTick, "lastMercenaryRefreshTick", -99999);
             Scribe_Values.Look(ref hasBeenInitialized, "hasBeenInitialized", false);
             
+            // Save/load xenotype batches properly
+            if (Scribe.mode == LoadSaveMode.Saving)
+            {
+                // Convert to a simpler structure for saving
+                var xenotypeBatchSaveData = new List<XenotypeBatchSaveData>();
+                foreach (var kvp in xenotypeBatches)
+                {
+                    xenotypeBatchSaveData.Add(new XenotypeBatchSaveData
+                    {
+                        xenotypeDefName = kvp.Key?.defName ?? "NULL_XENOTYPE", // Use special marker for null
+                        offers = kvp.Value
+                    });
+                }
+                Scribe_Collections.Look(ref xenotypeBatchSaveData, "xenotypeBatchSaveData", LookMode.Deep);
+            }
+            else if (Scribe.mode == LoadSaveMode.LoadingVars)
+            {
+                var xenotypeBatchSaveData = new List<XenotypeBatchSaveData>();
+                Scribe_Collections.Look(ref xenotypeBatchSaveData, "xenotypeBatchSaveData", LookMode.Deep);
+                
+                // Reconstruct xenotype batches from save data
+                xenotypeBatches = new Dictionary<XenotypeDef, List<MercenaryOffer>>();
+                if (xenotypeBatchSaveData != null)
+                {
+                    foreach (var saveData in xenotypeBatchSaveData)
+                    {
+                        XenotypeDef xenotypeDef = null;
+                        if (!string.IsNullOrEmpty(saveData.xenotypeDefName))
+                        {
+                            if (saveData.xenotypeDefName == "NULL_XENOTYPE")
+                            {
+                                // This represents null xenotype (no Biotech)
+                                xenotypeDef = null;
+                            }
+                            else
+                            {
+                                xenotypeDef = DefDatabase<XenotypeDef>.GetNamed(saveData.xenotypeDefName, false);
+                            }
+                        }
+                        
+                        if (saveData.offers != null)
+                        {
+                            xenotypeBatches[xenotypeDef] = saveData.offers;
+                        }
+                    }
+                }
+            }
+            
             if (Scribe.mode == LoadSaveMode.PostLoadInit)
             {
-                // Clean up any null or invalid offers
-                availableMercenaries?.RemoveAll(offer => offer == null || offer.pawn == null);
-                
                 // Initialize collections if they're null
                 if (availableMercenaries == null)
                     availableMercenaries = new List<MercenaryOffer>();
@@ -58,7 +122,38 @@ namespace RimMercenaries
                 if (globalTierCounters == null || !globalTierCounters.Any())
                     globalTierCounters = new Dictionary<int, int> { { 1, 10 }, { 2, 5 }, { 3, 2 } };
                 
-                Log.Message($"[RimMercenaries] Loaded save data: hasBeenInitialized={hasBeenInitialized}, lastRefreshTick={lastMercenaryRefreshTick}, mercenaries={availableMercenaries.Count}");
+                // Clean up xenotype batches and reconstruct availableMercenaries
+                foreach (var batch in xenotypeBatches.Values)
+                {
+                    batch?.RemoveAll(offer => offer == null || offer.pawn == null);
+                }
+                
+                // Reconstruct availableMercenaries from the current xenotype batch
+                // This assumes the last used xenotype is what should be shown
+                if (xenotypeBatches.Any())
+                {
+                    // Try to use the selected xenotype if it exists in our batches
+                    if (RimMercenaries.selectedXenotypeDef != null && xenotypeBatches.ContainsKey(RimMercenaries.selectedXenotypeDef))
+                    {
+                        availableMercenaries = xenotypeBatches[RimMercenaries.selectedXenotypeDef];
+                    }
+                    else if (!ModsConfig.BiotechActive && xenotypeBatches.ContainsKey(null))
+                    {
+                        // For non-Biotech, use the null xenotype batch
+                        availableMercenaries = xenotypeBatches[null];
+                    }
+                    else
+                    {
+                        // Otherwise use the first available batch
+                        availableMercenaries = xenotypeBatches.Values.First();
+                    }
+                }
+                else
+                {
+                    availableMercenaries.Clear();
+                }
+                
+                Log.Message($"[RimMercenaries] Loaded save data: hasBeenInitialized={hasBeenInitialized}, lastRefreshTick={lastMercenaryRefreshTick}, mercenaries={availableMercenaries.Count}, tier1={globalTierCounters[1]}, tier2={globalTierCounters[2]}, tier3={globalTierCounters[3]}");
             }
         }
 
@@ -106,7 +201,7 @@ namespace RimMercenaries
             availableMercenaries.Clear();
             reserveBatches.Clear();
 
-            // Reset counters
+            // Reset counters (force initialization always resets counters)
             globalTierCounters[1] = 10;
             globalTierCounters[2] = 5;
             globalTierCounters[3] = 2;
@@ -137,9 +232,17 @@ namespace RimMercenaries
                 xenotypeBatches.Clear();
                 availableMercenaries.Clear();
 
-                globalTierCounters[1] = 10;
-                globalTierCounters[2] = 5;
-                globalTierCounters[3] = 2;
+                // Only reset counters if this is a genuine refresh (not loading from save)
+                // Check if this is being called from initialization vs a genuine refresh
+                bool isGenuineRefresh = lastMercenaryRefreshTick > -99999 && 
+                                       Find.TickManager.TicksGame >= lastMercenaryRefreshTick + RefreshIntervalTicks;
+                
+                if (isGenuineRefresh)
+                {
+                    globalTierCounters[1] = 10;
+                    globalTierCounters[2] = 5;
+                    globalTierCounters[3] = 2;
+                }
 
                 // Handle xenotype logic based on whether Biotech is active
                 XenotypeDef defaultXenotype = null;
@@ -243,7 +346,7 @@ namespace RimMercenaries
             lastMercenaryRefreshTick = Find.TickManager.TicksGame;
             hasBeenInitialized = true;
             
-            Log.Message($"[RimMercenaries] Generated {offers.Count} mercenaries for {(xenotype?.defName ?? "no xenotype (no Biotech)")}");
+            Log.Message($"[RimMercenaries] Generated {offers.Count} mercenaries for {(xenotype?.defName ?? "no xenotype (no Biotech)")} - Tier counts: T1={globalTierCounters[1]}, T2={globalTierCounters[2]}, T3={globalTierCounters[3]}");
         }
 
         private void GenerateReserveBatchForXenotype(Map map, XenotypeDef xenotype)
@@ -324,7 +427,7 @@ namespace RimMercenaries
                 {
                     xenotypeBatches[selectedXenotypeDef] = reserved;
                     reserveBatches.Remove(selectedXenotypeDef);
-                    availableMercenaries = reserved;
+                    availableMercenaries = reserved; // Update the current list
                     
                     // Generate the next reserve batch for this xenotype
                     GenerateReserveBatchForXenotype(Find.CurrentMap, selectedXenotypeDef);
@@ -350,7 +453,7 @@ namespace RimMercenaries
                         {
                             xenotypeBatches[baseliner] = reserved;
                             reserveBatches.Remove(baseliner);
-                            availableMercenaries = reserved;
+                            availableMercenaries = reserved; // Update the current list
                             
                             // Generate the next reserve batch
                             GenerateReserveBatchForXenotype(Find.CurrentMap, baseliner);
@@ -385,7 +488,7 @@ namespace RimMercenaries
                 
                 if (keyToUse != null && xenotypeBatches.TryGetValue(keyToUse, out var selectedBatch))
                 {
-                    availableMercenaries = selectedBatch;
+                    availableMercenaries = selectedBatch; // Update the current list
                     return selectedBatch;
                 }
             }

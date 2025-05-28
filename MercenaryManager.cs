@@ -144,6 +144,23 @@ namespace RimMercenaries
             offer.pawn.SetFaction(Faction.OfPlayer);
             offer.pawn.relations?.Notify_ChangedFaction();
 
+            // Apply mercenary status hediff to track their status and mood
+            var mercenaryStatusDef = DefDatabase<HediffDef>.GetNamed("RimMercenaries_MercenaryStatus");
+            if (mercenaryStatusDef != null && offer.pawn.health?.hediffSet != null)
+            {
+                var existingHediff = offer.pawn.health.hediffSet.GetFirstHediffOfDef(mercenaryStatusDef);
+                if (existingHediff == null)
+                {
+                    var mercenaryHediff = HediffMaker.MakeHediff(mercenaryStatusDef, offer.pawn);
+                    offer.pawn.health.AddHediff(mercenaryHediff);
+                    Log.Message($"[RimMercenaries] Applied mercenary status to {offer.pawn.LabelShortCap}");
+                }
+            }
+            else
+            {
+                Log.Warning("[RimMercenaries] Could not find RimMercenaries_MercenaryStatus hediff def or pawn has no health");
+            }
+
             var podInfo = new ActiveDropPodInfo();
             podInfo.innerContainer.TryAdd(offer.pawn);
             podInfo.leaveSlag = false;

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LanguageData>
+
+  <!-- Mercenary burden thought - applied to the mercenary themselves -->
+  <RimMercenaries_BurdenOfMercenary.stages.0.label>тягар найманця</RimMercenaries_BurdenOfMercenary.stages.0.label>
+  <RimMercenaries_BurdenOfMercenary.stages.0.description>Неприємно ризикувати життям заради тих, кому ти байдужий.</RimMercenaries_BurdenOfMercenary.stages.0.description>
+
+  <!-- Thought when a mercenary dies - applied to other colonists -->
+  <RimMercenaries_MercenaryDied.stages.0.label>найманець загинув</RimMercenaries_MercenaryDied.stages.0.label>
+  <RimMercenaries_MercenaryDied.stages.0.description>Один з наших найманців загинув. Він не був справді одним з нас, але це все одно втрата.</RimMercenaries_MercenaryDied.stages.0.description>
+
+  <!-- Acceptance by settlement thought - applied to the former mercenary when they become a settler -->
+  <RimMercenaries_AcceptedBySettlement.stages.0.label>чи я вдома?</RimMercenaries_AcceptedBySettlement.stages.0.label>
+  <RimMercenaries_AcceptedBySettlement.stages.0.description>Я не звик відчувати себе важливим для інших. Чи можу я назвати це місце домом?</RimMercenaries_AcceptedBySettlement.stages.0.description>
+
+</LanguageData> 

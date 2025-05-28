@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LanguageData>
+
+  <!-- Hediff to track mercenary status -->
+  <RimMercenaries_MercenaryStatus.label>mercenary status</RimMercenaries_MercenaryStatus.label>
+  <RimMercenaries_MercenaryStatus.description>This person is a hired mercenary, not a true member of the settlement yet.</RimMercenaries_MercenaryStatus.description>
+  <RimMercenaries_MercenaryStatus.stages.0.label>mercenary</RimMercenaries_MercenaryStatus.stages.0.label>
+
+</LanguageData> 

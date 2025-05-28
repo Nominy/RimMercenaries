@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+  
+  <!-- Mercenary Acceptance Event Letter -->
+  <RimMercenaries_MercenaryAccepted.label>Наёмник принят</RimMercenaries_MercenaryAccepted.label>
+  <RimMercenaries_MercenaryAccepted.description>Наёмник был принят как полноправный член поселения.</RimMercenaries_MercenaryAccepted.description>
+
+</LanguageData> 

@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Defs>
+
+  <!-- Hediff to track mercenary status -->
+  <HediffDef>
+    <defName>RimMercenaries_MercenaryStatus</defName>
+    <label>mercenary status</label>
+    <description>This person is a hired mercenary, not a true member of the settlement yet.</description>
+    <hediffClass>RimMercenaries.Hediff_MercenaryStatus</hediffClass>
+    <defaultLabelColor>(0.8, 0.8, 0.4)</defaultLabelColor>
+    <isBad>false</isBad>
+    <everCurableByItem>false</everCurableByItem>
+    <lethalSeverity>-1</lethalSeverity>
+    <initialSeverity>1</initialSeverity>
+    <maxSeverity>1</maxSeverity>
+    <comps>
+      <li Class="HediffCompProperties_ThoughtSetter">
+        <thought>RimMercenaries_BurdenOfMercenary</thought>
+      </li>
+    </comps>
+    <stages>
+      <li>
+        <label>mercenary</label>
+        <becomeVisible>true</becomeVisible>
+      </li>
+    </stages>
+  </HediffDef>
+
+</Defs> 

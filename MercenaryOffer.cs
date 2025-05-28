@@ -8,6 +8,9 @@ namespace RimMercenaries
         public Pawn pawn;
         public int price;
         public MercenaryBuild buildType;
+        
+        // Helper field for saving/loading - stores the tier number instead of the build object
+        private int buildTier = 1;
 
         public MercenaryOffer() { }
 
@@ -16,13 +19,54 @@ namespace RimMercenaries
             pawn = p;
             price = cost;
             buildType = build;
+            
+            // Store the tier number for saving
+            if (build != null)
+            {
+                foreach (var kvp in MercenaryBuilds.Builds)
+                {
+                    if (kvp.Value == build)
+                    {
+                        buildTier = kvp.Key;
+                        break;
+                    }
+                }
+            }
         }
 
         public void ExposeData()
         {
             Scribe_Deep.Look(ref pawn, "pawn");
             Scribe_Values.Look(ref price, "price");
-            Scribe_Values.Look(ref buildType, "buildType");
+            Scribe_Values.Look(ref buildTier, "buildTier", 1);
+            
+            // Reconstruct the buildType reference from the tier number when loading
+            if (Scribe.mode == LoadSaveMode.LoadingVars || Scribe.mode == LoadSaveMode.PostLoadInit)
+            {
+                if (MercenaryBuilds.Builds.TryGetValue(buildTier, out MercenaryBuild build))
+                {
+                    buildType = build;
+                }
+                else
+                {
+                    Log.Warning($"[RimMercenaries] Invalid build tier {buildTier} found in save, defaulting to tier 1");
+                    buildType = MercenaryBuilds.Builds[1];
+                    buildTier = 1;
+                }
+            }
+            
+            // Store the tier number when saving
+            if (Scribe.mode == LoadSaveMode.Saving && buildType != null)
+            {
+                foreach (var kvp in MercenaryBuilds.Builds)
+                {
+                    if (kvp.Value == buildType)
+                    {
+                        buildTier = kvp.Key;
+                        break;
+                    }
+                }
+            }
         }
 
         public static int CalculatePrice(Pawn pawn, MercenaryBuild build)

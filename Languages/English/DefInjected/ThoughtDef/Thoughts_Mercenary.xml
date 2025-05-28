@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LanguageData>
+
+  <!-- Mercenary burden thought - applied to the mercenary themselves -->
+  <RimMercenaries_BurdenOfMercenary.stages.0.label>burden of mercenary</RimMercenaries_BurdenOfMercenary.stages.0.label>
+  <RimMercenaries_BurdenOfMercenary.stages.0.description>It's not pleasant to risk your life for those who don't care about you.</RimMercenaries_BurdenOfMercenary.stages.0.description>
+
+  <!-- Thought when a mercenary dies - applied to other colonists -->
+  <RimMercenaries_MercenaryDied.stages.0.label>mercenary died</RimMercenaries_MercenaryDied.stages.0.label>
+  <RimMercenaries_MercenaryDied.stages.0.description>One of our hired mercenaries died. They weren't really one of us, but it's still a loss.</RimMercenaries_MercenaryDied.stages.0.description>
+
+  <!-- Acceptance by settlement thought - applied to the former mercenary when they become a settler -->
+  <RimMercenaries_AcceptedBySettlement.stages.0.label>am I at home?</RimMercenaries_AcceptedBySettlement.stages.0.label>
+  <RimMercenaries_AcceptedBySettlement.stages.0.description>I am not used to feel important to others. Can't I call this place my home?</RimMercenaries_AcceptedBySettlement.stages.0.description>
+
+</LanguageData> 

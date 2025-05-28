@@ -79,6 +79,15 @@
   <RimMercenaries_NoSafeDropLocationFound>傭兵の着陸に安全な場所が見つかりません。雇用をキャンセルしました。</RimMercenaries_NoSafeDropLocationFound>
   <RimMercenaries_HireBudgetReachedTier>これ以上ティア{0}の傭兵を雇うことはできません。残り：{1}</RimMercenaries_HireBudgetReachedTier>
 
+  <!-- Mercenary Status System -->
+  <RimMercenaries_MercenaryBecameSettler>{0} は入植地の真のメンバーとして受け入れられました！</RimMercenaries_MercenaryBecameSettler>
+  <RimMercenaries_MercenaryStatusEligibleIn>定住者として受け入れ可能になるまで：{0}</RimMercenaries_MercenaryStatusEligibleIn>
+  <RimMercenaries_MercenaryStatusEligible>定住者として受け入れ可能</RimMercenaries_MercenaryStatusEligible>
+
+  <!-- Mercenary Acceptance Event -->
+  <RimMercenaries_MercenaryAcceptedEventLabel>傭兵が受け入れられました</RimMercenaries_MercenaryAcceptedEventLabel>
+  <RimMercenaries_MercenaryAcceptedEventText>入植地で時間を過ごした後、{0} は植民者たちとの強い絆を築き、コミュニティの永続的なメンバーになることを決めました。\n\n傭兵の重荷は取り除かれ、新しい家族の中で真に受け入れられたと感じています。彼らはもはや単なる雇われ兵ではなく、入植地の貴重な一員です。</RimMercenaries_MercenaryAcceptedEventText>
+
   <!-- Loading Indicator -->
   <!--
   <RimMercenaries_GeneratingMercenaries>傭兵を生成中...</RimMercenaries_GeneratingMercenaries>

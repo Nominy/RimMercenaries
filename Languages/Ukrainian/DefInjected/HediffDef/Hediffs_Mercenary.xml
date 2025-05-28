@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LanguageData>
+
+  <!-- Hediff to track mercenary status -->
+  <RimMercenaries_MercenaryStatus.label>статус найманця</RimMercenaries_MercenaryStatus.label>
+  <RimMercenaries_MercenaryStatus.description>Ця людина - найнятий найманець, ще не справжній член поселення.</RimMercenaries_MercenaryStatus.description>
+  <RimMercenaries_MercenaryStatus.stages.0.label>найманець</RimMercenaries_MercenaryStatus.stages.0.label>
+
+</LanguageData> 

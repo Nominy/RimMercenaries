@@ -76,8 +76,17 @@
   <RimMercenaries_ThemeDeepYellow>Глибокий жовтий</RimMercenaries_ThemeDeepYellow>
   <RimMercenaries_TierLabel>Рівень {0}: {1}/{2}</RimMercenaries_TierLabel>
 
-  <RimMercenaries_NoSafeDropLocationFound>Не знайдено безпечного місця для висадки найманця. Найм скасовано.</RimMercenaries_NoSafeDropLocationFound>
-  <RimMercenaries_HireBudgetReachedTier>Неможливо найняти більше найманців {0} рівня. Залишилося: {1}</RimMercenaries_HireBudgetReachedTier>
+  <RimMercenaries_NoSafeDropLocationFound>Не знайдено безпечного місця для посадки найманця. Найм скасовано.</RimMercenaries_NoSafeDropLocationFound>
+  <RimMercenaries_HireBudgetReachedTier>Неможливо найняти більше найманців рівня {0}. Залишилося: {1}</RimMercenaries_HireBudgetReachedTier>
+
+  <!-- Mercenary Status System -->
+  <RimMercenaries_MercenaryBecameSettler>{0} був прийнятий як справжній член поселення!</RimMercenaries_MercenaryBecameSettler>
+  <RimMercenaries_MercenaryStatusEligibleIn>Може бути прийнятий як поселенець через: {0}</RimMercenaries_MercenaryStatusEligibleIn>
+  <RimMercenaries_MercenaryStatusEligible>Може бути прийнятий як поселенець</RimMercenaries_MercenaryStatusEligible>
+
+  <!-- Mercenary Acceptance Event -->
+  <RimMercenaries_MercenaryAcceptedEventLabel>Найманець прийнятий</RimMercenaries_MercenaryAcceptedEventLabel>
+  <RimMercenaries_MercenaryAcceptedEventText>Після проведеного часу в поселенні, {0} сформував міцні зв'язки з колоністами і вирішив стати постійним членом спільноти.\n\nТягар найманця знято, і тепер він відчуває себе справді прийнятим серед своєї нової сім'ї. Він більше не просто найманий убивця, а цінний член поселення.</RimMercenaries_MercenaryAcceptedEventText>
 
   <!-- Loading Indicator -->
   <!--

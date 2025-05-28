@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LanguageData>
+
+  <!-- Hediff to track mercenary status -->
+  <RimMercenaries_MercenaryStatus.label>傭兵狀態</RimMercenaries_MercenaryStatus.label>
+  <RimMercenaries_MercenaryStatus.description>這個人是雇傭兵，還不是定居點的真正成員。</RimMercenaries_MercenaryStatus.description>
+  <RimMercenaries_MercenaryStatus.stages.0.label>傭兵</RimMercenaries_MercenaryStatus.stages.0.label>
+
+</LanguageData> 
