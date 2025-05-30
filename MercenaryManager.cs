@@ -63,7 +63,206 @@ namespace RimMercenaries
             component?.TryRefreshMercenaries(map);
         }
 
+        /// <summary>
+        /// Checks if a building is a ScribeTable from MedievalOverhaul mod
+        /// </summary>
+        private static bool IsScribeTable(Building building)
+        {
+            if (building == null) 
+            {
+                return false;
+            }
+            
+            try
+            {
+                // Check if MedievalOverhaul is loaded
+                bool isMedievalOverhaulActive = ModsConfig.IsActive("DankPyon.Medieval.Overhaul");
+                
+                if (!isMedievalOverhaulActive)
+                {
+                    return false;
+                }
+                
+                // Check if the building is a ScribeTable
+                var scribeTableType = building.GetType();
+                string fullTypeName = scribeTableType.FullName;
+                bool isScribeTable = fullTypeName == "MedievalOverhaul.Building_ScribeTable";
+                
+                return isScribeTable;
+            }
+            catch (System.Exception ex)
+            {
+                Log.Warning($"[RimMercenaries] Error checking if building is ScribeTable: {ex.Message}");
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// Alternative silver checking for ScribeTable - checks colony-wide silver without orbital beacon dependency
+        /// </summary>
+        private static bool ColonyHasEnoughSilverForScribeTable(Map map, int amount)
+        {
+            if (map?.listerThings?.ThingsOfDef(ThingDefOf.Silver) == null)
+                return false;
+                
+            int totalSilver = 0;
+            
+            // Count silver in all accessible areas (similar to how TradeUtility works, but without beacon restriction)
+            var silverThings = map.listerThings.ThingsOfDef(ThingDefOf.Silver);
+            
+            foreach (var thing in silverThings)
+            {
+                // Check if the silver is in a player-controlled area
+                bool isPlayerControlled = IsInPlayerControlledArea(map, thing);
+                
+                if (isPlayerControlled)
+                {
+                    totalSilver += thing.stackCount;
+                }
+            }
+            
+            // Also check silver carried by colonists
+            var freeColonists = map.mapPawns.FreeColonists;
+            
+            foreach (var pawn in freeColonists)
+            {
+                if (pawn.inventory?.innerContainer != null)
+                {
+                    foreach (var item in pawn.inventory.innerContainer)
+                    {
+                        if (item.def == ThingDefOf.Silver)
+                        {
+                            totalSilver += item.stackCount;
+                        }
+                    }
+                }
+            }
+            
+            return totalSilver >= amount;
+        }
+
+        /// <summary>
+        /// Determines if a thing is in a player-controlled area of the map
+        /// </summary>
+        private static bool IsInPlayerControlledArea(Map map, Thing thing)
+        {
+            if (thing?.Position == null || !thing.Position.IsValid || !thing.Spawned)
+            {
+                return false;
+            }
+
+            // Check if it's in a room that belongs to the player
+            Room room = thing.Position.GetRoom(map);
+            if (room != null && !room.PsychologicallyOutdoors)
+            {
+                // Indoor room - check if any part of the room is owned by player buildings
+                foreach (var building in room.ContainedAndAdjacentThings.OfType<Building>())
+                {
+                    if (building.Faction == Faction.OfPlayer)
+                    {
+                        return true;
+                    }
+                }
+            }
+
+            // Check if it's in a stockpile zone
+            var zone = map.zoneManager.ZoneAt(thing.Position);
+            if (zone is Zone_Stockpile)
+            {
+                return true;
+            }
+
+            // Check if it's near player buildings (within reasonable distance)
+            var nearbyBuildings = GenRadial.RadialDistinctThingsAround(thing.Position, map, 10f, false)
+                .OfType<Building>()
+                .Where(b => b.Faction == Faction.OfPlayer);
+            
+            if (nearbyBuildings.Any())
+            {
+                return true;
+            }
+
+            // Check if it's in the home area
+            if (map.areaManager.Home[thing.Position])
+            {
+                return true;
+            }
+
+            // If none of the above, consider it not player-controlled
+            return false;
+        }
+
+        /// <summary>
+        /// Alternative silver consumption for ScribeTable - removes silver from colony without orbital beacon dependency
+        /// </summary>
+        private static bool ConsumeColonySilverForScribeTable(Map map, int amount)
+        {
+            if (!ColonyHasEnoughSilverForScribeTable(map, amount))
+                return false;
+                
+            int remainingToConsume = amount;
+            var silverThings = new List<Thing>();
+            
+            // Collect all silver from player-controlled areas
+            var mapSilverThings = map.listerThings.ThingsOfDef(ThingDefOf.Silver);
+            
+            foreach (var thing in mapSilverThings)
+            {
+                bool isPlayerControlled = IsInPlayerControlledArea(map, thing);
+                
+                if (isPlayerControlled && remainingToConsume > 0)
+                {
+                    silverThings.Add(thing);
+                }
+            }
+            
+            // Collect silver from colonist inventories
+            var freeColonists = map.mapPawns.FreeColonists;
+            
+            foreach (var pawn in freeColonists)
+            {
+                if (pawn.inventory?.innerContainer != null && remainingToConsume > 0)
+                {
+                    foreach (var item in pawn.inventory.innerContainer.ToList())
+                    {
+                        if (item.def == ThingDefOf.Silver && remainingToConsume > 0)
+                        {
+                            silverThings.Add(item);
+                        }
+                    }
+                }
+            }
+            
+            // Consume silver from collected sources
+            foreach (var silverThing in silverThings)
+            {
+                if (remainingToConsume <= 0) 
+                {
+                    break;
+                }
+                
+                int toTake = Mathf.Min(remainingToConsume, silverThing.stackCount);
+                remainingToConsume -= toTake;
+                
+                if (toTake >= silverThing.stackCount)
+                {
+                    silverThing.Destroy();
+                }
+                else
+                {
+                    silverThing.stackCount -= toTake;
+                }
+            }
+            
+            return remainingToConsume <= 0;
+        }
+
         public static bool TryHireMercenary(Map map, IntVec3 dropCell, Pawn negotiator, MercenaryOffer offer)
+        {
+            return TryHireMercenary(map, dropCell, negotiator, offer, null);
+        }
+
+        public static bool TryHireMercenary(Map map, IntVec3 dropCell, Pawn negotiator, MercenaryOffer offer, Building sourceBuilding)
         {
             var component = GetComponent();
             if (component == null || offer?.pawn == null) return false;
@@ -134,13 +333,40 @@ namespace RimMercenaries
             }
             // ---- END new logic for finding safe drop cell ----
 
-            if (!TradeUtility.ColonyHasEnoughSilver(map, offer.price))
+            // ---- START ScribeTable-aware silver handling ----
+            bool isFromScribeTable = IsScribeTable(sourceBuilding);
+            
+            if (isFromScribeTable)
             {
-                Messages.Message("RimMercenaries_NotEnoughSilver".Translate(offer.price), MessageTypeDefOf.RejectInput, false);
-                return false;
+                // Use alternative silver handling for ScribeTable
+                if (!ColonyHasEnoughSilverForScribeTable(map, offer.price))
+                {
+                    Messages.Message("RimMercenaries_NotEnoughSilver".Translate(offer.price), MessageTypeDefOf.RejectInput, false);
+                    return false;
+                }
+                
+                if (!ConsumeColonySilverForScribeTable(map, offer.price))
+                {
+                    Messages.Message("RimMercenaries_NotEnoughSilver".Translate(offer.price), MessageTypeDefOf.RejectInput, false);
+                    Log.Error($"[RimMercenaries] Failed to consume {offer.price} silver for ScribeTable hire despite having enough - this should not happen");
+                    return false;
+                }
+                
+                Log.Message($"[RimMercenaries] Successfully consumed {offer.price} silver via ScribeTable method for {offer.pawn.LabelShortCap}");
             }
+            else
+            {
+                // Use vanilla TradeUtility for CommsConsole
+                if (!TradeUtility.ColonyHasEnoughSilver(map, offer.price))
+                {
+                    Messages.Message("RimMercenaries_NotEnoughSilver".Translate(offer.price), MessageTypeDefOf.RejectInput, false);
+                    return false;
+                }
+                
+                TradeUtility.LaunchSilver(map, offer.price);
+            }
+            // ---- END ScribeTable-aware silver handling ----
 
-            TradeUtility.LaunchSilver(map, offer.price);
             offer.pawn.SetFaction(Faction.OfPlayer);
             offer.pawn.relations?.Notify_ChangedFaction();
 

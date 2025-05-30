@@ -503,7 +503,7 @@ namespace RimMercenaries
 
         private bool TryHireMercenary(Pawn negotiator, MercenaryOffer offer)
         {
-            return MercenaryManager.TryHireMercenary(commsConsole.Map, commsConsole.InteractionCell, negotiator, offer);
+            return MercenaryManager.TryHireMercenary(commsConsole.Map, commsConsole.InteractionCell, negotiator, offer, commsConsole);
         }
 
         private void DrawSkillTooltipAtMouse(Pawn pawn)
