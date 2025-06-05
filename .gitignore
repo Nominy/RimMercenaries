@@ -46,9 +46,7 @@ obj/
 *.sln.iml
 
 # Unity/RimWorld
-*.csproj
 *.unityproj
-*.sln
 *.booproj
 *.svd
 *.userprefs
