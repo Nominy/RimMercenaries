@@ -387,7 +387,7 @@ namespace RimMercenaries
                 Log.Warning("[RimMercenaries] Could not find RimMercenaries_MercenaryStatus hediff def or pawn has no health");
             }
 
-            var podInfo = new ActiveDropPodInfo();
+            var podInfo = new ActiveTransporterInfo();
             podInfo.innerContainer.TryAdd(offer.pawn);
             podInfo.leaveSlag = false;
             podInfo.moveItemsAsideBeforeSpawning = true;
