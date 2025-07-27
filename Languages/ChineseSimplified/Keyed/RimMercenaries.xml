@@ -76,6 +76,31 @@
   <RimMercenaries_ThemeDeepYellow>深黄色</RimMercenaries_ThemeDeepYellow>
   <RimMercenaries_TierLabel>等级 {0}：{1}/{2}</RimMercenaries_TierLabel>
 
+  <!-- Settings -->
+  <RimMercenaries_WorldSettings>世界设置</RimMercenaries_WorldSettings>
+  <RimMercenaries_UsingWorldSettings>使用：世界设置</RimMercenaries_UsingWorldSettings>
+  <RimMercenaries_UsingGlobalSettings>使用：全局设置</RimMercenaries_UsingGlobalSettings>
+  <RimMercenaries_CurrentlyFollowingGlobals>当前遵循全局设置</RimMercenaries_CurrentlyFollowingGlobals>
+  <RimMercenaries_UsingWorldSpecific>使用世界特定设置</RimMercenaries_UsingWorldSpecific>
+  <RimMercenaries_FreezeGlobalsHere>将当前全局数值冻结到此处</RimMercenaries_FreezeGlobalsHere>
+  <RimMercenaries_ReturnToGlobal>返回并跟随全局</RimMercenaries_ReturnToGlobal>
+  <RimMercenaries_Tier1Section>1级雇佣兵：</RimMercenaries_Tier1Section>
+  <RimMercenaries_Tier2Section>2级雇佣兵：</RimMercenaries_Tier2Section>
+  <RimMercenaries_Tier3Section>3级雇佣兵：</RimMercenaries_Tier3Section>
+  <RimMercenaries_PriceMin>最低价格</RimMercenaries_PriceMin>
+  <RimMercenaries_PriceMax>最高价格</RimMercenaries_PriceMax>
+  <RimMercenaries_Count>数量</RimMercenaries_Count>
+  <RimMercenaries_RefreshInterval>刷新间隔（天）：</RimMercenaries_RefreshInterval>
+  <RimMercenaries_Days>天数</RimMercenaries_Days>
+  <RimMercenaries_ConversionPeriod>雇佣兵不可转化时长（天）：</RimMercenaries_ConversionPeriod>
+  <RimMercenaries_ConversionChance>社交互动后雇佣兵转化几率（0.00 - 1.00）：</RimMercenaries_ConversionChance>
+  <RimMercenaries_Chance>几率</RimMercenaries_Chance>
+  <RimMercenaries_BuiltinRandomTraits>使用 RimWorld 内建的随机特性</RimMercenaries_BuiltinRandomTraits>
+  <RimMercenaries_EnableConversion>启用雇佣兵转化</RimMercenaries_EnableConversion>
+  <RimMercenaries_ReturnToDefault>恢复默认</RimMercenaries_ReturnToDefault>
+  <RimMercenaries_TraitsTier1Disallowed>禁止 1 级特性：</RimMercenaries_TraitsTier1Disallowed>
+  <RimMercenaries_TraitsTier3Disallowed>禁止 3 级特性：</RimMercenaries_TraitsTier3Disallowed>
+
   <RimMercenaries_NoSafeDropLocationFound>找不到安全的雇佣兵降落地点。雇佣已取消。</RimMercenaries_NoSafeDropLocationFound>
   <RimMercenaries_HireBudgetReachedTier>无法雇佣更多 {0} 级雇佣兵。剩余：{1}</RimMercenaries_HireBudgetReachedTier>
 

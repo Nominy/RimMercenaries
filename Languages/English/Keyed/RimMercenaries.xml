@@ -76,6 +76,31 @@
   <RimMercenaries_ThemeDeepYellow>Deep Yellow</RimMercenaries_ThemeDeepYellow>
   <RimMercenaries_TierLabel>Tier {0}: {1}/{2}</RimMercenaries_TierLabel>
 
+  <!-- Settings -->
+  <RimMercenaries_WorldSettings>World Settings</RimMercenaries_WorldSettings>
+  <RimMercenaries_UsingWorldSettings>Using: World Settings</RimMercenaries_UsingWorldSettings>
+  <RimMercenaries_UsingGlobalSettings>Using: Global Settings</RimMercenaries_UsingGlobalSettings>
+  <RimMercenaries_CurrentlyFollowingGlobals>Currently following global settings</RimMercenaries_CurrentlyFollowingGlobals>
+  <RimMercenaries_UsingWorldSpecific>Using world-specific settings</RimMercenaries_UsingWorldSpecific>
+  <RimMercenaries_FreezeGlobalsHere>Freeze Current Global Values Here</RimMercenaries_FreezeGlobalsHere>
+  <RimMercenaries_ReturnToGlobal>Return to Global (Follow)</RimMercenaries_ReturnToGlobal>
+  <RimMercenaries_Tier1Section>Tier 1 mercenaries:</RimMercenaries_Tier1Section>
+  <RimMercenaries_Tier2Section>Tier 2 mercenaries:</RimMercenaries_Tier2Section>
+  <RimMercenaries_Tier3Section>Tier 3 mercenaries:</RimMercenaries_Tier3Section>
+  <RimMercenaries_PriceMin>Price min</RimMercenaries_PriceMin>
+  <RimMercenaries_PriceMax>Price max</RimMercenaries_PriceMax>
+  <RimMercenaries_Count>Count</RimMercenaries_Count>
+  <RimMercenaries_RefreshInterval>Refresh interval (days):</RimMercenaries_RefreshInterval>
+  <RimMercenaries_Days>Days</RimMercenaries_Days>
+  <RimMercenaries_ConversionPeriod>Period for which mercenaries can't be converted(days):</RimMercenaries_ConversionPeriod>
+  <RimMercenaries_ConversionChance>Chance for mercenary to be converted after social interaction(0.00 - 1.00):</RimMercenaries_ConversionChance>
+  <RimMercenaries_Chance>Chance</RimMercenaries_Chance>
+  <RimMercenaries_BuiltinRandomTraits>Use RimWorld's builtin random traits</RimMercenaries_BuiltinRandomTraits>
+  <RimMercenaries_EnableConversion>Enable mercenary conversion</RimMercenaries_EnableConversion>
+  <RimMercenaries_ReturnToDefault>Return to Default</RimMercenaries_ReturnToDefault>
+  <RimMercenaries_TraitsTier1Disallowed>Traits tier 1 disallowed:</RimMercenaries_TraitsTier1Disallowed>
+  <RimMercenaries_TraitsTier3Disallowed>Traits tier 3 disallowed:</RimMercenaries_TraitsTier3Disallowed>
+
   <RimMercenaries_NoSafeDropLocationFound>No safe drop location found for mercenary landing. Hiring cancelled.</RimMercenaries_NoSafeDropLocationFound>
   <RimMercenaries_HireBudgetReachedTier>Cannot hire more tier {0} mercenaries. Remaining: {1}</RimMercenaries_HireBudgetReachedTier>
 

@@ -104,7 +104,7 @@ namespace RimMercenaries
             {
                 var worldSettingsButtonW = 150f;
                 //var worldSettingsButtonText = "RimMercenaries_WorldSettings".Translate() + themes[selectedThemeIndex].translationKey.Translate();
-                var worldSettingsButtonText = "World Settings";
+                var worldSettingsButtonText = "RimMercenaries_WorldSettings".Translate();
                 var worldSettingsButtonH = Text.CalcHeight(worldSettingsButtonText, worldSettingsButtonW) + 8f;
                 Rect worldSettingsButtonRect = new Rect(inRect.x + inRect.xMax / 2 - worldSettingsButtonW/2, inRect.y, worldSettingsButtonW, worldSettingsButtonH);
                 
@@ -119,13 +119,13 @@ namespace RimMercenaries
                 bool usingWorldSettings = comp?.WorldSettings != null;
                 
                 // Display the settings indicator text
-                string settingsText = usingWorldSettings ? "Using: World Settings" : "Using: Global Settings";
+                string settingsText = usingWorldSettings ? "RimMercenaries_UsingWorldSettings".Translate() : "RimMercenaries_UsingGlobalSettings".Translate();
                 GUI.color = usingWorldSettings ? Color.yellow : Color.cyan;
                 Widgets.Label(settingsIndicatorRect, settingsText);
                 GUI.color = Color.white;
                 
                 // Draw the world settings button
-                if (Widgets.ButtonText(worldSettingsButtonRect, "World settings"))
+                if (Widgets.ButtonText(worldSettingsButtonRect, "RimMercenaries_WorldSettings".Translate()))
                 {
                     Find.WindowStack.Add(new Dialog_WorldMercenarySettings());
                 }

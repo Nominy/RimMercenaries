@@ -75,6 +75,31 @@
   <RimMercenaries_ThemeDeepYellow>Глубокий жёлтый</RimMercenaries_ThemeDeepYellow>
   <RimMercenaries_TierLabel>Уровень {0}: {1}/{2}</RimMercenaries_TierLabel>
 
+  <!-- Settings -->
+  <RimMercenaries_WorldSettings>Настройки мира</RimMercenaries_WorldSettings>
+  <RimMercenaries_UsingWorldSettings>Используются: настройки мира</RimMercenaries_UsingWorldSettings>
+  <RimMercenaries_UsingGlobalSettings>Используются: глобальные настройки</RimMercenaries_UsingGlobalSettings>
+  <RimMercenaries_CurrentlyFollowingGlobals>Используются глобальные настройки</RimMercenaries_CurrentlyFollowingGlobals>
+  <RimMercenaries_UsingWorldSpecific>Используются настройки мира</RimMercenaries_UsingWorldSpecific>
+  <RimMercenaries_FreezeGlobalsHere>Зафиксировать текущие глобальные значения здесь</RimMercenaries_FreezeGlobalsHere>
+  <RimMercenaries_ReturnToGlobal>Вернуться к глобальным</RimMercenaries_ReturnToGlobal>
+  <RimMercenaries_Tier1Section>Наёмники 1 уровня:</RimMercenaries_Tier1Section>
+  <RimMercenaries_Tier2Section>Наёмники 2 уровня:</RimMercenaries_Tier2Section>
+  <RimMercenaries_Tier3Section>Наёмники 3 уровня:</RimMercenaries_Tier3Section>
+  <RimMercenaries_PriceMin>Мин. цена</RimMercenaries_PriceMin>
+  <RimMercenaries_PriceMax>Макс. цена</RimMercenaries_PriceMax>
+  <RimMercenaries_Count>Количество</RimMercenaries_Count>
+  <RimMercenaries_RefreshInterval>Интервал обновления (дни):</RimMercenaries_RefreshInterval>
+  <RimMercenaries_Days>Дни</RimMercenaries_Days>
+  <RimMercenaries_ConversionPeriod>Период, когда наёмников нельзя обратить (дни):</RimMercenaries_ConversionPeriod>
+  <RimMercenaries_ConversionChance>Шанс обращения наёмника после общения (0.00 - 1.00):</RimMercenaries_ConversionChance>
+  <RimMercenaries_Chance>Шанс</RimMercenaries_Chance>
+  <RimMercenaries_BuiltinRandomTraits>Использовать встроенные случайные черты RimWorld</RimMercenaries_BuiltinRandomTraits>
+  <RimMercenaries_EnableConversion>Разрешить обращение наёмников</RimMercenaries_EnableConversion>
+  <RimMercenaries_ReturnToDefault>Вернуть по умолчанию</RimMercenaries_ReturnToDefault>
+  <RimMercenaries_TraitsTier1Disallowed>Запрещённые черты 1 уровня:</RimMercenaries_TraitsTier1Disallowed>
+  <RimMercenaries_TraitsTier3Disallowed>Запрещённые черты 3 уровня:</RimMercenaries_TraitsTier3Disallowed>
+
   <RimMercenaries_NoSafeDropLocationFound>Не найдено безопасного места для посадки наёмника. Найм отменён.</RimMercenaries_NoSafeDropLocationFound>
   <RimMercenaries_HireBudgetReachedTier>Невозможно нанять больше наёмников уровня {0}. Осталось: {1}</RimMercenaries_HireBudgetReachedTier>
 
