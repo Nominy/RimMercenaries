@@ -61,8 +61,6 @@ namespace RimMercenaries
     public class Hediff_MercenaryStatus : HediffWithComps
     {
         private int hiredTick = -1;
-        private const int YearInTicks = 3600000; // 60 days * 60000 ticks per day
-        private const float ConversionChance = 0.02f; // 2% chance per social interaction after a year
 
         public override void PostAdd(DamageInfo? dinfo)
         {
@@ -91,11 +89,13 @@ namespace RimMercenaries
         public void OnSocialInteraction()
         {
             // Only process if enough time has passed since hiring (1 year)
-            if (Find.TickManager.TicksGame - hiredTick < YearInTicks)
+            if (Find.TickManager.TicksGame - hiredTick < RimMercenariesMod.ActiveSettings.mercenaryConversionPeriodDays * 60000)
+                return;
+            if (!RimMercenariesMod.ActiveSettings.mercenaryConversionEnabled)
                 return;
                 
             // Roll for conversion
-            if (Rand.Chance(ConversionChance))
+            if (Rand.Chance(RimMercenariesMod.ActiveSettings.mercenaryConversionChance))
             {
                 ConvertToSettler();
             }
@@ -149,7 +149,7 @@ namespace RimMercenaries
 
         public bool IsEligibleForConversion()
         {
-            return Find.TickManager.TicksGame - hiredTick >= YearInTicks;
+            return Find.TickManager.TicksGame - hiredTick >= RimMercenariesMod.ActiveSettings.mercenaryConversionPeriodDays * 60000;
         }
 
         public override string LabelInBrackets
@@ -159,9 +159,9 @@ namespace RimMercenaries
                 if (hiredTick == -1) return base.LabelInBrackets;
                 
                 int ticksSinceHired = Find.TickManager.TicksGame - hiredTick;
-                if (ticksSinceHired < YearInTicks)
+                if (ticksSinceHired < RimMercenariesMod.ActiveSettings.mercenaryConversionPeriodDays * 60000)
                 {
-                    int ticksUntilEligible = YearInTicks - ticksSinceHired;
+                    int ticksUntilEligible = RimMercenariesMod.ActiveSettings.mercenaryConversionPeriodDays * 60000 - ticksSinceHired;
                     return "RimMercenaries_MercenaryStatusEligibleIn".Translate(ticksUntilEligible.ToStringTicksToPeriod());
                 }
                 else
@@ -171,4 +171,4 @@ namespace RimMercenaries
             }
         }
     }
-} 
+}

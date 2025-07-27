@@ -4,10 +4,10 @@ namespace RimMercenaries
 {
     public class MercenaryBuild
     {
-        public int ShootingLevel { get; }
-        public int MeleeLevel { get; }
-        public int? MedicineLevel { get; }
-        public int OtherSkillMax { get; }
+        public int ShootingLevel { get; set; }
+        public int MeleeLevel { get; set; }
+        public int? MedicineLevel { get; set; }
+        public int OtherSkillMax { get; set; }
 
         public MercenaryBuild(int shootingLevel, int meleeLevel, int? medicineLevel, int otherSkillMax)
         {

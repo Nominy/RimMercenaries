@@ -28,14 +28,16 @@ namespace RimMercenaries
             { TraitDef.Named("QuickSleeper"), new[] { 0 } }
         };
 
-        private static readonly List<TraitDef> BadTraits = new[] {
+        public static IEnumerable<TraitDef> AllTraits => TraitPool.Keys;
+
+        public static readonly List<TraitDef> BadTraits = new[] {
             TraitDefOf.Greedy, TraitDefOf.Pyromaniac, TraitDef.Named("Cannibal"),
             TraitDef.Named("SlowLearner"), TraitDefOf.DislikesMen, TraitDefOf.DislikesWomen,
             TraitDefOf.DrugDesire, TraitDefOf.Industriousness, TraitDefOf.AnnoyingVoice,
             TraitDefOf.CreepyBreathing
         }.ToList();
 
-        private static readonly List<TraitDef> GoodTraits = new[] {
+        public static readonly List<TraitDef> GoodTraits = new[] {
             TraitDefOf.Bloodlust, TraitDef.Named("Tough"), TraitDef.Named("SpeedOffset"),
             TraitDef.Named("PsychicSensitivity"), TraitDef.Named("FastLearner"),
             TraitDef.Named("QuickSleeper")
@@ -181,18 +183,22 @@ namespace RimMercenaries
             {
                 Log.Warning($"[RimMercenaries] Exception while applying mercenary build to {pawn.LabelShortCap}: {ex.Message}");
             }
+            // if users opts to use rimworld's builtin random traits, we DO NOT NEED to apply our own traits
+            if (!RimMercenariesMod.ActiveSettings.mercenaryTraitsBuiltinRandom) {
+                ApplyTierTraits(pawn, build);
+            }
 
-            ApplyTierTraits(pawn, build);
         }
 
         private static void ApplyTierTraits(Pawn pawn, MercenaryBuild build)
         {
             pawn.story.traits.allTraits.Clear();
 
+            var settings = RimMercenariesMod.ActiveSettings;
             if (build == MercenaryBuilds.Builds[1])
-                EnsureTraits(pawn, BadTraits, Rand.RangeInclusive(1, 2), GoodTraits);
+                EnsureTraits(pawn, BadTraits.Where(t => settings.TraitAllowed(t.defName)).ToList(), Rand.RangeInclusive(1, 2), GoodTraits);
             else if (build == MercenaryBuilds.Builds[3])
-                EnsureTraits(pawn, GoodTraits, Rand.RangeInclusive(1, 2), BadTraits);
+                EnsureTraits(pawn, GoodTraits.Where(t => settings.TraitAllowed(t.defName)).ToList(), Rand.RangeInclusive(1, 2), BadTraits);
         }
 
         /// <summary>
@@ -219,9 +225,11 @@ namespace RimMercenaries
             pawn.story.traits.allTraits.Clear();
 
             // Get available traits from the pool
+            var settings = RimMercenariesMod.ActiveSettings;
             var availableTraits = TraitPool
-                .Where(kvp => desiredTraits.Contains(kvp.Key) && 
-                             !forbiddenTraits.Contains(kvp.Key))
+                .Where(kvp => desiredTraits.Contains(kvp.Key) &&
+                             !forbiddenTraits.Contains(kvp.Key) &&
+                             settings.TraitAllowed(kvp.Key.defName))
                 .SelectMany(kvp => kvp.Value.Select(degree => new Trait(kvp.Key, degree)))
                 .ToList();
 

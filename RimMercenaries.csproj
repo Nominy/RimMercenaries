@@ -76,6 +76,10 @@
     <Compile Include="MercenaryDeathHandler.cs" />
     <Compile Include="Hediff_MercenaryStatus.cs" />
     <Compile Include="MercenarySocialPatches.cs" />
+    <Compile Include="RimMercenariesSettings.cs" />
+    <Compile Include="Dialog_WorldMercenarySettings.cs" />
+    <Compile Include="BuildSettings.cs" />
+    <Compile Include="RimMercenariesMod.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

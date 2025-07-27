@@ -11,10 +11,8 @@ namespace RimMercenaries
     {
         public static void Postfix(Pawn __instance, DamageInfo? dinfo, Hediff exactCulprit = null)
         {
-            // Only process if the pawn that died was a player colonist
             if (__instance?.Faction != Faction.OfPlayer || !__instance.Dead)
                 return;
-            // Check if the dead pawn was a mercenary
             var mercenaryStatusDef = DefDatabase<HediffDef>.GetNamed("RimMercenaries_MercenaryStatus", false);
             if (mercenaryStatusDef == null)
             {
@@ -24,9 +22,8 @@ namespace RimMercenaries
             
             var mercenaryHediff = __instance.health?.hediffSet?.GetFirstHediffOfDef(mercenaryStatusDef);
             if (mercenaryHediff == null)
-                return; // Not a mercenary, no special handling needed
+                return;
                 
-            // Get thought definition
             var thoughtDef = DefDatabase<ThoughtDef>.GetNamed("RimMercenaries_MercenaryDied", false);
             if (thoughtDef == null)
             {
@@ -34,7 +31,6 @@ namespace RimMercenaries
                 return;
             }
             
-            // Get the map - MapHeld is most reliable for determining where a pawn belongs
             var targetMap = __instance.MapHeld ?? __instance.Map ?? __instance.prevMap;
             if (targetMap == null)
             {
@@ -42,7 +38,6 @@ namespace RimMercenaries
                 return;
             }
             
-            // Apply mood debuff to other living colonists
             var livingColonists = targetMap.mapPawns?.AllPawnsSpawned
                 ?.Where(p => p.Faction == Faction.OfPlayer && 
                             p != __instance && 

@@ -32,12 +32,13 @@ namespace RimMercenaries
         private List<MercenaryOffer> availableMercenaries = new List<MercenaryOffer>();
         private int lastMercenaryRefreshTick = -99999;
         private bool hasBeenInitialized = false;
+        public RimMercenariesSettings WorldSettings { get; set; } // null => follow globals
         
         // Reserve batches for instant switching
         private Dictionary<XenotypeDef, List<MercenaryOffer>> reserveBatches = new Dictionary<XenotypeDef, List<MercenaryOffer>>();
         private bool isGeneratingReserve = false;
 
-        public const int RefreshIntervalTicks = 3600000;
+        public static int RefreshIntervalTicks => RimMercenariesMod.ActiveSettings.refreshIntervalDays * 60000;
         
         // Properties to access the data
         public Dictionary<XenotypeDef, List<MercenaryOffer>> XenotypeBatches => xenotypeBatches;
@@ -61,6 +62,9 @@ namespace RimMercenaries
             Scribe_Collections.Look(ref globalTierCounters, "globalTierCounters", LookMode.Value, LookMode.Value);
             Scribe_Values.Look(ref lastMercenaryRefreshTick, "lastMercenaryRefreshTick", -99999);
             Scribe_Values.Look(ref hasBeenInitialized, "hasBeenInitialized", false);
+            RimMercenariesSettings worldSettingsTemp = WorldSettings;
+            Scribe_Deep.Look(ref worldSettingsTemp, "worldSettings");
+            WorldSettings = worldSettingsTemp;
             
             // Save/load xenotype batches properly
             if (Scribe.mode == LoadSaveMode.Saving)
@@ -120,7 +124,18 @@ namespace RimMercenaries
                 if (reserveBatches == null)
                     reserveBatches = new Dictionary<XenotypeDef, List<MercenaryOffer>>();
                 if (globalTierCounters == null || !globalTierCounters.Any())
-                    globalTierCounters = new Dictionary<int, int> { { 1, 10 }, { 2, 5 }, { 3, 2 } };
+                {
+                    var s = RimMercenariesMod.ActiveSettings;
+                    globalTierCounters = new Dictionary<int, int> { { 1, s.tier1Count }, { 2, s.tier2Count }, { 3, s.tier3Count } };
+                }
+
+                // If WorldSettings is null, we're following globals
+                // If it was explicitly set to null, keep it that way
+                // If it was never set (loading old save), initialize with a copy of globals
+                if (WorldSettings != null)
+                {
+                    WorldSettings.Apply();
+                }
                 
                 // Clean up xenotype batches and reconstruct availableMercenaries
                 foreach (var batch in xenotypeBatches.Values)
@@ -160,6 +175,10 @@ namespace RimMercenaries
         public override void FinalizeInit()
         {
             base.FinalizeInit();
+
+            // Only apply world settings if they exist (not following globals)
+            if (WorldSettings != null)
+                WorldSettings.Apply();
             
             Log.Message($"[RimMercenaries] FinalizeInit called for save. HasBeenInitialized: {hasBeenInitialized}");
             
@@ -190,6 +209,9 @@ namespace RimMercenaries
         public void ForceInitialization(Map map)
         {
             Log.Message("[RimMercenaries] Force initializing mercenary system for this save...");
+
+            var s = RimMercenariesMod.ActiveSettings;
+            s.Apply();
             
             // Clear any existing data
             foreach (var batch in xenotypeBatches.Values)
@@ -200,11 +222,11 @@ namespace RimMercenaries
             xenotypeBatches.Clear();
             availableMercenaries.Clear();
             reserveBatches.Clear();
-
+            
             // Reset counters (force initialization always resets counters)
-            globalTierCounters[1] = 10;
-            globalTierCounters[2] = 5;
-            globalTierCounters[3] = 2;
+            globalTierCounters[1] = s.tier1Count;
+            globalTierCounters[2] = s.tier2Count;
+            globalTierCounters[3] = s.tier3Count;
 
             // Set initialization time to trigger immediate refresh
             lastMercenaryRefreshTick = Find.TickManager.TicksGame - RefreshIntervalTicks - 1;
@@ -239,9 +261,10 @@ namespace RimMercenaries
                 
                 if (isGenuineRefresh)
                 {
-                    globalTierCounters[1] = 10;
-                    globalTierCounters[2] = 5;
-                    globalTierCounters[3] = 2;
+                    var sett = RimMercenariesMod.ActiveSettings;
+                    globalTierCounters[1] = sett.tier1Count;
+                    globalTierCounters[2] = sett.tier2Count;
+                    globalTierCounters[3] = sett.tier3Count;
                 }
 
                 // Handle xenotype logic based on whether Biotech is active
@@ -496,4 +519,4 @@ namespace RimMercenaries
             return availableMercenaries ?? new List<MercenaryOffer>();
         }
     }
-} 
+}

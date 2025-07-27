@@ -6,7 +6,7 @@ using UnityEngine;
 using Verse;
 using Verse.Sound;
 using System.Reflection;
-using RimMercenaries;
+using System.CodeDom;
 
 namespace RimMercenaries
 {
@@ -99,6 +99,38 @@ namespace RimMercenaries
             Color themeColor = themes[selectedThemeIndex].color;
             Color stainedBg = BlendColor(vanillaBg, themeColor, 0.22f);
             Widgets.DrawBoxSolid(inRect, stainedBg);
+
+            if (Current.Game != null && Prefs.DevMode)
+            {
+                var worldSettingsButtonW = 150f;
+                //var worldSettingsButtonText = "RimMercenaries_WorldSettings".Translate() + themes[selectedThemeIndex].translationKey.Translate();
+                var worldSettingsButtonText = "World Settings";
+                var worldSettingsButtonH = Text.CalcHeight(worldSettingsButtonText, worldSettingsButtonW) + 8f;
+                Rect worldSettingsButtonRect = new Rect(inRect.x + inRect.xMax / 2 - worldSettingsButtonW/2, inRect.y, worldSettingsButtonW, worldSettingsButtonH);
+                
+                // Create a rect for the settings indicator text
+                Rect settingsIndicatorRect = new Rect(worldSettingsButtonRect.xMax + 10f, inRect.y, 200f, 40f);
+                
+                // Check which settings are currently active
+                var comp = Current.Game.GetComponent<MercenaryGameComponent>();
+                // RimMercenariesMod.ActiveSettings returns comp?.WorldSettings ?? Settings
+                // If WorldSettings is null, we're following globals
+                // If WorldSettings is not null, we're using world-specific settings
+                bool usingWorldSettings = comp?.WorldSettings != null;
+                
+                // Display the settings indicator text
+                string settingsText = usingWorldSettings ? "Using: World Settings" : "Using: Global Settings";
+                GUI.color = usingWorldSettings ? Color.yellow : Color.cyan;
+                Widgets.Label(settingsIndicatorRect, settingsText);
+                GUI.color = Color.white;
+                
+                // Draw the world settings button
+                if (Widgets.ButtonText(worldSettingsButtonRect, "World settings"))
+                {
+                    Find.WindowStack.Add(new Dialog_WorldMercenarySettings());
+                }
+            }
+
 
             Rect contentRect = inRect;
             float layoutX = contentRect.x;
@@ -263,9 +295,12 @@ namespace RimMercenaries
             currentX += refreshInfoRect.width + Margin;
 
             var tierCounts = MercenaryManager.GetAllRemainingTierCounts();
-            var tier1Text = "RimMercenaries_TierLabel".Translate(1, tierCounts[1], 10);
-            var tier2Text = "RimMercenaries_TierLabel".Translate(2, tierCounts[2], 5);
-            var tier3Text = "RimMercenaries_TierLabel".Translate(3, tierCounts[3], 2);
+
+            var settings = RimMercenariesMod.ActiveSettings;
+
+            var tier1Text = "RimMercenaries_TierLabel".Translate(1, tierCounts[1], settings.tier1Count);
+            var tier2Text = "RimMercenaries_TierLabel".Translate(2, tierCounts[2], settings.tier2Count);
+            var tier3Text = "RimMercenaries_TierLabel".Translate(3, tierCounts[3], settings.tier3Count);
             var tierCountText = $"{tier1Text}   {tier2Text}   {tier3Text}";
             var tierW = 400f;
             var tierH = Text.CalcHeight(tierCountText, tierW);

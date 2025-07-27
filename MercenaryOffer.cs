@@ -74,12 +74,13 @@ namespace RimMercenaries
             float basePrice = Mathf.CeilToInt(pawn.MarketValue * 1.25f);
             basePrice = Mathf.Max(100, basePrice);
 
+            var set = RimMercenariesMod.ActiveSettings;
             if (build == MercenaryBuilds.Builds[1])
-                basePrice = Mathf.Clamp(basePrice, 450, 750);
+                basePrice = Mathf.Clamp(basePrice, set.tier1Price.min, set.tier1Price.max);
             else if (build == MercenaryBuilds.Builds[2])
-                basePrice = Mathf.Clamp(basePrice, 950, 1300);
+                basePrice = Mathf.Clamp(basePrice, set.tier2Price.min, set.tier2Price.max);
             else if (build == MercenaryBuilds.Builds[3])
-                basePrice = Mathf.Clamp(basePrice, 1850, 2500);
+                basePrice = Mathf.Clamp(basePrice, set.tier3Price.min, set.tier3Price.max);
 
             return (int)(basePrice / 50) * 50;
         }
