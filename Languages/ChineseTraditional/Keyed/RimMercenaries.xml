@@ -76,6 +76,31 @@
   <RimMercenaries_ThemeDeepYellow>深黃色</RimMercenaries_ThemeDeepYellow>
   <RimMercenaries_TierLabel>等級 {0}：{1}/{2}</RimMercenaries_TierLabel>
 
+  <!-- Settings -->
+  <RimMercenaries_WorldSettings>世界設定</RimMercenaries_WorldSettings>
+  <RimMercenaries_UsingWorldSettings>使用：世界設定</RimMercenaries_UsingWorldSettings>
+  <RimMercenaries_UsingGlobalSettings>使用：全域設定</RimMercenaries_UsingGlobalSettings>
+  <RimMercenaries_CurrentlyFollowingGlobals>目前遵循全域設定</RimMercenaries_CurrentlyFollowingGlobals>
+  <RimMercenaries_UsingWorldSpecific>使用世界專用設定</RimMercenaries_UsingWorldSpecific>
+  <RimMercenaries_FreezeGlobalsHere>將目前全域數值凍結於此</RimMercenaries_FreezeGlobalsHere>
+  <RimMercenaries_ReturnToGlobal>返回並跟隨全域</RimMercenaries_ReturnToGlobal>
+  <RimMercenaries_Tier1Section>1級傭兵：</RimMercenaries_Tier1Section>
+  <RimMercenaries_Tier2Section>2級傭兵：</RimMercenaries_Tier2Section>
+  <RimMercenaries_Tier3Section>3級傭兵：</RimMercenaries_Tier3Section>
+  <RimMercenaries_PriceMin>最低價格</RimMercenaries_PriceMin>
+  <RimMercenaries_PriceMax>最高價格</RimMercenaries_PriceMax>
+  <RimMercenaries_Count>數量</RimMercenaries_Count>
+  <RimMercenaries_RefreshInterval>刷新間隔（天）：</RimMercenaries_RefreshInterval>
+  <RimMercenaries_Days>天數</RimMercenaries_Days>
+  <RimMercenaries_ConversionPeriod>傭兵不可轉化期間（天）：</RimMercenaries_ConversionPeriod>
+  <RimMercenaries_ConversionChance>社交後傭兵轉化機率（0.00 - 1.00）：</RimMercenaries_ConversionChance>
+  <RimMercenaries_Chance>機率</RimMercenaries_Chance>
+  <RimMercenaries_BuiltinRandomTraits>使用 RimWorld 內建隨機特性</RimMercenaries_BuiltinRandomTraits>
+  <RimMercenaries_EnableConversion>啟用傭兵轉化</RimMercenaries_EnableConversion>
+  <RimMercenaries_ReturnToDefault>恢復預設</RimMercenaries_ReturnToDefault>
+  <RimMercenaries_TraitsTier1Disallowed>禁止 1 級特性：</RimMercenaries_TraitsTier1Disallowed>
+  <RimMercenaries_TraitsTier3Disallowed>禁止 3 級特性：</RimMercenaries_TraitsTier3Disallowed>
+
   <RimMercenaries_NoSafeDropLocationFound>找不到安全的僱傭兵降落地點。僱傭已取消。</RimMercenaries_NoSafeDropLocationFound>
   <RimMercenaries_HireBudgetReachedTier>無法僱傭更多 {0} 級僱傭兵。剩餘：{1}</RimMercenaries_HireBudgetReachedTier>
 

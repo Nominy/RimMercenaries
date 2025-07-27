@@ -76,6 +76,31 @@
   <RimMercenaries_ThemeDeepYellow>ディープイエロー</RimMercenaries_ThemeDeepYellow>
   <RimMercenaries_TierLabel>ティア{0}：{1}/{2}</RimMercenaries_TierLabel>
 
+  <!-- Settings -->
+  <RimMercenaries_WorldSettings>ワールド設定</RimMercenaries_WorldSettings>
+  <RimMercenaries_UsingWorldSettings>使用中: ワールド設定</RimMercenaries_UsingWorldSettings>
+  <RimMercenaries_UsingGlobalSettings>使用中: グローバル設定</RimMercenaries_UsingGlobalSettings>
+  <RimMercenaries_CurrentlyFollowingGlobals>現在グローバル設定を使用中</RimMercenaries_CurrentlyFollowingGlobals>
+  <RimMercenaries_UsingWorldSpecific>ワールド固有の設定を使用中</RimMercenaries_UsingWorldSpecific>
+  <RimMercenaries_FreezeGlobalsHere>現在のグローバル値をここに固定</RimMercenaries_FreezeGlobalsHere>
+  <RimMercenaries_ReturnToGlobal>グローバル設定に戻る</RimMercenaries_ReturnToGlobal>
+  <RimMercenaries_Tier1Section>ティア1傭兵:</RimMercenaries_Tier1Section>
+  <RimMercenaries_Tier2Section>ティア2傭兵:</RimMercenaries_Tier2Section>
+  <RimMercenaries_Tier3Section>ティア3傭兵:</RimMercenaries_Tier3Section>
+  <RimMercenaries_PriceMin>最低価格</RimMercenaries_PriceMin>
+  <RimMercenaries_PriceMax>最高価格</RimMercenaries_PriceMax>
+  <RimMercenaries_Count>数</RimMercenaries_Count>
+  <RimMercenaries_RefreshInterval>更新間隔(日):</RimMercenaries_RefreshInterval>
+  <RimMercenaries_Days>日数</RimMercenaries_Days>
+  <RimMercenaries_ConversionPeriod>傭兵を転化できない期間(日):</RimMercenaries_ConversionPeriod>
+  <RimMercenaries_ConversionChance>社交後に傭兵が転化する確率(0.00 - 1.00):</RimMercenaries_ConversionChance>
+  <RimMercenaries_Chance>確率</RimMercenaries_Chance>
+  <RimMercenaries_BuiltinRandomTraits>RimWorld標準のランダム特性を使用</RimMercenaries_BuiltinRandomTraits>
+  <RimMercenaries_EnableConversion>傭兵の転化を有効化</RimMercenaries_EnableConversion>
+  <RimMercenaries_ReturnToDefault>デフォルトに戻す</RimMercenaries_ReturnToDefault>
+  <RimMercenaries_TraitsTier1Disallowed>ティア1特性の禁止:</RimMercenaries_TraitsTier1Disallowed>
+  <RimMercenaries_TraitsTier3Disallowed>ティア3特性の禁止:</RimMercenaries_TraitsTier3Disallowed>
+
   <RimMercenaries_NoSafeDropLocationFound>傭兵の着陸に安全な場所が見つかりません。雇用をキャンセルしました。</RimMercenaries_NoSafeDropLocationFound>
   <RimMercenaries_HireBudgetReachedTier>これ以上ティア{0}の傭兵を雇うことはできません。残り：{1}</RimMercenaries_HireBudgetReachedTier>
 

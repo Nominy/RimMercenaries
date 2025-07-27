@@ -76,6 +76,31 @@
   <RimMercenaries_ThemeDeepYellow>Глибокий жовтий</RimMercenaries_ThemeDeepYellow>
   <RimMercenaries_TierLabel>Рівень {0}: {1}/{2}</RimMercenaries_TierLabel>
 
+  <!-- Settings -->
+  <RimMercenaries_WorldSettings>Налаштування світу</RimMercenaries_WorldSettings>
+  <RimMercenaries_UsingWorldSettings>Використовуються: налаштування світу</RimMercenaries_UsingWorldSettings>
+  <RimMercenaries_UsingGlobalSettings>Використовуються: глобальні налаштування</RimMercenaries_UsingGlobalSettings>
+  <RimMercenaries_CurrentlyFollowingGlobals>Використовуються глобальні налаштування</RimMercenaries_CurrentlyFollowingGlobals>
+  <RimMercenaries_UsingWorldSpecific>Використовуються налаштування світу</RimMercenaries_UsingWorldSpecific>
+  <RimMercenaries_FreezeGlobalsHere>Закріпити поточні глобальні значення тут</RimMercenaries_FreezeGlobalsHere>
+  <RimMercenaries_ReturnToGlobal>Повернутися до глобальних</RimMercenaries_ReturnToGlobal>
+  <RimMercenaries_Tier1Section>Найманці 1 рівня:</RimMercenaries_Tier1Section>
+  <RimMercenaries_Tier2Section>Найманці 2 рівня:</RimMercenaries_Tier2Section>
+  <RimMercenaries_Tier3Section>Найманці 3 рівня:</RimMercenaries_Tier3Section>
+  <RimMercenaries_PriceMin>Мін. ціна</RimMercenaries_PriceMin>
+  <RimMercenaries_PriceMax>Макс. ціна</RimMercenaries_PriceMax>
+  <RimMercenaries_Count>Кількість</RimMercenaries_Count>
+  <RimMercenaries_RefreshInterval>Інтервал оновлення (дні):</RimMercenaries_RefreshInterval>
+  <RimMercenaries_Days>Дні</RimMercenaries_Days>
+  <RimMercenaries_ConversionPeriod>Період, коли найманців не можна завербувати (дні):</RimMercenaries_ConversionPeriod>
+  <RimMercenaries_ConversionChance>Шанс вербування найманця після спілкування (0.00 - 1.00):</RimMercenaries_ConversionChance>
+  <RimMercenaries_Chance>Шанс</RimMercenaries_Chance>
+  <RimMercenaries_BuiltinRandomTraits>Використовувати вбудовані випадкові риси RimWorld</RimMercenaries_BuiltinRandomTraits>
+  <RimMercenaries_EnableConversion>Дозволити вербування найманців</RimMercenaries_EnableConversion>
+  <RimMercenaries_ReturnToDefault>Повернути стандарт</RimMercenaries_ReturnToDefault>
+  <RimMercenaries_TraitsTier1Disallowed>Заборонені риси 1 рівня:</RimMercenaries_TraitsTier1Disallowed>
+  <RimMercenaries_TraitsTier3Disallowed>Заборонені риси 3 рівня:</RimMercenaries_TraitsTier3Disallowed>
+
   <RimMercenaries_NoSafeDropLocationFound>Не знайдено безпечного місця для посадки найманця. Найм скасовано.</RimMercenaries_NoSafeDropLocationFound>
   <RimMercenaries_HireBudgetReachedTier>Неможливо найняти більше найманців рівня {0}. Залишилося: {1}</RimMercenaries_HireBudgetReachedTier>
 

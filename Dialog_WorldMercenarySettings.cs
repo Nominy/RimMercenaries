@@ -79,13 +79,13 @@ namespace RimMercenaries
             list.Begin(viewRect);
 
             // Status indicator
-            list.Label(FollowingGlobals ? "Currently following global settings" : "Using world-specific settings");
+            list.Label(FollowingGlobals ? "RimMercenaries_CurrentlyFollowingGlobals".Translate() : "RimMercenaries_UsingWorldSpecific".Translate());
             list.GapLine();
 
             // Freeze button - creates snapshot without changing any values
             Action deferred = null; // run after we EndScrollView 
 
-            if (FollowingGlobals && list.ButtonText("Freeze Current Global Values Here")) 
+            if (FollowingGlobals && list.ButtonText("RimMercenaries_FreezeGlobalsHere".Translate()))
             { 
                 deferred = () => 
                 { 
@@ -95,7 +95,7 @@ namespace RimMercenaries
             }
 
             // Return to global button - destroy local override
-            if (list.ButtonText("Return to Global (Follow)")) 
+            if (list.ButtonText("RimMercenaries_ReturnToGlobal".Translate()))
             { 
                 deferred = () => 
                 { 
@@ -106,74 +106,74 @@ namespace RimMercenaries
 
             list.GapLine();
 
-            list.Label("Tier 1 mercenaries:");
+            list.Label("RimMercenaries_Tier1Section".Translate());
             int beforeI = working.tier1Count;
-            list.TextFieldNumericLabeled("Count", ref working.tier1Count, ref t1Buf, 0, 100);
+            list.TextFieldNumericLabeled("RimMercenaries_Count".Translate(), ref working.tier1Count, ref t1Buf, 0, 100);
             if (working.tier1Count != beforeI) CommitEdits();
 
             beforeI = working.tier1Price.min;
-            list.TextFieldNumericLabeled("Price min", ref working.tier1Price.min, ref t1PriceMinBuf, 0, 10000);
+            list.TextFieldNumericLabeled("RimMercenaries_PriceMin".Translate(), ref working.tier1Price.min, ref t1PriceMinBuf, 0, 10000);
             if (working.tier1Price.min != beforeI) CommitEdits();
 
             beforeI = working.tier1Price.max;
-            list.TextFieldNumericLabeled("Price max", ref working.tier1Price.max, ref t1PriceMaxBuf, 0, 10000);
+            list.TextFieldNumericLabeled("RimMercenaries_PriceMax".Translate(), ref working.tier1Price.max, ref t1PriceMaxBuf, 0, 10000);
             if (working.tier1Price.max != beforeI) CommitEdits();
 
-            list.Label("Tier 2 mercenaries:");
+            list.Label("RimMercenaries_Tier2Section".Translate());
             beforeI = working.tier2Count;
-            list.TextFieldNumericLabeled("Count", ref working.tier2Count, ref t2Buf, 0, 100);
+            list.TextFieldNumericLabeled("RimMercenaries_Count".Translate(), ref working.tier2Count, ref t2Buf, 0, 100);
             if (working.tier2Count != beforeI) CommitEdits();
 
             beforeI = working.tier2Price.min;
-            list.TextFieldNumericLabeled("Price min", ref working.tier2Price.min, ref t2PriceMinBuf, 0, 10000);
+            list.TextFieldNumericLabeled("RimMercenaries_PriceMin".Translate(), ref working.tier2Price.min, ref t2PriceMinBuf, 0, 10000);
             if (working.tier2Price.min != beforeI) CommitEdits();
 
             beforeI = working.tier2Price.max;
-            list.TextFieldNumericLabeled("Price max", ref working.tier2Price.max, ref t2PriceMaxBuf, 0, 10000);
+            list.TextFieldNumericLabeled("RimMercenaries_PriceMax".Translate(), ref working.tier2Price.max, ref t2PriceMaxBuf, 0, 10000);
             if (working.tier2Price.max != beforeI) CommitEdits();
 
-            list.Label("Tier 3 mercenaries:");
+            list.Label("RimMercenaries_Tier3Section".Translate());
             beforeI = working.tier3Count;
-            list.TextFieldNumericLabeled("Count", ref working.tier3Count, ref t3Buf, 0, 100);
+            list.TextFieldNumericLabeled("RimMercenaries_Count".Translate(), ref working.tier3Count, ref t3Buf, 0, 100);
             if (working.tier3Count != beforeI) CommitEdits();
 
             beforeI = working.tier3Price.min;
-            list.TextFieldNumericLabeled("Price min", ref working.tier3Price.min, ref t3PriceMinBuf, 0, 10000);
+            list.TextFieldNumericLabeled("RimMercenaries_PriceMin".Translate(), ref working.tier3Price.min, ref t3PriceMinBuf, 0, 10000);
             if (working.tier3Price.min != beforeI) CommitEdits();
 
             beforeI = working.tier3Price.max;
-            list.TextFieldNumericLabeled("Price max", ref working.tier3Price.max, ref t3PriceMaxBuf, 0, 10000);
+            list.TextFieldNumericLabeled("RimMercenaries_PriceMax".Translate(), ref working.tier3Price.max, ref t3PriceMaxBuf, 0, 10000);
             if (working.tier3Price.max != beforeI) CommitEdits();
 
             list.GapLine();
-            list.Label("Refresh interval (days):");
+            list.Label("RimMercenaries_RefreshInterval".Translate());
             beforeI = working.refreshIntervalDays;
-            list.TextFieldNumericLabeled("Days", ref working.refreshIntervalDays, ref refreshBuf, 1, 1000);
+            list.TextFieldNumericLabeled("RimMercenaries_Days".Translate(), ref working.refreshIntervalDays, ref refreshBuf, 1, 1000);
             if (working.refreshIntervalDays != beforeI) CommitEdits();
 
-            list.Label("Period for which mercenaries can't be converted(days):");
+            list.Label("RimMercenaries_ConversionPeriod".Translate());
             beforeI = working.mercenaryConversionPeriodDays;
-            list.TextFieldNumericLabeled("Days", ref working.mercenaryConversionPeriodDays, ref mercenaryConversionPeriodDaysBuf, 1, 1000);
+            list.TextFieldNumericLabeled("RimMercenaries_Days".Translate(), ref working.mercenaryConversionPeriodDays, ref mercenaryConversionPeriodDaysBuf, 1, 1000);
             if (working.mercenaryConversionPeriodDays != beforeI) CommitEdits();
 
-            list.Label("Chance for mercenary to be converted after social interaction(0.00 - 1.00):");
+            list.Label("RimMercenaries_ConversionChance".Translate());
             float beforeF = working.mercenaryConversionChance;
-            list.TextFieldNumericLabeled("Chance", ref working.mercenaryConversionChance, ref mercenaryConversionChanceBuf, 0f, 1f);
+            list.TextFieldNumericLabeled("RimMercenaries_Chance".Translate(), ref working.mercenaryConversionChance, ref mercenaryConversionChanceBuf, 0f, 1f);
             if (!Mathf.Approximately(working.mercenaryConversionChance, beforeF)) CommitEdits();
 
             list.GapLine();
             
             bool beforeB = working.mercenaryTraitsBuiltinRandom;
-            list.CheckboxLabeled("Use RimWorld's builtin random traits", ref working.mercenaryTraitsBuiltinRandom);
+            list.CheckboxLabeled("RimMercenaries_BuiltinRandomTraits".Translate(), ref working.mercenaryTraitsBuiltinRandom);
             if (working.mercenaryTraitsBuiltinRandom != beforeB) CommitEdits();
 
             beforeB = working.mercenaryConversionEnabled;
-            list.CheckboxLabeled("Enable mercenary conversion", ref working.mercenaryConversionEnabled);
+            list.CheckboxLabeled("RimMercenaries_EnableConversion".Translate(), ref working.mercenaryConversionEnabled);
             if (working.mercenaryConversionEnabled != beforeB) CommitEdits();
 
             list.GapLine();
 
-            list.Label("Traits tier 1 disallowed:");
+            list.Label("RimMercenaries_TraitsTier1Disallowed".Translate());
 
             foreach (var trait in MercenaryOfferGenerator.BadTraits)
             {
@@ -190,7 +190,7 @@ namespace RimMercenaries
 
             list.GapLine();
 
-            list.Label("Traits tier 3 disallowed:");
+            list.Label("RimMercenaries_TraitsTier3Disallowed".Translate());
             
             foreach (var trait in MercenaryOfferGenerator.GoodTraits)
             {

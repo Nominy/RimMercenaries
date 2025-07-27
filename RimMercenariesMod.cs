@@ -61,37 +61,37 @@ namespace RimMercenaries
             var list = new Listing_Standard();
             list.Begin(viewRect);
 
-            list.Label("Tier 1 mercenaries:");
-            list.TextFieldNumericLabeled("Count", ref Settings.tier1Count, ref t1Buf, 0, 100);
-            list.TextFieldNumericLabeled("Price min", ref Settings.tier1Price.min, ref t1PriceMinBuf, 0, 10000);
-            list.TextFieldNumericLabeled("Price max", ref Settings.tier1Price.max, ref t1PriceMaxBuf, 0, 10000);
+            list.Label("RimMercenaries_Tier1Section".Translate());
+            list.TextFieldNumericLabeled("RimMercenaries_Count".Translate(), ref Settings.tier1Count, ref t1Buf, 0, 100);
+            list.TextFieldNumericLabeled("RimMercenaries_PriceMin".Translate(), ref Settings.tier1Price.min, ref t1PriceMinBuf, 0, 10000);
+            list.TextFieldNumericLabeled("RimMercenaries_PriceMax".Translate(), ref Settings.tier1Price.max, ref t1PriceMaxBuf, 0, 10000);
 
-            list.Label("Tier 2 mercenaries:");
-            list.TextFieldNumericLabeled("Count", ref Settings.tier2Count, ref t2Buf, 0, 100);
-            list.TextFieldNumericLabeled("Price min", ref Settings.tier2Price.min, ref t2PriceMinBuf, 0, 10000);
-            list.TextFieldNumericLabeled("Price max", ref Settings.tier2Price.max, ref t2PriceMaxBuf, 0, 10000);
+            list.Label("RimMercenaries_Tier2Section".Translate());
+            list.TextFieldNumericLabeled("RimMercenaries_Count".Translate(), ref Settings.tier2Count, ref t2Buf, 0, 100);
+            list.TextFieldNumericLabeled("RimMercenaries_PriceMin".Translate(), ref Settings.tier2Price.min, ref t2PriceMinBuf, 0, 10000);
+            list.TextFieldNumericLabeled("RimMercenaries_PriceMax".Translate(), ref Settings.tier2Price.max, ref t2PriceMaxBuf, 0, 10000);
 
-            list.Label("Tier 3 mercenaries:");
-            list.TextFieldNumericLabeled("Count", ref Settings.tier3Count, ref t3Buf, 0, 100);
-            list.TextFieldNumericLabeled("Price min", ref Settings.tier3Price.min, ref t3PriceMinBuf, 0, 10000);
-            list.TextFieldNumericLabeled("Price max", ref Settings.tier3Price.max, ref t3PriceMaxBuf, 0, 10000);
-
-            list.GapLine();
-            list.Label("Refresh interval (days):");
-            list.TextFieldNumericLabeled("Days", ref Settings.refreshIntervalDays, ref refreshBuf, 1, 1000);
-            list.Label("Period for which mercenaries can't be converted(days):");
-            list.TextFieldNumericLabeled("Days", ref Settings.mercenaryConversionPeriodDays, ref mercenaryConversionPeriodDaysBuf, 1, 1000);
-            list.Label("Chance for mercenary to be converted after social interaction(0.00 - 1.00):");
-            list.TextFieldNumericLabeled("Chance", ref Settings.mercenaryConversionChance, ref mercenaryConversionChanceBuf, 0, 1);
+            list.Label("RimMercenaries_Tier3Section".Translate());
+            list.TextFieldNumericLabeled("RimMercenaries_Count".Translate(), ref Settings.tier3Count, ref t3Buf, 0, 100);
+            list.TextFieldNumericLabeled("RimMercenaries_PriceMin".Translate(), ref Settings.tier3Price.min, ref t3PriceMinBuf, 0, 10000);
+            list.TextFieldNumericLabeled("RimMercenaries_PriceMax".Translate(), ref Settings.tier3Price.max, ref t3PriceMaxBuf, 0, 10000);
 
             list.GapLine();
-
-            list.CheckboxLabeled("Use RimWorld's builtin random traits", ref Settings.mercenaryTraitsBuiltinRandom);
-            list.CheckboxLabeled("Enable mercenary conversion", ref Settings.mercenaryConversionEnabled);
+            list.Label("RimMercenaries_RefreshInterval".Translate());
+            list.TextFieldNumericLabeled("RimMercenaries_Days".Translate(), ref Settings.refreshIntervalDays, ref refreshBuf, 1, 1000);
+            list.Label("RimMercenaries_ConversionPeriod".Translate());
+            list.TextFieldNumericLabeled("RimMercenaries_Days".Translate(), ref Settings.mercenaryConversionPeriodDays, ref mercenaryConversionPeriodDaysBuf, 1, 1000);
+            list.Label("RimMercenaries_ConversionChance".Translate());
+            list.TextFieldNumericLabeled("RimMercenaries_Chance".Translate(), ref Settings.mercenaryConversionChance, ref mercenaryConversionChanceBuf, 0, 1);
 
             list.GapLine();
 
-            if (list.ButtonText("Return to Default"))
+            list.CheckboxLabeled("RimMercenaries_BuiltinRandomTraits".Translate(), ref Settings.mercenaryTraitsBuiltinRandom);
+            list.CheckboxLabeled("RimMercenaries_EnableConversion".Translate(), ref Settings.mercenaryConversionEnabled);
+
+            list.GapLine();
+
+            if (list.ButtonText("RimMercenaries_ReturnToDefault".Translate()))
             {
                 Settings.ResetToDefaults();
                 // Update buffer values
@@ -110,7 +110,7 @@ namespace RimMercenaries
             }
             list.GapLine();
 
-            list.Label("Traits tier 1 disallowed:");
+            list.Label("RimMercenaries_TraitsTier1Disallowed".Translate());
 
             foreach (var trait in MercenaryOfferGenerator.BadTraits)
             {
@@ -124,7 +124,7 @@ namespace RimMercenaries
 
             list.GapLine();
 
-            list.Label("Traits tier 3 disallowed:");
+            list.Label("RimMercenaries_TraitsTier3Disallowed".Translate());
             
             foreach (var trait in MercenaryOfferGenerator.GoodTraits)
             {
