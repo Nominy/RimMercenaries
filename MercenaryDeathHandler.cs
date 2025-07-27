@@ -83,4 +83,20 @@ namespace RimMercenaries
                 t.thought.def == ThoughtDefOf.KnowColonistDied);
         }
     }
+
+    [HarmonyPatch(typeof(Alert_ColonistLeftUnburied), "IsCorpseOfColonist")]
+    static class Patch_Alert_ColonistLeftUnburied_IsCorpseOfColonist
+    {
+        private static readonly HediffDef Merc =
+            DefDatabase<HediffDef>.GetNamedSilentFail("RimMercenaries_MercenaryStatus");    
+        public static bool Prefix(Corpse corpse, ref bool __result)
+        {   
+            if (corpse != null && corpse.InnerPawn?.health?.hediffSet?.HasHediff(Merc) == true)
+            {
+                __result = false;
+                return false;
+            }
+            return true;
+        }
+    }
 }
