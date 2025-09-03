@@ -83,6 +83,7 @@
     <Compile Include="MercenaryLoadoutSelection.cs" />
     <Compile Include="Dialog_MercenaryLoadout.cs" />
     <Compile Include="LoadoutPresets.cs" />
+    <Compile Include="IncidentWorker_MercenaryAcceptedDummy.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

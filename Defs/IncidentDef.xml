@@ -3,6 +3,7 @@
   <IncidentDef>
     <defName>RimMercenaries_MercenaryAccepted</defName>
     <label>mercenary accepted</label>
+    <workerClass>RimMercenaries.IncidentWorker_MercenaryAcceptedDummy</workerClass>
     <category>Misc</category>
     <targetTags>
       <li>Map_PlayerHome</li>
