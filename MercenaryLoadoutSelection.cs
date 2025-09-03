@@ -42,9 +42,11 @@ namespace RimMercenaries
                     apparel.HitPoints = hitPoints;
                 }
 
-                // Set colors if supported
+                // Apply color override only if explicitly using a custom color.
+                // This prevents forcing white (or any saved default) when loading presets
+                // that did not opt into a custom color.
                 var colorableComp = apparel.TryGetComp<CompColorable>();
-                if (colorableComp != null)
+                if (colorableComp != null && useCustomColor)
                 {
                     color.a = 1f; // Ensure proper alpha
                     colorableComp.SetColor(color);
@@ -322,5 +324,4 @@ namespace RimMercenaries
         }
     }
 }
-
 

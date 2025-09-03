@@ -1631,9 +1631,21 @@ namespace RimMercenaries
                         materialDef = chosenStuff,
                         quality = ap.quality,
                         hitPoints = ap.hitPoints > 0 ? Mathf.Clamp(ap.hitPoints, 1, Mathf.RoundToInt(def.GetStatValueAbstract(StatDefOf.MaxHitPoints))) : Mathf.RoundToInt(def.GetStatValueAbstract(StatDefOf.MaxHitPoints)),
-                        color = new Color(ap.colorR, ap.colorG, ap.colorB, ap.colorA),
+                        color = new Color(ap.colorR, ap.colorG, ap.colorB, ap.colorA == 0 ? 1f : ap.colorA),
                         useCustomColor = ap.useCustomColor
                     };
+
+                    // Backward compatibility: if preset has a stored color that differs from the apparel's base color,
+                    // but useCustomColor wasn't saved (older presets), treat it as a custom color.
+                    // This also preserves Faction/Ideology color selections across saves.
+                    try
+                    {
+                        if (!cust.useCustomColor && !ColorsApproximatelyEqual(cust.color, def.uiIconColor))
+                        {
+                            cust.useCustomColor = true;
+                        }
+                    }
+                    catch { }
 
                     newApparelDefs.Add(def);
                     newCustomizations[def] = cust;
@@ -1650,6 +1662,13 @@ namespace RimMercenaries
 
             report = string.Join("\n", issues);
             return (issues.Count == 0 || applied > 0, applied, total);
+        }
+
+        private static bool ColorsApproximatelyEqual(Color a, Color b, float eps = 0.0025f)
+        {
+            return Mathf.Abs(a.r - b.r) <= eps
+                && Mathf.Abs(a.g - b.g) <= eps
+                && Mathf.Abs(a.b - b.b) <= eps;
         }
 
         private void ClearPreviewPawnForPresetValidation()
@@ -1989,5 +2008,4 @@ namespace RimMercenaries
 
 
 }
-
 
