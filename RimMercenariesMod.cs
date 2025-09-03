@@ -23,6 +23,7 @@ namespace RimMercenaries
         private string t3PriceMaxBuf = "2500";
         private string mercenaryConversionPeriodDaysBuf = "60";
         private string mercenaryConversionChanceBuf = "0.02";
+        private string loadoutPerItemCostBuf = "200";
         public RimMercenariesMod(ModContentPack content) : base(content)
         {   
             Settings = GetSettings<RimMercenariesSettings>();
@@ -38,6 +39,7 @@ namespace RimMercenaries
             t3PriceMaxBuf = Settings.tier3Price.max.ToString();
             mercenaryConversionPeriodDaysBuf = Settings.mercenaryConversionPeriodDays.ToString();
             mercenaryConversionChanceBuf = Settings.mercenaryConversionChance.ToString();
+            loadoutPerItemCostBuf = Settings.loadoutPerItemCost.ToString();
         }
 
         public static RimMercenariesSettings ActiveSettings
@@ -91,6 +93,20 @@ namespace RimMercenaries
 
             list.GapLine();
 
+            // Loadout settings section
+            list.Label("RimMercenaries_LoadoutSettings".Translate());
+            list.CheckboxLabeled("RimMercenaries_EnableLoadoutCustomization".Translate(), ref Settings.enableDevLoadoutCustomization);
+            list.CheckboxLabeled("RimMercenaries_UseActualItemPrices".Translate(), ref Settings.useActualItemPrices);
+            list.TextFieldNumericLabeled("RimMercenaries_LoadoutPerItemCost".Translate(), ref Settings.loadoutPerItemCost, ref loadoutPerItemCostBuf, 0, 100000);
+
+            // Dev-only section for additional customization
+            if (Prefs.DevMode)
+            {
+                list.GapLine();
+                list.Label("RimMercenaries_DevSection".Translate());
+                // Loadout customization setting moved to regular settings section above
+            }
+
             if (list.ButtonText("RimMercenaries_ReturnToDefault".Translate()))
             {
                 Settings.ResetToDefaults();
@@ -107,6 +123,8 @@ namespace RimMercenaries
                 t3PriceMaxBuf = Settings.tier3Price.max.ToString();
                 mercenaryConversionPeriodDaysBuf = Settings.mercenaryConversionPeriodDays.ToString();
                 mercenaryConversionChanceBuf = Settings.mercenaryConversionChance.ToString();
+                loadoutPerItemCostBuf = Settings.loadoutPerItemCost.ToString();
+                // Note: useActualItemPrices is a boolean, no buffer needed
             }
             list.GapLine();
 

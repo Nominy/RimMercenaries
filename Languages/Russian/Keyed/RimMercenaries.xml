@@ -100,8 +100,51 @@
   <RimMercenaries_TraitsTier1Disallowed>Запрещённые черты 1 уровня:</RimMercenaries_TraitsTier1Disallowed>
   <RimMercenaries_TraitsTier3Disallowed>Запрещённые черты 3 уровня:</RimMercenaries_TraitsTier3Disallowed>
 
+  <!-- Dev Loadout Customization -->
+  <RimMercenaries_DevSection>Опции разработчика:</RimMercenaries_DevSection>
+  <RimMercenaries_EnableLoadoutCustomization>Включить диалог настройки экипировки</RimMercenaries_EnableLoadoutCustomization>
+  <RimMercenaries_LoadoutPerItemCost>Стоимость экипировки за предмет</RimMercenaries_LoadoutPerItemCost>
+
+  <!-- Loadout Settings -->
+  <RimMercenaries_LoadoutSettings>Настройки экипировки:</RimMercenaries_LoadoutSettings>
+  <RimMercenaries_UseActualItemPrices>Использовать реальные цены предметов (рекомендуется)</RimMercenaries_UseActualItemPrices>
+
   <RimMercenaries_NoSafeDropLocationFound>Не найдено безопасного места для посадки наёмника. Найм отменён.</RimMercenaries_NoSafeDropLocationFound>
   <RimMercenaries_HireBudgetReachedTier>Невозможно нанять больше наёмников уровня {0}. Осталось: {1}</RimMercenaries_HireBudgetReachedTier>
+
+  <!-- Loadout Dialog -->
+  <RimMercenaries_Loadout_Title>Настроить экипировку</RimMercenaries_Loadout_Title>
+  <RimMercenaries_Loadout_Subtitle>Выберите оружие и одежду для {0}</RimMercenaries_Loadout_Subtitle>
+  <RimMercenaries_Loadout_Weapon>Оружие</RimMercenaries_Loadout_Weapon>
+  <RimMercenaries_Loadout_Apparel>Одежда</RimMercenaries_Loadout_Apparel>
+  <RimMercenaries_Loadout_SelectedCount>Выбрано: {0}</RimMercenaries_Loadout_SelectedCount>
+  <RimMercenaries_Loadout_BasePrice>Базовая цена</RimMercenaries_Loadout_BasePrice>
+  <RimMercenaries_Loadout_AdditionalCost>Стоимость экипировки</RimMercenaries_Loadout_AdditionalCost>
+  <RimMercenaries_Loadout_Total>Итого</RimMercenaries_Loadout_Total>
+  <RimMercenaries_Loadout_Confirm>Подтвердить</RimMercenaries_Loadout_Confirm>
+  <RimMercenaries_Loadout_Cancel>Отмена</RimMercenaries_Loadout_Cancel>
+  <RimMercenaries_Loadout_Customize>Настроить</RimMercenaries_Loadout_Customize>
+  <RimMercenaries_Loadout_NotEnoughSilver>Недостаточно серебра для общей стоимости {0}.</RimMercenaries_Loadout_NotEnoughSilver>
+  <RimMercenaries_Loadout_Filter_Search>Поиск</RimMercenaries_Loadout_Filter_Search>
+  <RimMercenaries_Loadout_PresetId>ID пресета</RimMercenaries_Loadout_PresetId>
+  <RimMercenaries_Loadout_SavePreset>Сохранить</RimMercenaries_Loadout_SavePreset>
+  <RimMercenaries_Loadout_LoadPreset>Загрузить</RimMercenaries_Loadout_LoadPreset>
+  <RimMercenaries_Loadout_NoPresets>Нет сохранённых пресетов</RimMercenaries_Loadout_NoPresets>
+  <RimMercenaries_Loadout_PresetSaved>Пресет сохранён: {0}</RimMercenaries_Loadout_PresetSaved>
+  <RimMercenaries_Loadout_PresetLoadedOk>Пресет '{0}' загружен. Применено предметов: {1}</RimMercenaries_Loadout_PresetLoadedOk>
+  <RimMercenaries_Loadout_PresetLoadedWithIssues>Пресет '{0}' загружен с проблемами. Применено {1}/{2} предметов:\n{3}</RimMercenaries_Loadout_PresetLoadedWithIssues>
+  <RimMercenaries_Loadout_PresetLoadFailed>Не удалось загрузить пресет '{0}': {1}</RimMercenaries_Loadout_PresetLoadFailed>
+  <RimMercenaries_Loadout_PresetNotFound>Пресет не найден</RimMercenaries_Loadout_PresetNotFound>
+  <RimMercenaries_Loadout_PresetIdRequired>Требуется ID пресета</RimMercenaries_Loadout_PresetIdRequired>
+
+  <!-- Apparel Customization -->
+  <RimMercenaries_Customization_Title>Настроить: {0}</RimMercenaries_Customization_Title>
+  <RimMercenaries_Customization_Style>Стиль</RimMercenaries_Customization_Style>
+  <RimMercenaries_Customization_Material>Материал</RimMercenaries_Customization_Material>
+  <RimMercenaries_Customization_Quality>Качество</RimMercenaries_Customization_Quality>
+  <RimMercenaries_Customization_HitPoints>Прочность</RimMercenaries_Customization_HitPoints>
+  <RimMercenaries_Customization_Color>Цвет</RimMercenaries_Customization_Color>
+  <RimMercenaries_Customization_Add>Добавить</RimMercenaries_Customization_Add>
 
   <!-- Mercenary Status System -->
   <RimMercenaries_MercenaryBecameSettler>{0} был принят как настоящий член поселения!</RimMercenaries_MercenaryBecameSettler>
@@ -119,5 +162,16 @@
   <RimMercenaries_LoadingTime>Прошло времени: {0} сек.</RimMercenaries_LoadingTime>
   <RimMercenaries_ForceRefresh>Принудительное обновление</RimMercenaries_ForceRefresh>
   -->
+
+  <!-- Additional Loadout Dialog Strings -->
+  <RimMercenaries_DeletePresetConfirm>Удалить пресет '{0}'?</RimMercenaries_DeletePresetConfirm>
+  <RimMercenaries_Loadout_Filter_Ranged>Дальний бой</RimMercenaries_Loadout_Filter_Ranged>
+  <RimMercenaries_Loadout_Filter_Melee>Ближний бой</RimMercenaries_Loadout_Filter_Melee>
+  <RimMercenaries_Loadout_ClearWeapon>Очистить оружие</RimMercenaries_Loadout_ClearWeapon>
+  <RimMercenaries_Loadout_ClearApparel>Очистить одежду</RimMercenaries_Loadout_ClearApparel>
+  <RimMercenaries_Loadout_ApparelInvalid>Недопустимая запись одежды</RimMercenaries_Loadout_ApparelInvalid>
+  <RimMercenaries_Loadout_Load>Загрузить</RimMercenaries_Loadout_Load>
+  <RimMercenaries_Loadout_Del>Удалить</RimMercenaries_Loadout_Del>
+  <RimMercenaries_Loadout_DefaultMaterial>По умолчанию</RimMercenaries_Loadout_DefaultMaterial>
 
 </LanguageData>

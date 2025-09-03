@@ -32,6 +32,21 @@
     </stages>
   </ThoughtDef>
 
+  <!-- Thought when a mercenary is lost (captured, leaves map, etc.) - applied to all colonists -->
+  <ThoughtDef>
+    <defName>RimMercenaries_MercenaryLost</defName>
+    <thoughtClass>Thought_Memory</thoughtClass>
+    <durationDays>5</durationDays>
+    <stackLimit>1</stackLimit>
+    <stages>
+      <li>
+        <label>mercenary lost</label>
+        <description>We lost a hired mercenary. Not as bad as losing one of our own.</description>
+        <baseMoodEffect>-1</baseMoodEffect>
+      </li>
+    </stages>
+  </ThoughtDef>
+
   <!-- Acceptance by settlement thought - applied to the former mercenary when they become a settler -->
   <ThoughtDef>
     <defName>RimMercenaries_AcceptedBySettlement</defName>

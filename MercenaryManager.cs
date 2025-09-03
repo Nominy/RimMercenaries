@@ -4,6 +4,7 @@ using System.Linq;
 using UnityEngine;
 using Verse;
 using Verse.Sound;
+using System.Reflection;
 
 namespace RimMercenaries
 {
@@ -199,61 +200,87 @@ namespace RimMercenaries
         {
             if (!ColonyHasEnoughSilverForScribeTable(map, amount))
                 return false;
-                
+
             int remainingToConsume = amount;
             var silverThings = new List<Thing>();
-            
+
             // Collect all silver from player-controlled areas
             var mapSilverThings = map.listerThings.ThingsOfDef(ThingDefOf.Silver);
-            
+
             foreach (var thing in mapSilverThings)
             {
+                // Skip null or destroyed items
+                if (thing == null || thing.Destroyed || !thing.Spawned)
+                {
+                    continue;
+                }
+
                 bool isPlayerControlled = IsInPlayerControlledArea(map, thing);
-                
+
                 if (isPlayerControlled && remainingToConsume > 0)
                 {
                     silverThings.Add(thing);
                 }
             }
-            
+
             // Collect silver from colonist inventories
             var freeColonists = map.mapPawns.FreeColonists;
-            
+
             foreach (var pawn in freeColonists)
             {
                 if (pawn.inventory?.innerContainer != null && remainingToConsume > 0)
                 {
                     foreach (var item in pawn.inventory.innerContainer.ToList())
                     {
-                        if (item.def == ThingDefOf.Silver && remainingToConsume > 0)
+                        // Skip null or destroyed items
+                        if (item == null || item.Destroyed || item.def != ThingDefOf.Silver)
+                        {
+                            continue;
+                        }
+
+                        if (remainingToConsume > 0)
                         {
                             silverThings.Add(item);
                         }
                     }
                 }
             }
-            
+
             // Consume silver from collected sources
             foreach (var silverThing in silverThings)
             {
-                if (remainingToConsume <= 0) 
+                if (remainingToConsume <= 0)
                 {
                     break;
                 }
-                
+
+                // Double-check the item is still valid before processing
+                if (silverThing == null || silverThing.Destroyed)
+                {
+                    continue;
+                }
+
                 int toTake = Mathf.Min(remainingToConsume, silverThing.stackCount);
                 remainingToConsume -= toTake;
-                
+
                 if (toTake >= silverThing.stackCount)
                 {
-                    silverThing.Destroy();
+                    // Final validation before destroying
+                    if (!silverThing.Destroyed)
+                    {
+                        silverThing.Destroy();
+                    }
                 }
                 else
                 {
-                    silverThing.stackCount -= toTake;
+                    // Only modify stack count if item is still valid
+                    if (!silverThing.Destroyed && silverThing.stackCount >= toTake)
+                    {
+                        silverThing.stackCount -= toTake;
+                    }
                 }
             }
-            
+
             return remainingToConsume <= 0;
         }
 
@@ -263,6 +290,11 @@ namespace RimMercenaries
         }
 
         public static bool TryHireMercenary(Map map, IntVec3 dropCell, Pawn negotiator, MercenaryOffer offer, Building sourceBuilding)
+        {
+            return TryHireMercenary(map, dropCell, negotiator, offer, sourceBuilding, null, offer?.price ?? 0);
+        }
+
+        public static bool TryHireMercenary(Map map, IntVec3 dropCell, Pawn negotiator, MercenaryOffer offer, Building sourceBuilding, MercenaryLoadoutSelection loadout, int finalPrice)
         {
             var component = GetComponent();
             if (component == null || offer?.pawn == null) return false;
@@ -339,33 +371,39 @@ namespace RimMercenaries
             if (isFromScribeTable)
             {
                 // Use alternative silver handling for ScribeTable
-                if (!ColonyHasEnoughSilverForScribeTable(map, offer.price))
+                if (!ColonyHasEnoughSilverForScribeTable(map, finalPrice))
                 {
-                    Messages.Message("RimMercenaries_NotEnoughSilver".Translate(offer.price), MessageTypeDefOf.RejectInput, false);
+                    Messages.Message("RimMercenaries_NotEnoughSilver".Translate(finalPrice), MessageTypeDefOf.RejectInput, false);
                     return false;
                 }
                 
-                if (!ConsumeColonySilverForScribeTable(map, offer.price))
+                if (!ConsumeColonySilverForScribeTable(map, finalPrice))
                 {
-                    Messages.Message("RimMercenaries_NotEnoughSilver".Translate(offer.price), MessageTypeDefOf.RejectInput, false);
-                    Log.Error($"[RimMercenaries] Failed to consume {offer.price} silver for ScribeTable hire despite having enough - this should not happen");
+                    Messages.Message("RimMercenaries_NotEnoughSilver".Translate(finalPrice), MessageTypeDefOf.RejectInput, false);
+                    Log.Error($"[RimMercenaries] Failed to consume {finalPrice} silver for ScribeTable hire despite having enough - this should not happen");
                     return false;
                 }
                 
-                Log.Message($"[RimMercenaries] Successfully consumed {offer.price} silver via ScribeTable method for {offer.pawn.LabelShortCap}");
+                Log.Message($"[RimMercenaries] Successfully consumed {finalPrice} silver via ScribeTable method for {offer.pawn.LabelShortCap}");
             }
             else
             {
                 // Use vanilla TradeUtility for CommsConsole
-                if (!TradeUtility.ColonyHasEnoughSilver(map, offer.price))
+                if (!TradeUtility.ColonyHasEnoughSilver(map, finalPrice))
                 {
-                    Messages.Message("RimMercenaries_NotEnoughSilver".Translate(offer.price), MessageTypeDefOf.RejectInput, false);
+                    Messages.Message("RimMercenaries_NotEnoughSilver".Translate(finalPrice), MessageTypeDefOf.RejectInput, false);
                     return false;
                 }
                 
-                TradeUtility.LaunchSilver(map, offer.price);
+                TradeUtility.LaunchSilver(map, finalPrice);
             }
             // ---- END ScribeTable-aware silver handling ----
+
+            // Apply selected loadout if provided (strip and equip)
+            if (loadout != null)
+            {
+                ApplyLoadoutToPawn(offer.pawn, loadout);
+            }
 
             offer.pawn.SetFaction(Faction.OfPlayer);
             offer.pawn.relations?.Notify_ChangedFaction();
@@ -396,7 +434,7 @@ namespace RimMercenaries
             DropPodUtility.MakeDropPodAt(finalDropCell, map, podInfo);
 
             Messages.Message(
-                "RimMercenaries_MercenaryHired".Translate(offer.pawn.LabelShortCap, negotiator.LabelShortCap, offer.price),
+                "RimMercenaries_MercenaryHired".Translate(offer.pawn.LabelShortCap, negotiator.LabelShortCap, finalPrice),
                 (LookTargets)offer.pawn,
                 MessageTypeDefOf.PositiveEvent,
                 false
@@ -459,6 +497,184 @@ namespace RimMercenaries
             }
 
             return true;
+        }
+
+        public static void ApplyLoadoutToPawn(Pawn pawn, MercenaryLoadoutSelection loadout)
+        {
+            if (pawn == null || loadout == null) return;
+            try
+            {
+                pawn.equipment?.DestroyAllEquipment();
+
+                if (pawn.apparel != null)
+                {
+                    foreach (var ap in pawn.apparel.WornApparel.ToList())
+                    {
+                        if (ap == null || ap.Destroyed)
+                        {
+                            continue;
+                        }
+                        pawn.apparel.Remove(ap);
+                        if (!ap.Destroyed)
+                        {
+                            ap.Destroy();
+                        }
+                    }
+                }
+
+                if (loadout.selectedWeaponDef != null && IsResearchedOrNoPrereq(loadout.selectedWeaponDef))
+                {
+                    ThingDef stuff = GenStuff.DefaultStuffFor(loadout.selectedWeaponDef);
+                    var weapon = ThingMaker.MakeThing(loadout.selectedWeaponDef, stuff) as ThingWithComps;
+                    if (weapon != null)
+                    {
+                        if (EquipmentUtility.CanEquip(weapon, pawn))
+                        {
+                            if (pawn.equipment == null)
+                            {
+                                pawn.equipment = new Pawn_EquipmentTracker(pawn);
+                            }
+                            pawn.equipment.AddEquipment(weapon);
+                        }
+                        else
+                        {
+                            weapon.Destroy();
+                        }
+                    }
+                }
+
+                if (loadout.selectedApparelDefs != null && pawn.apparel != null)
+                {
+                    foreach (var appDef in loadout.selectedApparelDefs)
+                    {
+                        if (appDef == null) continue;
+                        if (!IsResearchedOrNoPrereq(appDef)) continue;
+                        if (!ApparelUtility.HasPartsToWear(pawn, appDef)) continue;
+                        if (IsChildOrBabyApparel(appDef)) continue;
+                        if (appDef.apparel.gender != Gender.None && pawn.gender != Gender.None && pawn.gender != appDef.apparel.gender) continue;
+
+                        Apparel apparel = null;
+                        var customization = loadout.GetApparelCustomization(appDef);
+                        if (customization != null)
+                        {
+                            apparel = customization.CreateApparel();
+                        }
+                        else
+                        {
+                            ThingDef stuff = GenStuff.DefaultStuffFor(appDef);
+                            apparel = ThingMaker.MakeThing(appDef, stuff) as Apparel;
+                        }
+
+                        if (apparel != null)
+                        {
+                            if (CanWearOnTopWithoutConflicts(pawn, apparel))
+                            {
+                                pawn.apparel.Wear(apparel, false);
+                            }
+                            else
+                            {
+                                apparel.Destroy();
+                            }
+                        }
+                    }
+                }
+            }
+            catch (System.Exception ex)
+            {
+                Log.Warning($"[RimMercenaries] Error applying loadout: {ex.Message}");
+            }
+        }
+
+        private static bool IsResearchedOrNoPrereq(ThingDef def)
+        {
+            if (def == null) return false;
+
+            // Check ThingDef-attached research prerequisites if any
+            try
+            {
+                var prereqField = typeof(ThingDef).GetField("researchPrerequisites", BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+                if (prereqField != null)
+                {
+                    var list = prereqField.GetValue(def) as List<ResearchProjectDef>;
+                    if (list != null)
+                    {
+                        foreach (var proj in list)
+                        {
+                            if (proj != null && !proj.IsFinished)
+                                return false;
+                        }
+                    }
+                }
+            }
+            catch { }
+
+            // Check recipe-based research prerequisites
+            try
+            {
+                var recipes = DefDatabase<RecipeDef>.AllDefsListForReading
+                    .Where(r => r.products != null && r.products.Any(p => p.thingDef == def))
+                    .ToList();
+                foreach (var recipe in recipes)
+                {
+                    if (recipe.researchPrerequisites != null)
+                    {
+                        foreach (var res in recipe.researchPrerequisites)
+                        {
+                            if (!res.IsFinished)
+                                return false;
+                        }
+                    }
+                }
+            }
+            catch { }
+
+            return true;
+        }
+
+        private static bool IsChildOrBabyApparel(ThingDef apparelDef)
+        {
+            try
+            {
+                string label = (apparelDef.label ?? apparelDef.defName ?? string.Empty).ToLowerInvariant();
+                if (label.Contains("child") || label.Contains("kid") || label.Contains("baby") || label.Contains("toddler") || label.Contains("infant"))
+                    return true;
+
+                var tags = apparelDef.apparel?.tags;
+                if (tags != null)
+                {
+                    foreach (var t in tags)
+                    {
+                        if (t == null) continue;
+                        string tt = t.ToLowerInvariant();
+                        if (tt.Contains("child") || tt.Contains("kid") || tt.Contains("baby") || tt.Contains("toddler") || tt.Contains("infant"))
+                            return true;
+                    }
+                }
+            }
+            catch { }
+            return false;
+        }
+
+        private static bool CanWearOnTopWithoutConflicts(Pawn pawn, Apparel apparel)
+        {
+            try
+            {
+                if (pawn == null || apparel == null || pawn.apparel == null) return false;
+                if (!ApparelUtility.HasPartsToWear(pawn, apparel.def)) return false;
+                var body = pawn.RaceProps?.body;
+                if (body == null) return false;
+                foreach (var worn in pawn.apparel.WornApparel)
+                {
+                    if (worn == null || worn.Destroyed) continue;
+                    if (!ApparelUtility.CanWearTogether(apparel.def, worn.def, body))
+                        return false;
+                }
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
         }
     }
 }

@@ -19,6 +19,7 @@ namespace RimMercenaries
         private string t2PriceMaxBuf;
         private string t3PriceMinBuf;
         private string t3PriceMaxBuf;
+        private string loadoutPerItemCostBuf;
         private Vector2 scrollPos = Vector2.zero;
         private float viewHeight = 3000f;
 
@@ -60,6 +61,7 @@ namespace RimMercenaries
             t3PriceMaxBuf = this.working.tier3Price.max.ToString();
             mercenaryConversionPeriodDaysBuf = this.working.mercenaryConversionPeriodDays.ToString();
             mercenaryConversionChanceBuf = this.working.mercenaryConversionChance.ToString();
+            loadoutPerItemCostBuf = this.working.loadoutPerItemCost.ToString();
         }
 
         // No auto-save on close - immediate mode already saves on each change
@@ -170,6 +172,21 @@ namespace RimMercenaries
             beforeB = working.mercenaryConversionEnabled;
             list.CheckboxLabeled("RimMercenaries_EnableConversion".Translate(), ref working.mercenaryConversionEnabled);
             if (working.mercenaryConversionEnabled != beforeB) CommitEdits();
+
+            list.GapLine();
+            list.Label("RimMercenaries_LoadoutSettings".Translate());
+
+            beforeB = working.enableDevLoadoutCustomization;
+            list.CheckboxLabeled("RimMercenaries_EnableLoadoutCustomization".Translate(), ref working.enableDevLoadoutCustomization);
+            if (working.enableDevLoadoutCustomization != beforeB) CommitEdits();
+
+            beforeB = working.useActualItemPrices;
+            list.CheckboxLabeled("RimMercenaries_UseActualItemPrices".Translate(), ref working.useActualItemPrices);
+            if (working.useActualItemPrices != beforeB) CommitEdits();
+
+            beforeI = working.loadoutPerItemCost;
+            list.TextFieldNumericLabeled("RimMercenaries_LoadoutPerItemCost".Translate(), ref working.loadoutPerItemCost, ref loadoutPerItemCostBuf, 0, 10000);
+            if (working.loadoutPerItemCost != beforeI) CommitEdits();
 
             list.GapLine();
 

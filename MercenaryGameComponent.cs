@@ -38,6 +38,9 @@ namespace RimMercenaries
         private Dictionary<XenotypeDef, List<MercenaryOffer>> reserveBatches = new Dictionary<XenotypeDef, List<MercenaryOffer>>();
         private bool isGeneratingReserve = false;
 
+        // Ephemeral per-offer saved loadout selections (persist across UI openings within session)
+        private readonly Dictionary<int, MercenaryLoadoutSelection> savedSelectionsByPawnId = new Dictionary<int, MercenaryLoadoutSelection>();
+
         public static int RefreshIntervalTicks => RimMercenariesMod.ActiveSettings.refreshIntervalDays * 60000;
         
         // Properties to access the data
@@ -432,6 +435,33 @@ namespace RimMercenaries
         public void SetAvailableMercenaries(List<MercenaryOffer> mercenaries)
         {
             availableMercenaries = mercenaries;
+        }
+
+        // --- Saved selection helpers (session-scoped) ---
+        public MercenaryLoadoutSelection GetSavedSelection(int pawnThingId)
+        {
+            if (savedSelectionsByPawnId.TryGetValue(pawnThingId, out var sel) && sel != null)
+            {
+                return sel.Clone();
+            }
+            return null;
+        }
+
+        public void SetSavedSelection(int pawnThingId, MercenaryLoadoutSelection selection)
+        {
+            if (selection == null)
+            {
+                savedSelectionsByPawnId.Remove(pawnThingId);
+            }
+            else
+            {
+                savedSelectionsByPawnId[pawnThingId] = selection.Clone();
+            }
+        }
+
+        public void RemoveSavedSelection(int pawnThingId)
+        {
+            savedSelectionsByPawnId.Remove(pawnThingId);
         }
 
         public List<MercenaryOffer> GetAvailableMercenariesForUI(XenotypeDef selectedXenotypeDef = null)

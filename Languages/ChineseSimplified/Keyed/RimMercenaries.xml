@@ -101,8 +101,51 @@
   <RimMercenaries_TraitsTier1Disallowed>禁止 1 级特性：</RimMercenaries_TraitsTier1Disallowed>
   <RimMercenaries_TraitsTier3Disallowed>禁止 3 级特性：</RimMercenaries_TraitsTier3Disallowed>
 
+  <!-- Dev Loadout Customization -->
+  <RimMercenaries_DevSection>开发者选项：</RimMercenaries_DevSection>
+  <RimMercenaries_EnableLoadoutCustomization>启用装备定制对话框</RimMercenaries_EnableLoadoutCustomization>
+  <RimMercenaries_LoadoutPerItemCost>装备每件物品成本</RimMercenaries_LoadoutPerItemCost>
+
+  <!-- Loadout Settings -->
+  <RimMercenaries_LoadoutSettings>装备设置：</RimMercenaries_LoadoutSettings>
+  <RimMercenaries_UseActualItemPrices>使用实际物品价格（推荐）</RimMercenaries_UseActualItemPrices>
+
   <RimMercenaries_NoSafeDropLocationFound>找不到安全的雇佣兵降落地点。雇佣已取消。</RimMercenaries_NoSafeDropLocationFound>
   <RimMercenaries_HireBudgetReachedTier>无法雇佣更多 {0} 级雇佣兵。剩余：{1}</RimMercenaries_HireBudgetReachedTier>
+
+  <!-- Loadout Dialog -->
+  <RimMercenaries_Loadout_Title>定制装备</RimMercenaries_Loadout_Title>
+  <RimMercenaries_Loadout_Subtitle>为 {0} 选择武器和服装</RimMercenaries_Loadout_Subtitle>
+  <RimMercenaries_Loadout_Weapon>武器</RimMercenaries_Loadout_Weapon>
+  <RimMercenaries_Loadout_Apparel>服装</RimMercenaries_Loadout_Apparel>
+  <RimMercenaries_Loadout_SelectedCount>已选择：{0}</RimMercenaries_Loadout_SelectedCount>
+  <RimMercenaries_Loadout_BasePrice>基础价格</RimMercenaries_Loadout_BasePrice>
+  <RimMercenaries_Loadout_AdditionalCost>装备成本</RimMercenaries_Loadout_AdditionalCost>
+  <RimMercenaries_Loadout_Total>总计</RimMercenaries_Loadout_Total>
+  <RimMercenaries_Loadout_Confirm>确认</RimMercenaries_Loadout_Confirm>
+  <RimMercenaries_Loadout_Cancel>取消</RimMercenaries_Loadout_Cancel>
+  <RimMercenaries_Loadout_Customize>定制</RimMercenaries_Loadout_Customize>
+  <RimMercenaries_Loadout_NotEnoughSilver>总成本 {0} 银币不足。</RimMercenaries_Loadout_NotEnoughSilver>
+  <RimMercenaries_Loadout_Filter_Search>搜索</RimMercenaries_Loadout_Filter_Search>
+  <RimMercenaries_Loadout_PresetId>预设ID</RimMercenaries_Loadout_PresetId>
+  <RimMercenaries_Loadout_SavePreset>保存</RimMercenaries_Loadout_SavePreset>
+  <RimMercenaries_Loadout_LoadPreset>加载</RimMercenaries_Loadout_LoadPreset>
+  <RimMercenaries_Loadout_NoPresets>无保存的预设</RimMercenaries_Loadout_NoPresets>
+  <RimMercenaries_Loadout_PresetSaved>预设已保存：{0}</RimMercenaries_Loadout_PresetSaved>
+  <RimMercenaries_Loadout_PresetLoadedOk>预设 '{0}' 已加载。已应用项目：{1}</RimMercenaries_Loadout_PresetLoadedOk>
+  <RimMercenaries_Loadout_PresetLoadedWithIssues>预设 '{0}' 已加载但有问题。已应用 {1}/{2} 个项目：\n{3}</RimMercenaries_Loadout_PresetLoadedWithIssues>
+  <RimMercenaries_Loadout_PresetLoadFailed>加载预设 '{0}' 失败：{1}</RimMercenaries_Loadout_PresetLoadFailed>
+  <RimMercenaries_Loadout_PresetNotFound>未找到预设</RimMercenaries_Loadout_PresetNotFound>
+  <RimMercenaries_Loadout_PresetIdRequired>需要预设ID</RimMercenaries_Loadout_PresetIdRequired>
+
+  <!-- Apparel Customization -->
+  <RimMercenaries_Customization_Title>定制：{0}</RimMercenaries_Customization_Title>
+  <RimMercenaries_Customization_Style>样式</RimMercenaries_Customization_Style>
+  <RimMercenaries_Customization_Material>材料</RimMercenaries_Customization_Material>
+  <RimMercenaries_Customization_Quality>质量</RimMercenaries_Customization_Quality>
+  <RimMercenaries_Customization_HitPoints>生命值</RimMercenaries_Customization_HitPoints>
+  <RimMercenaries_Customization_Color>颜色</RimMercenaries_Customization_Color>
+  <RimMercenaries_Customization_Add>添加</RimMercenaries_Customization_Add>
 
   <!-- Mercenary Status System -->
   <RimMercenaries_MercenaryBecameSettler>{0} 已被接纳为殖民地的真正成员！</RimMercenaries_MercenaryBecameSettler>
@@ -120,5 +163,16 @@
   <RimMercenaries_LoadingTime>已用时间：{0}秒</RimMercenaries_LoadingTime>
   <RimMercenaries_ForceRefresh>强制刷新</RimMercenaries_ForceRefresh>
   -->
+
+  <!-- Additional Loadout Dialog Strings -->
+  <RimMercenaries_DeletePresetConfirm>删除预设 '{0}'？</RimMercenaries_DeletePresetConfirm>
+  <RimMercenaries_Loadout_Filter_Ranged>远程</RimMercenaries_Loadout_Filter_Ranged>
+  <RimMercenaries_Loadout_Filter_Melee>近战</RimMercenaries_Loadout_Filter_Melee>
+  <RimMercenaries_Loadout_ClearWeapon>清除武器</RimMercenaries_Loadout_ClearWeapon>
+  <RimMercenaries_Loadout_ClearApparel>清除服装</RimMercenaries_Loadout_ClearApparel>
+  <RimMercenaries_Loadout_ApparelInvalid>服装项目无效</RimMercenaries_Loadout_ApparelInvalid>
+  <RimMercenaries_Loadout_Load>加载</RimMercenaries_Loadout_Load>
+  <RimMercenaries_Loadout_Del>删除</RimMercenaries_Loadout_Del>
+  <RimMercenaries_Loadout_DefaultMaterial>默认</RimMercenaries_Loadout_DefaultMaterial>
 
 </LanguageData> 

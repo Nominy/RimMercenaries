@@ -101,8 +101,51 @@
   <RimMercenaries_TraitsTier1Disallowed>ティア1特性の禁止:</RimMercenaries_TraitsTier1Disallowed>
   <RimMercenaries_TraitsTier3Disallowed>ティア3特性の禁止:</RimMercenaries_TraitsTier3Disallowed>
 
+  <!-- Dev Loadout Customization -->
+  <RimMercenaries_DevSection>開発者オプション:</RimMercenaries_DevSection>
+  <RimMercenaries_EnableLoadoutCustomization>装備カスタマイズダイアログを有効化</RimMercenaries_EnableLoadoutCustomization>
+  <RimMercenaries_LoadoutPerItemCost>装備 アイテムごとのコスト</RimMercenaries_LoadoutPerItemCost>
+
+  <!-- Loadout Settings -->
+  <RimMercenaries_LoadoutSettings>装備設定:</RimMercenaries_LoadoutSettings>
+  <RimMercenaries_UseActualItemPrices>実際のアイテム価格を使用（推奨）</RimMercenaries_UseActualItemPrices>
+
   <RimMercenaries_NoSafeDropLocationFound>傭兵の着陸に安全な場所が見つかりません。雇用をキャンセルしました。</RimMercenaries_NoSafeDropLocationFound>
   <RimMercenaries_HireBudgetReachedTier>これ以上ティア{0}の傭兵を雇うことはできません。残り：{1}</RimMercenaries_HireBudgetReachedTier>
+
+  <!-- Loadout Dialog -->
+  <RimMercenaries_Loadout_Title>装備をカスタマイズ</RimMercenaries_Loadout_Title>
+  <RimMercenaries_Loadout_Subtitle>{0} の武器と服装を選択</RimMercenaries_Loadout_Subtitle>
+  <RimMercenaries_Loadout_Weapon>武器</RimMercenaries_Loadout_Weapon>
+  <RimMercenaries_Loadout_Apparel>服装</RimMercenaries_Loadout_Apparel>
+  <RimMercenaries_Loadout_SelectedCount>選択済み：{0}</RimMercenaries_Loadout_SelectedCount>
+  <RimMercenaries_Loadout_BasePrice>基本価格</RimMercenaries_Loadout_BasePrice>
+  <RimMercenaries_Loadout_AdditionalCost>装備コスト</RimMercenaries_Loadout_AdditionalCost>
+  <RimMercenaries_Loadout_Total>合計</RimMercenaries_Loadout_Total>
+  <RimMercenaries_Loadout_Confirm>確認</RimMercenaries_Loadout_Confirm>
+  <RimMercenaries_Loadout_Cancel>キャンセル</RimMercenaries_Loadout_Cancel>
+  <RimMercenaries_Loadout_Customize>カスタマイズ</RimMercenaries_Loadout_Customize>
+  <RimMercenaries_Loadout_NotEnoughSilver>合計コスト {0} シルバー不足。</RimMercenaries_Loadout_NotEnoughSilver>
+  <RimMercenaries_Loadout_Filter_Search>検索</RimMercenaries_Loadout_Filter_Search>
+  <RimMercenaries_Loadout_PresetId>プリセットID</RimMercenaries_Loadout_PresetId>
+  <RimMercenaries_Loadout_SavePreset>保存</RimMercenaries_Loadout_SavePreset>
+  <RimMercenaries_Loadout_LoadPreset>読み込み</RimMercenaries_Loadout_LoadPreset>
+  <RimMercenaries_Loadout_NoPresets>保存されたプリセットなし</RimMercenaries_Loadout_NoPresets>
+  <RimMercenaries_Loadout_PresetSaved>プリセット保存済み：{0}</RimMercenaries_Loadout_PresetSaved>
+  <RimMercenaries_Loadout_PresetLoadedOk>プリセット '{0}' を読み込みました。適用されたアイテム：{1}</RimMercenaries_Loadout_PresetLoadedOk>
+  <RimMercenaries_Loadout_PresetLoadedWithIssues>プリセット '{0}' を読み込みましたが問題があります。{1}/{2} 個のアイテムを適用：\n{3}</RimMercenaries_Loadout_PresetLoadedWithIssues>
+  <RimMercenaries_Loadout_PresetLoadFailed>プリセット '{0}' の読み込みに失敗：{1}</RimMercenaries_Loadout_PresetLoadFailed>
+  <RimMercenaries_Loadout_PresetNotFound>プリセットが見つかりません</RimMercenaries_Loadout_PresetNotFound>
+  <RimMercenaries_Loadout_PresetIdRequired>プリセットIDが必要です</RimMercenaries_Loadout_PresetIdRequired>
+
+  <!-- Apparel Customization -->
+  <RimMercenaries_Customization_Title>カスタマイズ：{0}</RimMercenaries_Customization_Title>
+  <RimMercenaries_Customization_Style>スタイル</RimMercenaries_Customization_Style>
+  <RimMercenaries_Customization_Material>素材</RimMercenaries_Customization_Material>
+  <RimMercenaries_Customization_Quality>品質</RimMercenaries_Customization_Quality>
+  <RimMercenaries_Customization_HitPoints>耐久値</RimMercenaries_Customization_HitPoints>
+  <RimMercenaries_Customization_Color>色</RimMercenaries_Customization_Color>
+  <RimMercenaries_Customization_Add>追加</RimMercenaries_Customization_Add>
 
   <!-- Mercenary Status System -->
   <RimMercenaries_MercenaryBecameSettler>{0} は入植地の真のメンバーとして受け入れられました！</RimMercenaries_MercenaryBecameSettler>
@@ -120,5 +163,16 @@
   <RimMercenaries_LoadingTime>経過時間：{0}秒</RimMercenaries_LoadingTime>
   <RimMercenaries_ForceRefresh>強制更新</RimMercenaries_ForceRefresh>
   -->
+
+  <!-- Additional Loadout Dialog Strings -->
+  <RimMercenaries_DeletePresetConfirm>プリセット '{0}' を削除しますか？</RimMercenaries_DeletePresetConfirm>
+  <RimMercenaries_Loadout_Filter_Ranged>遠距離</RimMercenaries_Loadout_Filter_Ranged>
+  <RimMercenaries_Loadout_Filter_Melee>近接</RimMercenaries_Loadout_Filter_Melee>
+  <RimMercenaries_Loadout_ClearWeapon>武器をクリア</RimMercenaries_Loadout_ClearWeapon>
+  <RimMercenaries_Loadout_ClearApparel>装備をクリア</RimMercenaries_Loadout_ClearApparel>
+  <RimMercenaries_Loadout_ApparelInvalid>装備エントリが無効です</RimMercenaries_Loadout_ApparelInvalid>
+  <RimMercenaries_Loadout_Load>ロード</RimMercenaries_Loadout_Load>
+  <RimMercenaries_Loadout_Del>削除</RimMercenaries_Loadout_Del>
+  <RimMercenaries_Loadout_DefaultMaterial>デフォルト</RimMercenaries_Loadout_DefaultMaterial>
 
 </LanguageData> 

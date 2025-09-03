@@ -9,6 +9,89 @@ using Verse.AI;
 
 namespace RimMercenaries
 {
+    /// <summary>
+    /// Global theme provider for consistent theming across all mod windows
+    /// </summary>
+    public static class ThemeProvider
+    {
+        // --- Theme Colors ---
+        private static readonly Color DefaultBgColor = new Color(0.15f, 0.15f, 0.15f, 0.8f);
+        private static readonly Color DeepPurple = new Color(0.3f, 0.1f, 0.5f, 0.8f);
+        private static readonly Color DeepBlue = new Color(0.1f, 0.2f, 0.5f, 0.8f);
+        private static readonly Color DeepGreen = new Color(0.1f, 0.4f, 0.2f, 0.8f);
+        private static readonly Color DeepYellow = new Color(0.5f, 0.4f, 0.1f, 0.8f);
+
+        private static readonly List<(string translationKey, Color color)> themes = new List<(string, Color)>()
+        {
+            ("RimMercenaries_ThemeDefault", DefaultBgColor),
+            ("RimMercenaries_ThemeDeepPurple", DeepPurple),
+            ("RimMercenaries_ThemeDeepBlue", DeepBlue),
+            ("RimMercenaries_ThemeDeepGreen", DeepGreen),
+            ("RimMercenaries_ThemeDeepYellow", DeepYellow)
+        };
+
+        private static int selectedThemeIndex = 0;
+
+        /// <summary>
+        /// Blends two colors together with the specified ratio
+        /// </summary>
+        public static Color BlendColor(Color a, Color b, float t)
+        {
+            return new Color(
+                Mathf.Lerp(a.r, b.r, t),
+                Mathf.Lerp(a.g, b.g, t),
+                Mathf.Lerp(a.b, b.b, t),
+                Mathf.Lerp(a.a, b.a, t));
+        }
+
+        /// <summary>
+        /// Gets the currently selected theme color
+        /// </summary>
+        public static Color CurrentThemeColor => themes[selectedThemeIndex].color;
+
+        /// <summary>
+        /// Gets the translation key for the currently selected theme
+        /// </summary>
+        public static string CurrentThemeTranslationKey => themes[selectedThemeIndex].translationKey;
+
+        /// <summary>
+        /// Gets all available themes
+        /// </summary>
+        public static List<(string translationKey, Color color)> Themes => themes;
+
+        /// <summary>
+        /// Gets the currently selected theme index
+        /// </summary>
+        public static int SelectedThemeIndex => selectedThemeIndex;
+
+        /// <summary>
+        /// Cycles to the next theme and returns the new theme info
+        /// </summary>
+        public static (string translationKey, Color color) CycleTheme()
+        {
+            selectedThemeIndex = (selectedThemeIndex + 1) % themes.Count;
+            return themes[selectedThemeIndex];
+        }
+
+        /// <summary>
+        /// Gets a themed background color for the main window content
+        /// </summary>
+        public static Color GetWindowBackgroundColor()
+        {
+            Color vanillaBg = new Color(0.13f, 0.13f, 0.13f, 0.92f);
+            return BlendColor(vanillaBg, CurrentThemeColor, 0.22f);
+        }
+
+        /// <summary>
+        /// Gets a themed color for window sections/cells
+        /// </summary>
+        public static Color GetSectionBackgroundColor()
+        {
+            Color vanillaCellBg = new Color(0.18f, 0.18f, 0.18f, 0.92f);
+            return BlendColor(vanillaCellBg, CurrentThemeColor, 0.28f);
+        }
+    }
+
     [StaticConstructorOnStartup]
     public static class RimMercenaries
     {

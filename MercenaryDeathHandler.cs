@@ -73,14 +73,56 @@ namespace RimMercenaries
 
         public static void Postfix(
             Pawn victim,
-            List<IndividualThoughtToAdd> outIndividualThoughts)
+            List<IndividualThoughtToAdd> outIndividualThoughts,
+            List<ThoughtToAddToAll> outAllColonistsThoughts)
         {
             if (Merc == null) return;
             if (victim?.health?.hediffSet?.HasHediff(Merc) != true) return;
 
+            // Remove ally/colonist death witness thoughts for mercs
             outIndividualThoughts.RemoveAll(t =>
                 t.thought.def == ThoughtDefOf.WitnessedDeathAlly ||
                 t.thought.def == ThoughtDefOf.KnowColonistDied);
+
+            // Replace ColonistLost broadcast with MercenaryLost when victim is a merc
+            if (outAllColonistsThoughts != null && outAllColonistsThoughts.Count > 0)
+            {
+                int idx = -1;
+                for (int i = 0; i < outAllColonistsThoughts.Count; i++)
+                {
+                    if (outAllColonistsThoughts[i].thoughtDef == ThoughtDefOf.ColonistLost)
+                    {
+                        idx = i;
+                        break;
+                    }
+                }
+                if (idx >= 0)
+                {
+                    outAllColonistsThoughts.RemoveAt(idx);
+                    var mercLost = DefDatabase<ThoughtDef>.GetNamedSilentFail("RimMercenaries_MercenaryLost");
+                    if (mercLost != null)
+                    {
+                        outAllColonistsThoughts.Add(new ThoughtToAddToAll(mercLost, victim));
+                    }
+                }
+            }
+        }
+    }
+
+    // When the game removes lost thoughts, also remove MercenaryLost
+    [HarmonyPatch(typeof(PawnDiedOrDownedThoughtsUtility), "RemoveLostThoughts")]
+    static class Patch_RemoveLostThoughts
+    {
+        public static void Postfix(Pawn pawn)
+        {
+            var mercLost = DefDatabase<ThoughtDef>.GetNamedSilentFail("RimMercenaries_MercenaryLost");
+            if (mercLost == null) return;
+
+            foreach (var p in PawnsFinder.AllMapsWorldAndTemporary_Alive)
+            {
+                if (p?.needs?.mood == null || p == pawn) continue;
+                p.needs.mood.thoughts.memories.RemoveMemoriesOfDefWhereOtherPawnIs(mercLost, pawn);
+            }
         }
     }
 

@@ -17,32 +17,10 @@ namespace RimMercenaries
         private Vector2 scrollPosition = Vector2.zero;
         private List<MercenaryOffer> currentOffers;
         private Pawn hoveredPawnForSkills = null;
+        private readonly Dictionary<MercenaryOffer, MercenaryLoadoutSelection> savedSelections = new Dictionary<MercenaryOffer, MercenaryLoadoutSelection>();
+        private readonly Dictionary<MercenaryOffer, int> savedFinalPrices = new Dictionary<MercenaryOffer, int>();
 
-        // --- Theme Colors ---
-        private static readonly Color DefaultBgColor = new Color(0.15f, 0.15f, 0.15f, 0.8f);
-        private static readonly Color DeepPurple = new Color(0.3f, 0.1f, 0.5f, 0.8f); 
-        private static readonly Color DeepBlue = new Color(0.1f, 0.2f, 0.5f, 0.8f);  
-        private static readonly Color DeepGreen = new Color(0.1f, 0.4f, 0.2f, 0.8f); 
-        private static readonly Color DeepYellow = new Color(0.5f, 0.4f, 0.1f, 0.8f); 
 
-        private static readonly List<(string translationKey, Color color)> themes = new List<(string, Color)>()
-        {
-            ("RimMercenaries_ThemeDefault", DefaultBgColor),
-            ("RimMercenaries_ThemeDeepPurple", DeepPurple),
-            ("RimMercenaries_ThemeDeepBlue", DeepBlue),
-            ("RimMercenaries_ThemeDeepGreen", DeepGreen),
-            ("RimMercenaries_ThemeDeepYellow", DeepYellow)
-        };
-        private static int selectedThemeIndex = 0;
-
-        private static Color BlendColor(Color a, Color b, float t)
-        {
-            return new Color(
-                Mathf.Lerp(a.r, b.r, t),
-                Mathf.Lerp(a.g, b.g, t),
-                Mathf.Lerp(a.b, b.b, t),
-                Mathf.Lerp(a.a, b.a, t));
-        }
 
         // --- Layout Constants ---
         private const float DropdownWidth = 150f;
@@ -50,6 +28,7 @@ namespace RimMercenaries
         private new const float Margin = 10f;
         private const float PortraitSize = 60f;
         private const float HireButtonWidth = 100f;
+        private const float CustomizeButtonWidth = 110f;
         private const float ScrollBarWidth = 16f;
 
         private const float SkillRowHeight = 27f;
@@ -70,6 +49,20 @@ namespace RimMercenaries
             this.resizeable = true;
             this.windowRect = new Rect(0, 0, 1150f, 750f);
             RefreshOfferList();
+            // Restore any session-saved selections from the game component
+            var comp = Current.Game?.GetComponent<MercenaryGameComponent>();
+            if (comp != null && currentOffers != null)
+            {
+                foreach (var offer in currentOffers)
+                {
+                    var sel = comp.GetSavedSelection(offer?.pawn?.thingIDNumber ?? 0);
+                    if (sel != null)
+                    {
+                        savedSelections[offer] = sel;
+                        savedFinalPrices[offer] = offer.price + sel.CalculateAdditionalCost();
+                    }
+                }
+            }
         }
 
         private void RefreshOfferList()
@@ -95,9 +88,7 @@ namespace RimMercenaries
 
         public override void DoWindowContents(Rect inRect)
         {
-            Color vanillaBg = new Color(0.13f, 0.13f, 0.13f, 0.92f);
-            Color themeColor = themes[selectedThemeIndex].color;
-            Color stainedBg = BlendColor(vanillaBg, themeColor, 0.22f);
+            Color stainedBg = ThemeProvider.GetWindowBackgroundColor();
             Widgets.DrawBoxSolid(inRect, stainedBg);
 
             if (Current.Game != null && Prefs.DevMode)
@@ -272,7 +263,7 @@ namespace RimMercenaries
             var refreshHeight = Text.CalcHeight(refreshText, 200f);
             var tierCountText = $"Tier 1: 10/10   Tier 2: 5/5   Tier 3: 2/2";
             var tierHeight = Text.CalcHeight(tierCountText, 400f);
-            var themeButtonHeight = Text.CalcHeight("RimMercenaries_Theme".Translate() + themes[selectedThemeIndex].translationKey.Translate(), 150f) + 8f;
+            var themeButtonHeight = Text.CalcHeight("RimMercenaries_Theme".Translate() + ThemeProvider.CurrentThemeTranslationKey.Translate(), 150f) + 8f;
             var xenotypeLabelHeight = ModsConfig.BiotechActive ? Text.CalcHeight("RimMercenaries_FilterXenotype".Translate(), 120f) : 0f;
             var dropdownButtonHeight = ModsConfig.BiotechActive ? Text.CalcHeight("RimMercenaries_XenotypeAny".Translate(), DropdownWidth) + 8f : 0f;
 
@@ -309,12 +300,12 @@ namespace RimMercenaries
             currentX += tierCountRect.width + Margin;
 
             var themeButtonW = 150f;
-            var themeButtonText = "RimMercenaries_Theme".Translate() + themes[selectedThemeIndex].translationKey.Translate();
+            var themeButtonText = "RimMercenaries_Theme".Translate() + ThemeProvider.CurrentThemeTranslationKey.Translate();
             var themeButtonH = Text.CalcHeight(themeButtonText, themeButtonW) + 8f;
             var themeButtonRect = new Rect(currentX, controlsRect.y + (controlsRect.height - themeButtonH) / 2, themeButtonW, themeButtonH);
             if (Widgets.ButtonText(themeButtonRect, themeButtonText))
             {
-                selectedThemeIndex = (selectedThemeIndex + 1) % themes.Count;
+                ThemeProvider.CycleTheme();
                 SoundDefOf.Tick_High.PlayOneShotOnCamera();
             }
             currentX += themeButtonRect.width + Margin;
@@ -391,7 +382,8 @@ namespace RimMercenaries
         {
             if (offer?.pawn == null) return 0f;
             float internalMargin = Margin / 2f;
-            float infoWidth = availableWidth - PortraitSize - internalMargin * 2 - HireButtonWidth - internalMargin;
+            // Account for both buttons stacked horizontally plus margins
+            float infoWidth = availableWidth - PortraitSize - internalMargin * 3 - Mathf.Max(HireButtonWidth, CustomizeButtonWidth);
             float currentY = internalMargin;
             Text.Font = GameFont.Medium;
             currentY += Text.CalcHeight(offer.pawn.LabelShortCap, infoWidth);
@@ -416,27 +408,32 @@ namespace RimMercenaries
                                         .Replace("[3]", meleePenaltyString);
             currentY += Text.CalcHeight(skillsStr, infoWidth);
             currentY += 2f;
-            string priceStr = "RimMercenaries_Price".Translate(offer.price.ToString("N0"));
+            int displayPrice = offer.price;
+            if (savedSelections.TryGetValue(offer, out var selTmp))
+            {
+                displayPrice = offer.price + (selTmp?.CalculateAdditionalCost() ?? 0);
+            }
+            string priceStr = "RimMercenaries_Price".Translate(displayPrice.ToString("N0"));
             currentY += Text.CalcHeight(priceStr, infoWidth);
             currentY += internalMargin;
             float portraitAreaHeight = PortraitSize + internalMargin * 2;
-            return Mathf.Max(portraitAreaHeight, currentY);
+            // Account for two buttons stacked vertically (hire button + customize button + spacing)
+            float buttonAreaHeight = (30f * 2) + 4f + internalMargin * 2;
+            return Mathf.Max(portraitAreaHeight, currentY, buttonAreaHeight);
         }
 
         private void DrawOfferCell(Rect cellRect, MercenaryOffer offer, Pawn negotiator, List<MercenaryOffer> toRemove, float colWidth)
         {
             if (offer?.pawn == null) return;
 
-            Color vanillaCellBg = new Color(0.18f, 0.18f, 0.18f, 0.92f);
-            Color themeColor = themes[selectedThemeIndex].color;
-            Color stainedCellColor = BlendColor(vanillaCellBg, themeColor, 0.28f);
-
+            Color stainedCellColor = ThemeProvider.GetSectionBackgroundColor();
             Widgets.DrawBoxSolid(cellRect, stainedCellColor);
             Widgets.DrawBox(cellRect);
 
             float internalMargin = Margin / 2f;
 
-            float infoWidth = cellRect.width - PortraitSize - internalMargin * 2 - HireButtonWidth - internalMargin;
+            // Account for both buttons stacked horizontally plus margins
+            float infoWidth = cellRect.width - PortraitSize - internalMargin * 3 - Mathf.Max(HireButtonWidth, CustomizeButtonWidth);
             float textBlockHeight = 0f;
             Text.Font = GameFont.Medium;
             float nameHeight = Text.CalcHeight(offer.pawn.LabelShortCap, infoWidth);
@@ -465,7 +462,12 @@ namespace RimMercenaries
             float skillsHeight = Text.CalcHeight(skillsStr, infoWidth);
             textBlockHeight += skillsHeight;
             textBlockHeight += 2f;
-            string priceStr = "RimMercenaries_Price".Translate(offer.price.ToString("N0"));
+            int displayPrice = offer.price;
+            if (savedSelections.TryGetValue(offer, out var selTmp))
+            {
+                displayPrice = offer.price + (selTmp?.CalculateAdditionalCost() ?? 0);
+            }
+            string priceStr = "RimMercenaries_Price".Translate(displayPrice.ToString("N0"));
             float priceHeight = Text.CalcHeight(priceStr, infoWidth);
             textBlockHeight += priceHeight;
 
@@ -507,7 +509,6 @@ namespace RimMercenaries
 
             float buttonHeight = 30f;
             float buttonY = cellRect.y + contentYOffset + (contentHeight - buttonHeight) / 2f;
-            Rect hireButtonRect = new Rect(cellRect.xMax - HireButtonWidth - internalMargin, buttonY, HireButtonWidth, buttonHeight);
             int tier = 1;
             if (offer.buildType != null)
             {
@@ -521,16 +522,70 @@ namespace RimMercenaries
                 }
             }
             bool canHire = GetRemainingTierCount(tier) > 0;
+
+            Rect hireButtonRect;
+            // Only show customize button if loadout customization is enabled
+            if (RimMercenariesMod.ActiveSettings.enableDevLoadoutCustomization)
+            {
+                // Place customize button below hire button with proper alignment
+                Rect customizeButtonRect = new Rect(cellRect.xMax - CustomizeButtonWidth - internalMargin, buttonY + buttonHeight + 4f, CustomizeButtonWidth, buttonHeight);
+                hireButtonRect = new Rect(customizeButtonRect.xMax - HireButtonWidth - internalMargin, buttonY, HireButtonWidth, buttonHeight);
+
+                // Customize button - only shown when enabled
+                if (Widgets.ButtonText(customizeButtonRect, "RimMercenaries_Loadout_Customize".Translate()))
+                {
+                    savedSelections.TryGetValue(offer, out var existingSel);
+                    var dlg = new Dialog_MercenaryLoadout(commsConsole.Map, commsConsole.InteractionCell, negotiator, offer, commsConsole, existingSel);
+                    dlg.onConfirm = (sel, finalPrice) =>
+                    {
+                        if (sel != null)
+                        {
+                            savedSelections[offer] = sel.Clone();
+                            savedFinalPrices[offer] = finalPrice;
+                            // Persist selection in session via game component (survives reopen)
+                            var comp = Current.Game?.GetComponent<MercenaryGameComponent>();
+                            comp?.SetSavedSelection(offer.pawn.thingIDNumber, sel);
+                        }
+                    };
+                    Find.WindowStack.Add(dlg);
+                }
+            }
+            else
+            {
+                // No customize button, hire button takes full width
+                hireButtonRect = new Rect(cellRect.xMax - HireButtonWidth - internalMargin, buttonY, HireButtonWidth, buttonHeight);
+            }
             if (!canHire) GUI.color = Color.gray;
             if (Widgets.ButtonText(hireButtonRect, "RimMercenaries_HireButton".Translate()))
             {
-                if (canHire && TryHireMercenary(negotiator, offer))
+                if (!canHire)
                 {
-                    toRemove.Add(offer);
+                    SoundDefOf.ClickReject.PlayOneShotOnCamera();
                 }
                 else
                 {
-                    SoundDefOf.ClickReject.PlayOneShotOnCamera();
+                    // Use saved selection if available; otherwise base hire
+                    MercenaryLoadoutSelection selToHire = null;
+                    int finalPrice = offer.price;
+                    if (savedSelections.TryGetValue(offer, out var savedSel))
+                    {
+                        selToHire = savedSel;
+                        finalPrice = offer.price + savedSel.CalculateAdditionalCost();
+                    }
+
+                    if (MercenaryManager.TryHireMercenary(commsConsole.Map, commsConsole.InteractionCell, negotiator, offer, commsConsole, selToHire, finalPrice))
+                    {
+                        toRemove.Add(offer);
+                        savedSelections.Remove(offer);
+                        savedFinalPrices.Remove(offer);
+                        // Clear persisted selection once hired
+                        var comp = Current.Game?.GetComponent<MercenaryGameComponent>();
+                        comp?.RemoveSavedSelection(offer.pawn.thingIDNumber);
+                    }
+                    else
+                    {
+                        SoundDefOf.ClickReject.PlayOneShotOnCamera();
+                    }
                 }
             }
             GUI.color = Color.white;

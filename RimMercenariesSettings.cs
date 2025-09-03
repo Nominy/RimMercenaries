@@ -21,6 +21,13 @@ namespace RimMercenaries
         public bool mercenaryConversionEnabled = true;
         public bool mercenaryTraitsBuiltinRandom = false;
 
+        // Dev-only: enable customization dialog and per-item cost for gear picks
+        public bool enableDevLoadoutCustomization = false;
+        public int loadoutPerItemCost = 200;
+
+        // Use actual item prices instead of fixed cost per item (default: true)
+        public bool useActualItemPrices = true;
+
         public override void ExposeData()
         {
             Scribe_Collections.Look(ref disabledTraits, "disabledTraits", LookMode.Value);
@@ -38,6 +45,9 @@ namespace RimMercenaries
             Scribe_Values.Look(ref mercenaryConversionChance, "mercenaryConversionChance", 0.02f);
             Scribe_Values.Look(ref mercenaryConversionEnabled, "mercenaryConversionEnabled", true);
             Scribe_Values.Look(ref mercenaryTraitsBuiltinRandom, "mercenaryTraitsBuiltinRandom", false);
+            Scribe_Values.Look(ref enableDevLoadoutCustomization, "enableDevLoadoutCustomization", false);
+            Scribe_Values.Look(ref loadoutPerItemCost, "loadoutPerItemCost", 200);
+            Scribe_Values.Look(ref useActualItemPrices, "useActualItemPrices", true);
         }
 
         public RimMercenariesSettings Clone()
@@ -58,6 +68,9 @@ namespace RimMercenaries
             s.mercenaryConversionChance = mercenaryConversionChance;
             s.mercenaryConversionEnabled = mercenaryConversionEnabled;
             s.mercenaryTraitsBuiltinRandom = mercenaryTraitsBuiltinRandom;
+            s.enableDevLoadoutCustomization = enableDevLoadoutCustomization;
+            s.loadoutPerItemCost = loadoutPerItemCost;
+            s.useActualItemPrices = useActualItemPrices;
             return s;
         }
 
@@ -76,6 +89,10 @@ namespace RimMercenaries
             tier1Price = o.tier1Price;
             tier2Price = o.tier2Price;
             tier3Price = o.tier3Price;
+
+            enableDevLoadoutCustomization = o.enableDevLoadoutCustomization;
+            loadoutPerItemCost = o.loadoutPerItemCost;
+            useActualItemPrices = o.useActualItemPrices;
 
             disabledTraits.Clear();
             disabledTraits.AddRange(o.disabledTraits);
@@ -130,6 +147,9 @@ namespace RimMercenaries
             mercenaryConversionChance = 0.02f;
             mercenaryConversionEnabled = true;
             mercenaryTraitsBuiltinRandom = false;
+            enableDevLoadoutCustomization = false;
+            loadoutPerItemCost = 200;
+            useActualItemPrices = true;
         }
     }
 }
