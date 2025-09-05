@@ -408,6 +408,31 @@ namespace RimMercenaries
             offer.pawn.SetFaction(Faction.OfPlayer);
             offer.pawn.relations?.Notify_ChangedFaction();
 
+            // Force currently worn apparel so outfit filters don't make them strip on spawn
+            try
+            {
+                if (offer.pawn.outfits == null)
+                {
+                    offer.pawn.outfits = new Pawn_OutfitTracker(offer.pawn);
+                }
+                var forced = offer.pawn.outfits?.forcedHandler;
+                var worn = offer.pawn.apparel?.WornApparel;
+                if (forced != null && worn != null)
+                {
+                    foreach (var ap in worn.ToList())
+                    {
+                        if (ap != null && !ap.Destroyed)
+                        {
+                            forced.SetForced(ap, true);
+                        }
+                    }
+                }
+            }
+            catch (System.Exception ex)
+            {
+                Log.Warning($"[RimMercenaries] Failed to force merc apparel for {offer.pawn.LabelShortCap}: {ex.Message}");
+            }
+
             // Apply mercenary status hediff to track their status and mood
             var mercenaryStatusDef = DefDatabase<HediffDef>.GetNamed("RimMercenaries_MercenaryStatus");
             if (mercenaryStatusDef != null && offer.pawn.health?.hediffSet != null)
@@ -522,6 +547,12 @@ namespace RimMercenaries
                     }
                 }
 
+                // Ensure outfit tracker exists so we can mark forced apparel below
+                if (pawn.outfits == null)
+                {
+                    pawn.outfits = new Pawn_OutfitTracker(pawn);
+                }
+
                 if (loadout.selectedWeaponDef != null && IsResearchedOrNoPrereq(loadout.selectedWeaponDef))
                 {
                     ThingDef stuff = GenStuff.DefaultStuffFor(loadout.selectedWeaponDef);
@@ -570,6 +601,8 @@ namespace RimMercenaries
                             if (CanWearOnTopWithoutConflicts(pawn, apparel))
                             {
                                 pawn.apparel.Wear(apparel, false);
+                                // Mark as forced so outfit filters don't immediately strip it
+                                try { pawn.outfits?.forcedHandler?.SetForced(apparel, true); } catch { }
                             }
                             else
                             {
