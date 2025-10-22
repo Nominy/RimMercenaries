@@ -19,26 +19,24 @@ namespace RimMercenaries
             this.FailOnDespawnedNullOrForbidden(TargetIndex.A);
             this.FailOn(() => !Console.CanUseCommsNow);
             
-            // Go to the console
             yield return Toils_Goto.GotoThing(TargetIndex.A, PathEndMode.InteractionCell);
-            
-            // Use the console
-            Toil useConsole = new Toil();
-            useConsole.initAction = () =>
-            {
-                // Check if console has power
-                var powerComp = Console.GetComp<CompPowerTrader>();
-                if (powerComp != null && !powerComp.PowerOn)
-                {
-                    Messages.Message("RimMercenaries_NoPower".Translate(), Console, MessageTypeDefOf.RejectInput, false);
-                    EndJobWith(JobCondition.Incompletable);
-                    return;
-                }
 
-                // Open the mercenary hire window with this pawn as negotiator
-                RimMercenaries.OpenMercenaryHireWindow(Console, pawn);
+            var useConsole = new Toil
+            {
+                initAction = () =>
+                {
+                    var powerComp = Console.GetComp<CompPowerTrader>();
+                    if (powerComp != null && !powerComp.PowerOn)
+                    {
+                        Messages.Message("RimMercenaries_NoPower".Translate(), Console, MessageTypeDefOf.RejectInput, false);
+                        EndJobWith(JobCondition.Incompletable);
+                        return;
+                    }
+
+                    RimMercenaries.OpenMercenaryHireWindow(Console, pawn);
+                },
+                defaultCompleteMode = ToilCompleteMode.Instant
             };
-            useConsole.defaultCompleteMode = ToilCompleteMode.Instant;
             yield return useConsole;
         }
     }

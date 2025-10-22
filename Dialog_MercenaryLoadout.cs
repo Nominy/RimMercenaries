@@ -57,7 +57,7 @@ namespace RimMercenaries
 
 
 
-        public override Vector2 InitialSize => new Vector2(900f, 650f);
+        public override Vector2 InitialSize => new Vector2(1020f, 720f);
 
         public Dialog_MercenaryLoadout(Map map, IntVec3 dropCell, Pawn negotiator, MercenaryOffer offer, Building sourceBuilding, MercenaryLoadoutSelection prefilledSelection = null)
         {
@@ -428,7 +428,7 @@ namespace RimMercenaries
             // Reset tracking for the new preview items
             previewCreatedThings.Clear();
 
-            // Apply weapon
+                // Apply weapon
             if (selection.selectedWeaponDef != null)
             {
                 var stuff = GenStuff.DefaultStuffFor(selection.selectedWeaponDef);
@@ -439,6 +439,48 @@ namespace RimMercenaries
                     {
                         if (offer.pawn.equipment == null)
                             offer.pawn.equipment = new Pawn_EquipmentTracker(offer.pawn);
+                            // Apply preview weapon style if any
+                            try
+                            {
+                                if (selection.selectedWeaponStyle != null)
+                                {
+                                    var styleable = weapon.GetCompByReflectedType("RimWorld.CompStyleable");
+                                    if (styleable != null)
+                                    {
+                                        var setStyle = styleable.GetType().GetMethod("SetStyle", BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+                                        if (setStyle != null)
+                                        {
+                                            var pars = setStyle.GetParameters();
+                                            if (pars.Length >= 1)
+                                            {
+                                                var args = pars.Length == 2 ? new object[] { selection.selectedWeaponStyle, true } : new object[] { selection.selectedWeaponStyle };
+                                                setStyle.Invoke(styleable, args);
+                                            }
+                                        }
+                                        else
+                                        {
+                                            var setStyleDef = styleable.GetType().GetMethod("SetStyleDef", BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+                                            if (setStyleDef != null)
+                                            {
+                                                setStyleDef.Invoke(styleable, new object[] { selection.selectedWeaponStyle });
+                                            }
+                                            else
+                                            {
+                                                var prop = styleable.GetType().GetProperty("StyleDef", BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+                                                if (prop != null && prop.CanWrite) prop.SetValue(styleable, selection.selectedWeaponStyle);
+                                                else
+                                                {
+                                                    var field = styleable.GetType().GetField("styleDef", BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+                                                    if (field != null) field.SetValue(styleable, selection.selectedWeaponStyle);
+                                                }
+                                                var notify = styleable.GetType().GetMethod("Notify_StyleChanged", BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+                                                notify?.Invoke(styleable, null);
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                            catch { }
                         offer.pawn.equipment.AddEquipment(weapon);
                         previewCreatedThings.Add(weapon);
                     }
@@ -542,7 +584,6 @@ namespace RimMercenaries
             searchFilter = Widgets.TextField(searchRect, searchFilter ?? string.Empty);
 
 
-
             float listsTop = searchRect.yMax + margin;
 
             float leftPanelWidth = 260f;
@@ -579,9 +620,9 @@ namespace RimMercenaries
             Rect filtersRect = new Rect(rect.x + 6f, header.yMax + 2f, rect.width - 12f, 24f);
             float fx = filtersRect.x;
             bool ranged = filterRanged, melee = filterMelee;
-            Widgets.CheckboxLabeled(new Rect(fx, filtersRect.y, 120f, 24f), "Ranged", ref ranged);
+            Widgets.CheckboxLabeled(new Rect(fx, filtersRect.y, 120f, 24f), "RimMercenaries_Loadout_Filter_Ranged".Translate(), ref ranged);
             fx += 126f;
-            Widgets.CheckboxLabeled(new Rect(fx, filtersRect.y, 120f, 24f), "Melee", ref melee);
+            Widgets.CheckboxLabeled(new Rect(fx, filtersRect.y, 120f, 24f), "RimMercenaries_Loadout_Filter_Melee".Translate(), ref melee);
             filterRanged = ranged; filterMelee = melee;
 
             float listTop = filtersRect.yMax + 2f;
@@ -591,22 +632,34 @@ namespace RimMercenaries
             // Use cached filtered weapons
             var filteredWeapons = GetCachedFilteredWeapons();
             int displayableWeapons = filteredWeapons.Count;
-            Rect viewRect = new Rect(0f, 0f, outRect.width - 16f, Mathf.Max(displayableWeapons * 28f, outRect.height + 1f));
+            // Extra space if weapon customization is shown
+            float extraWeaponRows = (selection.selectedWeaponDef != null && showWeaponCustomization) ? CalculateWeaponCustomizationPanelHeight() : 0f;
+            Rect viewRect = new Rect(0f, 0f, outRect.width - 16f, Mathf.Max(displayableWeapons * 28f + extraWeaponRows, outRect.height + 1f));
             Widgets.BeginScrollView(outRect, ref weaponsScroll, viewRect);
             float y = 0f;
             foreach (var def in filteredWeapons)
             {
-                Rect row = new Rect(0f, y, viewRect.width, 26f);
                 bool isSelected = selection.selectedWeaponDef == def;
+                float baseRowHeight = 26f;
+                float customizationHeight = (isSelected && showWeaponCustomization) ? CalculateWeaponCustomizationPanelHeight() : 0f;
+                float rowHeight = baseRowHeight + customizationHeight;
+                Rect row = new Rect(0f, y, viewRect.width, baseRowHeight);
                 DrawWeaponRow(row, def, isSelected);
                 if (Widgets.ButtonInvisible(row))
                 {
                     selection.selectedWeaponDef = def;
+                    // Reset style when switching weapons
+                    selection.selectedWeaponStyle = null;
                     selectionHash = -1; // Force preview refresh
                     InvalidateApparelCaches(); // Weapon changes may affect apparel eligibility
                     InvalidateCostCache();
                 }
-                y += 28f;
+                if (isSelected)
+                {
+                    Rect custRect = new Rect(0f, y + baseRowHeight, viewRect.width, customizationHeight);
+                    DrawWeaponCustomization(custRect, def);
+                }
+                y += rowHeight + 2f;
             }
             Widgets.EndScrollView();
         }
@@ -660,6 +713,129 @@ namespace RimMercenaries
             Vector2 priceSize = Text.CalcSize(priceText);
             Rect priceRect = new Rect(row.xMax - priceSize.x - 6f, row.y, priceSize.x, row.height);
             Widgets.Label(priceRect, priceText);
+        }
+
+        private bool showWeaponCustomization = true;
+
+        private void DrawWeaponCustomization(Rect rect, ThingDef weaponDef)
+        {
+            if (weaponDef == null) return;
+            Color themedBg = ThemeProvider.GetSectionBackgroundColor();
+            Widgets.DrawBoxSolid(rect, themedBg);
+            Widgets.DrawBox(rect);
+
+            float margin = 6f;
+            float y = rect.y + margin;
+            float x = rect.x + margin;
+            float width = rect.width - margin * 2;
+
+            // Style row for weapon
+            // Discover possible styles for this weapon using the same logic as apparel
+            List<ThingStyleDef> possibleStyles = DiscoverStylesForThingDef(weaponDef);
+            Rect styleLabelRect = new Rect(x, y, 80f, 24f);
+            Widgets.Label(styleLabelRect, "RimMercenaries_Customization_Style".Translate() + ":");
+            Rect styleDropdownRect = new Rect(x + 85f, y, width - 85f, 24f);
+            int styleCount = possibleStyles?.Count ?? 0;
+            string styleText = selection.selectedWeaponStyle != null
+                ? GetStyleDisplayLabel(selection.selectedWeaponStyle)
+                : (styleCount == 0 ? "None (no styles)" : "None");
+            if (styleCount > 0)
+            {
+                if (Widgets.ButtonText(styleDropdownRect, styleText))
+                {
+                    var opts = new List<FloatMenuOption>();
+                    opts.Add(new FloatMenuOption("None", () => { selection.selectedWeaponStyle = null; selectionHash = -1; }));
+                    foreach (var s in possibleStyles.OrderBy(s => GetStyleDisplayLabel(s)))
+                    {
+                        var captured = s;
+                        opts.Add(new FloatMenuOption(GetStyleDisplayLabel(captured), () => { selection.selectedWeaponStyle = captured; selectionHash = -1; }));
+                    }
+                    Find.WindowStack.Add(new FloatMenu(opts));
+                }
+            }
+            else
+            {
+                var prev = GUI.color;
+                GUI.color = new Color(1f, 1f, 1f, 0.6f);
+                Widgets.Label(styleDropdownRect, styleText);
+                GUI.color = prev;
+            }
+        }
+
+        private float CalculateWeaponCustomizationPanelHeight()
+        {
+            float height = 0f;
+            height += 30f; // Style row
+            height += 6f; // bottom margin
+            return height;
+        }
+
+        private List<ThingStyleDef> DiscoverStylesForThingDef(ThingDef def)
+        {
+            var styles = new List<ThingStyleDef>();
+            try
+            {
+                // From ThingStyleDef hints
+                foreach (var s in DefDatabase<ThingStyleDef>.AllDefsListForReading)
+                {
+                    if (s == null) continue;
+                    bool applies = false;
+                    var t = s.GetType();
+                    var appliesTo = t.GetMethod("AppliesTo", BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+                    if (appliesTo != null)
+                    {
+                        var pars = appliesTo.GetParameters();
+                        if (pars.Length == 1 && typeof(Def).IsAssignableFrom(pars[0].ParameterType))
+                        {
+                            try { applies = (bool)appliesTo.Invoke(s, new object[] { def }); } catch { }
+                        }
+                    }
+                    if (!applies)
+                    {
+                        var fThingDef = t.GetField("thingDef", BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+                        var pThingDef = t.GetProperty("thingDef", BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+                        ThingDef td = null;
+                        if (fThingDef != null) td = fThingDef.GetValue(s) as ThingDef;
+                        else if (pThingDef != null) td = pThingDef.GetValue(s, null) as ThingDef;
+                        if (td != null && (td == def || string.Equals(td.defName, def.defName)))
+                        {
+                            applies = true;
+                        }
+                    }
+                    if (applies) styles.Add(s);
+                }
+            }
+            catch { }
+            try
+            {
+                // From StyleCategoryDef mappings
+                foreach (var cat in DefDatabase<StyleCategoryDef>.AllDefsListForReading)
+                {
+                    if (cat == null) continue;
+                    var tcat = cat.GetType();
+                    var field = tcat.GetField("thingDefStyles", BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+                    var prop = tcat.GetProperty("thingDefStyles", BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+                    System.Collections.IEnumerable entries = null;
+                    if (prop != null) { try { entries = prop.GetValue(cat) as System.Collections.IEnumerable; } catch { } }
+                    if (entries == null && field != null) { try { entries = field.GetValue(cat) as System.Collections.IEnumerable; } catch { } }
+                    if (entries == null) continue;
+                    foreach (var entry in entries)
+                    {
+                        if (entry == null) continue;
+                        var te = entry.GetType();
+                        ThingDef eThing = null; ThingStyleDef eStyle = null;
+                        var fThing = te.GetField("thingDef") ?? te.GetField("ThingDef");
+                        var pThing = te.GetProperty("thingDef") ?? te.GetProperty("ThingDef");
+                        var fStyle = te.GetField("styleDef") ?? te.GetField("StyleDef");
+                        var pStyle = te.GetProperty("styleDef") ?? te.GetProperty("StyleDef");
+                        try { if (fThing != null) eThing = fThing.GetValue(entry) as ThingDef; else if (pThing != null) eThing = pThing.GetValue(entry, null) as ThingDef; } catch { }
+                        try { if (fStyle != null) eStyle = fStyle.GetValue(entry) as ThingStyleDef; else if (pStyle != null) eStyle = pStyle.GetValue(entry, null) as ThingStyleDef; } catch { }
+                        if (eThing == def && eStyle != null) styles.Add(eStyle);
+                    }
+                }
+            }
+            catch { }
+            return styles.Distinct().ToList();
         }
 
         private bool ShouldShowWeapon(ThingDef def)
@@ -772,7 +948,8 @@ namespace RimMercenaries
                             if (def != null)
                             {
                                 expandedApparelDef = def;
-                                currentCustomization = new ApparelCustomizationData(def);
+                                // Seed customization with any previously saved customization
+                                currentCustomization = selection.GetApparelCustomization(def)?.Clone() ?? new ApparelCustomizationData(def);
                                 showCustomization = true;
                             }
                         }
@@ -847,7 +1024,185 @@ namespace RimMercenaries
             Widgets.Label(titleRect, "RimMercenaries_Customization_Title".Translate(apparelDef.LabelCap));
             y += 30f;
 
-            // Style selection is not available in this RimWorld version
+            // Style selection (Ideology)
+            try
+            {
+                // Determine available styles for this apparel by reflecting ThingStyleDef and StyleCategoryDef (thingDefStyles)
+                List<ThingStyleDef> possibleStyles = new List<ThingStyleDef>();
+                try
+                {
+                    var all = DefDatabase<ThingStyleDef>.AllDefsListForReading;
+                    foreach (var s in all)
+                    {
+                        if (s == null) continue;
+                        bool applies = false;
+                        var t = s.GetType();
+
+                        // Prefer an AppliesTo(Def) method if present
+                        var appliesTo = t.GetMethod("AppliesTo", BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+                        if (appliesTo != null)
+                        {
+                            var pars = appliesTo.GetParameters();
+                            if (pars.Length == 1 && typeof(Def).IsAssignableFrom(pars[0].ParameterType))
+                            {
+                                try { applies = (bool)appliesTo.Invoke(s, new object[] { apparelDef }); } catch { }
+                            }
+                        }
+
+                        // Fallbacks: properties/fields that reference applicable defs
+                        if (!applies)
+                        {
+                            // Direct field/property commonly named "thingDef"
+                            try
+                            {
+                                var fThingDef = t.GetField("thingDef", BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+                                var pThingDef = t.GetProperty("thingDef", BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+                                ThingDef td = null;
+                                if (fThingDef != null) td = fThingDef.GetValue(s) as ThingDef;
+                                else if (pThingDef != null) td = pThingDef.GetValue(s, null) as ThingDef;
+                                if (td != null && (td == apparelDef || string.Equals(td.defName, apparelDef.defName)))
+                                {
+                                    applies = true;
+                                }
+                            }
+                            catch { }
+                        }
+
+                        if (!applies)
+                        {
+                            var propSingle = t.GetProperty("appliesToDef", BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+                            if (propSingle != null)
+                            {
+                                try { applies = object.Equals(propSingle.GetValue(s), apparelDef); } catch { }
+                            }
+                        }
+
+                        if (!applies)
+                        {
+                            var fieldSingle = t.GetField("appliesToDef", BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+                            if (fieldSingle != null)
+                            {
+                                try { applies = object.Equals(fieldSingle.GetValue(s), apparelDef); } catch { }
+                            }
+                        }
+
+                        if (!applies)
+                        {
+                            var propList = t.GetProperty("appliesTo", BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+                            if (propList != null)
+                            {
+                                try
+                                {
+                                    var coll = propList.GetValue(s) as System.Collections.IEnumerable;
+                                    if (coll != null)
+                                    {
+                                        foreach (var item in coll) { if (object.Equals(item, apparelDef)) { applies = true; break; } }
+                                    }
+                                }
+                                catch { }
+                            }
+                        }
+
+                        if (!applies)
+                        {
+                            var fieldList = t.GetField("appliesTo", BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+                            if (fieldList != null)
+                            {
+                                try
+                                {
+                                    var coll = fieldList.GetValue(s) as System.Collections.IEnumerable;
+                                    if (coll != null)
+                                    {
+                                        foreach (var item in coll) { if (object.Equals(item, apparelDef)) { applies = true; break; } }
+                                    }
+                                }
+                                catch { }
+                            }
+                        }
+
+                        if (applies)
+                        {
+                            possibleStyles.Add(s);
+                        }
+                    }
+                    // Also scan StyleCategoryDef.thingDefStyles mappings
+                    try
+                    {
+                        var allCats = DefDatabase<StyleCategoryDef>.AllDefsListForReading;
+                        foreach (var cat in allCats)
+                        {
+                            if (cat == null) continue;
+                            var tcat = cat.GetType();
+                            var field = tcat.GetField("thingDefStyles", BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+                            var prop = tcat.GetProperty("thingDefStyles", BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+                            System.Collections.IEnumerable entries = null;
+                            if (prop != null) { try { entries = prop.GetValue(cat) as System.Collections.IEnumerable; } catch { } }
+                            if (entries == null && field != null) { try { entries = field.GetValue(cat) as System.Collections.IEnumerable; } catch { } }
+                            if (entries == null) continue;
+                            foreach (var entry in entries)
+                            {
+                                if (entry == null) continue;
+                                var te = entry.GetType();
+                                ThingDef eThing = null; ThingStyleDef eStyle = null;
+                                // Support both camelCase fields and PascalCase properties
+                                var fThing = te.GetField("thingDef") ?? te.GetField("ThingDef");
+                                var pThing = te.GetProperty("thingDef") ?? te.GetProperty("ThingDef");
+                                var fStyle = te.GetField("styleDef") ?? te.GetField("StyleDef");
+                                var pStyle = te.GetProperty("styleDef") ?? te.GetProperty("StyleDef");
+                                try {
+                                    if (fThing != null) eThing = fThing.GetValue(entry) as ThingDef;
+                                    else if (pThing != null) eThing = pThing.GetValue(entry, null) as ThingDef;
+                                } catch { }
+                                try {
+                                    if (fStyle != null) eStyle = fStyle.GetValue(entry) as ThingStyleDef;
+                                    else if (pStyle != null) eStyle = pStyle.GetValue(entry, null) as ThingStyleDef;
+                                } catch { }
+                                if (eThing == apparelDef && eStyle != null)
+                                {
+                                    possibleStyles.Add(eStyle);
+                                }
+                            }
+                        }
+                    }
+                    catch { }
+                }
+                catch { }
+
+                // Always show Style row; if no styles, show disabled/"None (no styles)" text
+                Rect styleLabelRect = new Rect(x, y, 80f, 24f);
+                Widgets.Label(styleLabelRect, "RimMercenaries_Customization_Style".Translate() + ":");
+
+                Rect styleDropdownRect = new Rect(x + 85f, y, width - 85f, 24f);
+                int styleCount = possibleStyles?.Count ?? 0;
+                string styleText = currentCustomization.styleDef != null
+                    ? GetStyleDisplayLabel(currentCustomization.styleDef)
+                    : (styleCount == 0 ? "None (no styles)" : "None");
+
+                if (styleCount > 0)
+                {
+                    if (Widgets.ButtonText(styleDropdownRect, styleText))
+                    {
+                        var opts = new List<FloatMenuOption>();
+                        opts.Add(new FloatMenuOption("None", () => currentCustomization.styleDef = null));
+                        foreach (var s in possibleStyles.OrderBy(s => GetStyleDisplayLabel(s)))
+                        {
+                            var captured = s;
+                            opts.Add(new FloatMenuOption(GetStyleDisplayLabel(captured), () => currentCustomization.styleDef = captured));
+                        }
+                        Find.WindowStack.Add(new FloatMenu(opts));
+                    }
+                }
+                else
+                {
+                    // Draw a disabled-looking label to indicate no styles exist
+                    var prev = GUI.color;
+                    GUI.color = new Color(1f, 1f, 1f, 0.6f);
+                    Widgets.Label(styleDropdownRect, styleText);
+                    GUI.color = prev;
+                }
+                y += 30f;
+            }
+            catch { }
 
             // Material selection
             Rect materialLabelRect = new Rect(x, y, 80f, 24f);
@@ -1216,6 +1571,7 @@ namespace RimMercenaries
             float height = margin;
 
             height += 30f; // Title row
+            height += 30f; // Style row
             height += 30f; // Material row (label + dropdown)
             height += 30f; // Quality row (label + dropdown)
             height += 30f; // Hit Points row (label + slider + value)
@@ -1227,6 +1583,37 @@ namespace RimMercenaries
 
             height += margin; // Bottom margin
             return height;
+        }
+
+        private static string GetStyleDisplayLabel(ThingStyleDef style)
+        {
+            try
+            {
+                if (style == null) return "(missing label)";
+                // Prefer explicit override label
+                if (!string.IsNullOrEmpty(style.overrideLabel))
+                {
+                    return style.overrideLabel.CapitalizeFirst();
+                }
+                // Then fallback to def label
+                if (!string.IsNullOrEmpty(style.label))
+                {
+                    return style.label.CapitalizeFirst();
+                }
+                // Then category label (e.g. Rustic, Morbid, Totemic)
+                var cat = style.Category; // property resolves category
+                if (cat != null && !string.IsNullOrEmpty(cat.label))
+                {
+                    return cat.label.CapitalizeFirst();
+                }
+                // Final fallback: defName
+                if (!string.IsNullOrEmpty(style.defName))
+                {
+                    return style.defName.Replace('_', ' ').CapitalizeFirst();
+                }
+            }
+            catch { }
+            return "(missing label)";
         }
 
         private void DrawPreview(Rect rect)
@@ -1311,14 +1698,14 @@ namespace RimMercenaries
             float btnW = (rect.width - 12f) / 2f - 4f;
             Rect clearWeapon = new Rect(rect.x + 6f, rect.yMax - 30f, btnW, 24f);
             Rect clearApparel = new Rect(clearWeapon.xMax + 8f, rect.yMax - 30f, btnW, 24f);
-            if (Widgets.ButtonText(clearWeapon, "Clear weapon"))
+            if (Widgets.ButtonText(clearWeapon, "RimMercenaries_Loadout_ClearWeapon".Translate()))
             {
                 selection.selectedWeaponDef = null;
                 selectionHash = -1;
                 InvalidateApparelCaches();
                 InvalidateCostCache();
             }
-            if (Widgets.ButtonText(clearApparel, "Clear apparel"))
+            if (Widgets.ButtonText(clearApparel, "RimMercenaries_Loadout_ClearApparel".Translate()))
             {
                 selection.selectedApparelDefs.Clear();
                 selectionHash = -1;
@@ -1330,11 +1717,11 @@ namespace RimMercenaries
             float presetBtnWidth = (rect.width - 12f - 4f) / 2f; // Divide space for 2 buttons
             Rect savePreset = new Rect(rect.x + 6f, rect.yMax - 56f, presetBtnWidth, 24f);
             Rect loadPreset = new Rect(savePreset.xMax + 4f, rect.yMax - 56f, presetBtnWidth, 24f);
-            if (Widgets.ButtonText(savePreset, "Save Preset"))
+            if (Widgets.ButtonText(savePreset, "RimMercenaries_Loadout_SavePreset".Translate()))
             {
                 Find.WindowStack.Add(new Dialog_SavePreset(selection));
             }
-            if (Widgets.ButtonText(loadPreset, "Load Preset"))
+            if (Widgets.ButtonText(loadPreset, "RimMercenaries_Loadout_LoadPreset".Translate()))
             {
                 Find.WindowStack.Add(new Dialog_LoadPreset(this));
             }
@@ -1634,6 +2021,16 @@ namespace RimMercenaries
                         color = new Color(ap.colorR, ap.colorG, ap.colorB, ap.colorA == 0 ? 1f : ap.colorA),
                         useCustomColor = ap.useCustomColor
                     };
+
+                    // Load style if present
+                    try
+                    {
+                        if (!string.IsNullOrEmpty(ap.styleDefName))
+                        {
+                            cust.styleDef = DefDatabase<ThingStyleDef>.GetNamed(ap.styleDefName, false);
+                        }
+                    }
+                    catch { }
 
                     // Backward compatibility: if preset has a stored color that differs from the apparel's base color,
                     // but useCustomColor wasn't saved (older presets), treat it as a custom color.

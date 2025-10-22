@@ -565,6 +565,48 @@ namespace RimMercenaries
                             {
                                 pawn.equipment = new Pawn_EquipmentTracker(pawn);
                             }
+                            // Apply weapon style if chosen
+                            try
+                            {
+                                if (loadout.selectedWeaponStyle != null)
+                                {
+                                    var styleable = weapon.GetCompByReflectedType("RimWorld.CompStyleable");
+                                    if (styleable != null)
+                                    {
+                                        var setStyle = styleable.GetType().GetMethod("SetStyle", BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+                                        if (setStyle != null)
+                                        {
+                                            var pars = setStyle.GetParameters();
+                                            if (pars.Length >= 1)
+                                            {
+                                                var args = pars.Length == 2 ? new object[] { loadout.selectedWeaponStyle, true } : new object[] { loadout.selectedWeaponStyle };
+                                                setStyle.Invoke(styleable, args);
+                                            }
+                                        }
+                                        else
+                                        {
+                                            var setStyleDef = styleable.GetType().GetMethod("SetStyleDef", BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+                                            if (setStyleDef != null)
+                                            {
+                                                setStyleDef.Invoke(styleable, new object[] { loadout.selectedWeaponStyle });
+                                            }
+                                            else
+                                            {
+                                                var prop = styleable.GetType().GetProperty("StyleDef", BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+                                                if (prop != null && prop.CanWrite) prop.SetValue(styleable, loadout.selectedWeaponStyle);
+                                                else
+                                                {
+                                                    var field = styleable.GetType().GetField("styleDef", BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+                                                    if (field != null) field.SetValue(styleable, loadout.selectedWeaponStyle);
+                                                }
+                                                var notify = styleable.GetType().GetMethod("Notify_StyleChanged", BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+                                                notify?.Invoke(styleable, null);
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                            catch { }
                             pawn.equipment.AddEquipment(weapon);
                         }
                         else

@@ -16,6 +16,7 @@ namespace RimMercenaries
 		public int hitPoints = -1;
 		public float colorR = 1f, colorG = 1f, colorB = 1f, colorA = 1f;
 		public bool useCustomColor = false;
+		public string styleDefName = null;
 
 		public void ExposeData()
 		{
@@ -28,6 +29,7 @@ namespace RimMercenaries
 			Scribe_Values.Look(ref colorB, "colorB", 1f);
 			Scribe_Values.Look(ref colorA, "colorA", 1f);
 			Scribe_Values.Look(ref useCustomColor, "useCustomColor", false);
+			Scribe_Values.Look(ref styleDefName, "styleDefName");
 		}
 	}
 
@@ -260,6 +262,7 @@ namespace RimMercenaries
 					ap.colorB = color.b;
 					ap.colorA = color.a == 0 ? 1f : color.a;
 					ap.useCustomColor = cust?.useCustomColor ?? false;
+					ap.styleDefName = cust?.styleDef?.defName;
 
 					preset.apparels.Add(ap);
 				}

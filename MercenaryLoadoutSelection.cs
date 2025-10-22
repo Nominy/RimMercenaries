@@ -3,6 +3,7 @@ using System.Linq;
 using RimWorld;
 using Verse;
 using UnityEngine;
+using System.Reflection;
 
 namespace RimMercenaries
 {
@@ -14,6 +15,7 @@ namespace RimMercenaries
         public int hitPoints = -1;
         public Color color = Color.white;
         public bool useCustomColor = false;
+        public ThingStyleDef styleDef = null;
 
         public ApparelCustomizationData(ThingDef apparelDef)
         {
@@ -52,6 +54,58 @@ namespace RimMercenaries
                     colorableComp.SetColor(color);
                     apparel.SetColor(color);
                 }
+
+                // Apply style (Ideology). Use reflection for broad compatibility across versions.
+                try
+                {
+                    if (styleDef != null)
+                    {
+                        var styleable = apparel.GetCompByReflectedType("RimWorld.CompStyleable");
+                        if (styleable != null)
+                        {
+                            // Try SetStyle(ThingStyleDef, bool)
+                            var setStyle = styleable.GetType().GetMethod("SetStyle", BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+                            if (setStyle != null)
+                            {
+                                var pars = setStyle.GetParameters();
+                                if (pars.Length >= 1)
+                                {
+                                    var args = pars.Length == 2 ? new object[] { styleDef, true } : new object[] { styleDef };
+                                    setStyle.Invoke(styleable, args);
+                                }
+                            }
+                            else
+                            {
+                                // Try SetStyleDef(ThingStyleDef)
+                                var setStyleDef = styleable.GetType().GetMethod("SetStyleDef", BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+                                if (setStyleDef != null)
+                                {
+                                    setStyleDef.Invoke(styleable, new object[] { styleDef });
+                                }
+                                else
+                                {
+                                    // Try write property/field directly and notify
+                                    var prop = styleable.GetType().GetProperty("StyleDef", BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+                                    if (prop != null && prop.CanWrite)
+                                    {
+                                        prop.SetValue(styleable, styleDef);
+                                    }
+                                    else
+                                    {
+                                        var field = styleable.GetType().GetField("styleDef", BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+                                        if (field != null)
+                                        {
+                                            field.SetValue(styleable, styleDef);
+                                        }
+                                    }
+                                    var notify = styleable.GetType().GetMethod("Notify_StyleChanged", BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+                                    notify?.Invoke(styleable, null);
+                                }
+                            }
+                        }
+                    }
+                }
+                catch { }
             }
             return apparel;
         }
@@ -64,7 +118,8 @@ namespace RimMercenaries
                 quality = this.quality,
                 hitPoints = this.hitPoints,
                 color = new Color(this.color.r, this.color.g, this.color.b, 1f),
-                useCustomColor = this.useCustomColor
+                useCustomColor = this.useCustomColor,
+                styleDef = this.styleDef
             };
             return clone;
         }
@@ -73,6 +128,7 @@ namespace RimMercenaries
     public class MercenaryLoadoutSelection
     {
         public ThingDef selectedWeaponDef;
+        public ThingStyleDef selectedWeaponStyle;
         public List<ThingDef> selectedApparelDefs = new List<ThingDef>();
         public Dictionary<ThingDef, ApparelCustomizationData> apparelCustomizations = new Dictionary<ThingDef, ApparelCustomizationData>();
 
@@ -305,6 +361,7 @@ namespace RimMercenaries
         {
             var clone = new MercenaryLoadoutSelection();
             clone.selectedWeaponDef = this.selectedWeaponDef;
+            clone.selectedWeaponStyle = this.selectedWeaponStyle;
             clone.selectedApparelDefs = this.selectedApparelDefs != null
                 ? new List<ThingDef>(this.selectedApparelDefs)
                 : new List<ThingDef>();
