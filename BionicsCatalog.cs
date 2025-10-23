@@ -66,13 +66,7 @@ namespace RimMercenaries
 
                     if (option.ImplantThing == null)
                     {
-                    option.ImplantThing = recipe.products?.Select(p => p.thingDef).FirstOrDefault(d => d != null && d.IsIngestible == false);
-                    if (option.ImplantThing == null && recipe.ingredients != null)
-                    {
-                        option.ImplantThing = recipe.ingredients
-                            .SelectMany(ingredient => ingredient.filter?.AllowedThingDefs ?? Enumerable.Empty<ThingDef>())
-                            .FirstOrDefault(def => def != null && !def.IsIngestible);
-                    }
+                        option.ImplantThing = GuessImplantThingFromRecipe(recipe);
                     }
 
                     option.CalculatedMarketValue = CalculateMarketValue(option);
@@ -201,18 +195,11 @@ namespace RimMercenaries
                     {
                         try
                         {
-                            var fixedThing = ingredient.FixedIngredient;
-                            if (fixedThing != null)
+                            // Many mod recipes use multi-choice ingredients (not single). Avoid FixedIngredient to prevent errors.
+                            var cheapest = ingredient.filter?.AllowedThingDefs?.OrderBy(d => SafeMarketValue(d)).FirstOrDefault();
+                            if (cheapest != null)
                             {
-                                total += fixedThing.BaseMarketValue * ingredient.GetBaseCount();
-                            }
-                            else if (ingredient.filter?.AllowedThingDefs != null)
-                            {
-                                var cheapest = ingredient.filter.AllowedThingDefs.OrderBy(d => d.BaseMarketValue).FirstOrDefault();
-                                if (cheapest != null)
-                                {
-                                    total += cheapest.BaseMarketValue * ingredient.GetBaseCount();
-                                }
+                                total += SafeMarketValue(cheapest) * ingredient.GetBaseCount();
                             }
                         }
                         catch
@@ -225,6 +212,74 @@ namespace RimMercenaries
             }
 
             return 0f;
+        }
+
+        private static ThingDef GuessImplantThingFromRecipe(RecipeDef recipe)
+        {
+            if (recipe == null) return null;
+
+            // Prefer explicit product that clearly represents the implant
+            var product = recipe.products?
+                .Select(p => p?.thingDef)
+                .FirstOrDefault(d => d != null && !d.IsIngestible && !IsMedicine(d));
+            if (product != null)
+            {
+                return product;
+            }
+
+            // Fall back to scanning ingredients: pick the most plausible non-medicine, non-ingestible item
+            IEnumerable<ThingDef> candidateDefs = Enumerable.Empty<ThingDef>();
+            if (recipe.ingredients != null)
+            {
+                foreach (var ingredient in recipe.ingredients)
+                {
+                    if (ingredient == null) continue;
+
+                    // Avoid accessing FixedIngredient on non-single ingredients to prevent errors.
+                    var allowed = ingredient.filter?.AllowedThingDefs;
+                    if (allowed != null)
+                    {
+                        candidateDefs = candidateDefs.Concat(allowed);
+                    }
+                }
+            }
+
+            var chosen = candidateDefs
+                .Where(d => d != null && !d.IsIngestible && !IsMedicine(d))
+                .Distinct()
+                .OrderByDescending(SafeMarketValue)
+                .FirstOrDefault();
+
+            return chosen;
+        }
+
+        private static bool IsMedicine(ThingDef def)
+        {
+            if (def == null) return false;
+
+            try
+            {
+                // Available on newer RimWorld versions
+                if (def.IsMedicine) return true;
+            }
+            catch { }
+
+            try
+            {
+                if (def.thingCategories != null && def.thingCategories.Contains(ThingCategoryDefOf.Medicine))
+                {
+                    return true;
+                }
+            }
+            catch { }
+
+            return def.defName?.IndexOf("Medicine", StringComparison.OrdinalIgnoreCase) >= 0;
+        }
+
+        private static float SafeMarketValue(ThingDef def)
+        {
+            try { return def?.BaseMarketValue ?? 0f; }
+            catch { return 0f; }
         }
     }
 }
