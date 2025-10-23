@@ -3,6 +3,12 @@ using Verse;
 
 namespace RimMercenaries
 {
+    public enum BionicsPricingMode
+    {
+        Static,
+        Calculated
+    }
+
     public class RimMercenariesSettings : ModSettings
     {
         public List<string> disabledTraits = new List<string>();
@@ -28,6 +34,14 @@ namespace RimMercenaries
         // Use actual item prices instead of fixed cost per item (default: true)
         public bool useActualItemPrices = true;
 
+        // Bionics customization settings
+        public bool enableBionicsCustomization = false;
+        public BionicsPricingMode bionicsPricingMode = BionicsPricingMode.Calculated;
+        public int bionicsStaticPrice = 1200;
+        public bool disallowArchotechBionics = true;
+        public List<string> disallowedBionicHediffs = new List<string>();
+        public List<string> disallowedBionicImplants = new List<string>();
+
         public override void ExposeData()
         {
             Scribe_Collections.Look(ref disabledTraits, "disabledTraits", LookMode.Value);
@@ -48,6 +62,12 @@ namespace RimMercenaries
             Scribe_Values.Look(ref enableDevLoadoutCustomization, "enableDevLoadoutCustomization", false);
             Scribe_Values.Look(ref loadoutPerItemCost, "loadoutPerItemCost", 200);
             Scribe_Values.Look(ref useActualItemPrices, "useActualItemPrices", true);
+            Scribe_Values.Look(ref enableBionicsCustomization, "enableBionicsCustomization", false);
+            Scribe_Values.Look(ref bionicsPricingMode, "bionicsPricingMode", BionicsPricingMode.Calculated);
+            Scribe_Values.Look(ref bionicsStaticPrice, "bionicsStaticPrice", 1200);
+            Scribe_Values.Look(ref disallowArchotechBionics, "disallowArchotechBionics", true);
+            Scribe_Collections.Look(ref disallowedBionicHediffs, "disallowedBionicHediffs", LookMode.Value);
+            Scribe_Collections.Look(ref disallowedBionicImplants, "disallowedBionicImplants", LookMode.Value);
         }
 
         public RimMercenariesSettings Clone()
@@ -71,6 +91,12 @@ namespace RimMercenaries
             s.enableDevLoadoutCustomization = enableDevLoadoutCustomization;
             s.loadoutPerItemCost = loadoutPerItemCost;
             s.useActualItemPrices = useActualItemPrices;
+            s.enableBionicsCustomization = enableBionicsCustomization;
+            s.bionicsPricingMode = bionicsPricingMode;
+            s.bionicsStaticPrice = bionicsStaticPrice;
+            s.disallowArchotechBionics = disallowArchotechBionics;
+            s.disallowedBionicHediffs = new List<string>(disallowedBionicHediffs ?? new List<string>());
+            s.disallowedBionicImplants = new List<string>(disallowedBionicImplants ?? new List<string>());
             return s;
         }
 
@@ -96,6 +122,12 @@ namespace RimMercenaries
 
             disabledTraits.Clear();
             disabledTraits.AddRange(o.disabledTraits);
+            enableBionicsCustomization = o.enableBionicsCustomization;
+            bionicsPricingMode = o.bionicsPricingMode;
+            bionicsStaticPrice = o.bionicsStaticPrice;
+            disallowArchotechBionics = o.disallowArchotechBionics;
+            disallowedBionicHediffs = new List<string>(o.disallowedBionicHediffs ?? new List<string>());
+            disallowedBionicImplants = new List<string>(o.disallowedBionicImplants ?? new List<string>());
         }
 
         public void Apply()
@@ -129,7 +161,79 @@ namespace RimMercenaries
         {
             return !disabledTraits.Contains(defName);
         }
-        
+
+        public bool BionicHediffAllowed(string defName)
+        {
+            if (string.IsNullOrEmpty(defName)) return true;
+            if (disallowedBionicHediffs == null) return true;
+            return !MatchAnyPattern(disallowedBionicHediffs, defName);
+        }
+
+        public bool BionicImplantAllowed(string defName)
+        {
+            if (string.IsNullOrEmpty(defName)) return true;
+            if (disallowedBionicImplants == null) return true;
+            return !MatchAnyPattern(disallowedBionicImplants, defName);
+        }
+
+        private bool MatchAnyPattern(List<string> patterns, string value)
+        {
+            if (patterns == null || string.IsNullOrEmpty(value)) return false;
+            foreach (var pattern in patterns)
+            {
+                if (string.IsNullOrWhiteSpace(pattern)) continue;
+                var trimmed = pattern.Trim();
+                if (trimmed == "*") return true;
+                if (trimmed.Contains("*") || trimmed.Contains("?"))
+                {
+                    if (WildcardMatch(value, trimmed)) return true;
+                }
+                else if (value.IndexOf(trimmed, System.StringComparison.OrdinalIgnoreCase) >= 0 ||
+                         string.Equals(value, trimmed, System.StringComparison.OrdinalIgnoreCase))
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        private bool WildcardMatch(string input, string pattern)
+        {
+            if (string.IsNullOrEmpty(pattern)) return string.IsNullOrEmpty(input);
+
+            int inputPos = 0, patternPos = 0;
+            int starIdx = -1, match = 0;
+
+            while (inputPos < input.Length)
+            {
+                if (patternPos < pattern.Length && (pattern[patternPos] == '?' ||
+                    char.ToUpperInvariant(pattern[patternPos]) == char.ToUpperInvariant(input[inputPos])))
+                {
+                    inputPos++;
+                    patternPos++;
+                }
+                else if (patternPos < pattern.Length && pattern[patternPos] == '*')
+                {
+                    starIdx = patternPos;
+                    match = inputPos;
+                    patternPos++;
+                }
+                else if (starIdx != -1)
+                {
+                    patternPos = starIdx + 1;
+                    match++;
+                    inputPos = match;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+
+            while (patternPos < pattern.Length && pattern[patternPos] == '*') patternPos++;
+            return patternPos == pattern.Length;
+        }
+
         public void ResetToDefaults()
         {
             disabledTraits.Clear();
@@ -150,6 +254,12 @@ namespace RimMercenaries
             enableDevLoadoutCustomization = false;
             loadoutPerItemCost = 200;
             useActualItemPrices = true;
+            enableBionicsCustomization = false;
+            bionicsPricingMode = BionicsPricingMode.Calculated;
+            bionicsStaticPrice = 1200;
+            disallowArchotechBionics = true;
+            disallowedBionicHediffs.Clear();
+            disallowedBionicImplants.Clear();
         }
     }
 }

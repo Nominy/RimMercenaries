@@ -57,7 +57,7 @@ namespace RimMercenaries
 
 
 
-        public override Vector2 InitialSize => new Vector2(1020f, 720f);
+        public override Vector2 InitialSize => new Vector2(1080f, 760f);
 
         public Dialog_MercenaryLoadout(Map map, IntVec3 dropCell, Pawn negotiator, MercenaryOffer offer, Building sourceBuilding, MercenaryLoadoutSelection prefilledSelection = null)
         {
@@ -1626,9 +1626,8 @@ namespace RimMercenaries
             // Reserve enough space for both the Save/Load preset buttons and the Clear buttons below
             // Save/Load row starts at yMax - 56f (24f tall), Clear row at yMax - 30f (24f tall)
             // Use a slightly larger buffer so the scroll list never overlaps behind buttons
-            float reservedBottom = 64f;
-            float availableHeight = rect.height - reservedBottom - 12f;
-            float portraitSide = Mathf.Min(rect.width - 12f, Mathf.Max(120f, availableHeight * 0.75f));
+            float reservedBottom = 90f;
+            float portraitSide = Mathf.Min(rect.width - 12f, rect.height * 0.35f);
             float portraitX = rect.x + (rect.width - portraitSide) / 2f;
             Rect portraitRect = new Rect(portraitX, rect.y + 6f, portraitSide, portraitSide);
             try
@@ -1663,36 +1662,13 @@ namespace RimMercenaries
             Widgets.Label(selTitle, "RimMercenaries_Loadout_SelectedCount".Translate(selection.SelectedItemCount));
             y += 22f;
 
-            // Selected weapon label
-            Rect wRow = new Rect(rect.x + 6f, y, rect.width - 12f, 22f);
-            string wText = selection.selectedWeaponDef != null ? selection.selectedWeaponDef.LabelCap.ToString() : "None";
-            Widgets.Label(wRow, "RimMercenaries_Loadout_Weapon".Translate() + ": " + wText);
-            y += 22f;
+            float summarySectionHeight = Mathf.Max(0f, rect.yMax - reservedBottom - y - 6f);
+            float gearHeight = summarySectionHeight * 0.55f;
+            Rect gearSummaryRect = new Rect(rect.x + 6f, y, rect.width - 12f, gearHeight);
+            Rect bionicSummaryRect = new Rect(rect.x + 6f, gearSummaryRect.yMax + 4f, rect.width - 12f, Mathf.Max(0f, summarySectionHeight - gearHeight - 4f));
 
-            // Selected apparel list (scrollable)
-            Rect aTitle = new Rect(rect.x + 6f, y, rect.width - 12f, 22f);
-            Widgets.Label(aTitle, "RimMercenaries_Loadout_Apparel".Translate());
-            y = aTitle.yMax + 2f;
-            float listHeight = Mathf.Max(0f, rect.yMax - reservedBottom - y - 4f);
-            Rect outRect = new Rect(rect.x + 6f, y, rect.width - 12f, listHeight);
-            float rowHeight = 22f;
-            int selectedCount = selection.selectedApparelDefs.Count;
-            Rect viewRect = new Rect(0f, 0f, outRect.width - 16f, Mathf.Max(selectedCount * rowHeight, outRect.height + 1f));
-            Widgets.BeginScrollView(outRect, ref selectedApparelScroll, viewRect);
-            float yy = 0f;
-            foreach (var ad in selection.selectedApparelDefs.ToList())
-            {
-                Rect row = new Rect(0f, yy, viewRect.width, rowHeight);
-                Widgets.Label(new Rect(row.x + 4f, row.y, row.width - 24f, row.height), "• " + ad.LabelCap);
-                Rect xBtn = new Rect(row.xMax - 18f, row.y + 2f, 18f, 18f);
-                if (Widgets.ButtonText(xBtn, "x"))
-                {
-                    selection.selectedApparelDefs.Remove(ad);
-                    selectionHash = -1; // force refresh
-                }
-                yy += rowHeight;
-            }
-            Widgets.EndScrollView();
+            DrawGearSummary(gearSummaryRect);
+            DrawBionicsSummary(bionicSummaryRect);
 
             // Quick clear buttons
             float btnW = (rect.width - 12f) / 2f - 4f;
@@ -1862,6 +1838,111 @@ namespace RimMercenaries
             }
         }
 
+        private void DrawGearSummary(Rect rect)
+        {
+            Color themedBg = ThemeProvider.GetSectionBackgroundColor();
+            Widgets.DrawBoxSolid(rect, themedBg);
+            Widgets.DrawBox(rect);
+
+            Rect weaponRect = new Rect(rect.x + 4f, rect.y + 4f, rect.width - 8f, 22f);
+            string wText = selection.selectedWeaponDef != null ? selection.selectedWeaponDef.LabelCap.ToString() : "None";
+            Widgets.Label(weaponRect, "RimMercenaries_Loadout_Weapon".Translate() + ": " + wText);
+
+            Rect aTitle = new Rect(rect.x + 4f, weaponRect.yMax + 4f, rect.width - 8f, 22f);
+            Widgets.Label(aTitle, "RimMercenaries_Loadout_Apparel".Translate());
+
+            Rect outRect = new Rect(rect.x + 4f, aTitle.yMax + 2f, rect.width - 8f, rect.height - (aTitle.yMax - rect.y) - 6f);
+            float rowHeight = 22f;
+            int count = selection.selectedApparelDefs?.Count ?? 0;
+            Rect viewRect = new Rect(0f, 0f, outRect.width - 16f, Mathf.Max(count * rowHeight, outRect.height + 1f));
+            Widgets.BeginScrollView(outRect, ref selectedApparelScroll, viewRect);
+            float y = 0f;
+            if (selection.selectedApparelDefs != null)
+            {
+                foreach (var ad in selection.selectedApparelDefs.ToList())
+                {
+                    if (ad == null) continue;
+                    Rect row = new Rect(0f, y, viewRect.width, rowHeight);
+                    Widgets.Label(new Rect(row.x + 2f, row.y, row.width - 24f, row.height), "• " + ad.LabelCap);
+                    Rect remove = new Rect(row.xMax - 18f, row.y + 2f, 18f, 18f);
+                    if (Widgets.ButtonText(remove, "x"))
+                    {
+                        selection.selectedApparelDefs.Remove(ad);
+                        selectionHash = -1;
+                        InvalidateApparelCaches();
+                        InvalidateCostCache();
+                    }
+                    y += rowHeight;
+                }
+            }
+            Widgets.EndScrollView();
+        }
+
+        private void DrawBionicsSummary(Rect rect)
+        {
+            Color themedBg = ThemeProvider.GetSectionBackgroundColor();
+            Widgets.DrawBoxSolid(rect, themedBg);
+            Widgets.DrawBox(rect);
+
+            Rect title = new Rect(rect.x + 4f, rect.y + 4f, rect.width - 120f, 22f);
+            Widgets.Label(title, "RimMercenaries_Loadout_Bionics".Translate());
+
+            // Edit button (gated by settings)
+            if (RimMercenariesMod.ActiveSettings.enableBionicsCustomization)
+            {
+                Rect buttonRect = new Rect(rect.xMax - 110f, rect.y + 4f, 100f, 24f);
+                if (Widgets.ButtonText(buttonRect, "RimMercenaries_Loadout_EditBionics".Translate()))
+                {
+                    OpenBionicsDialog();
+                }
+            }
+            else
+            {
+                // Show hint when disabled
+                Rect hintRect = new Rect(rect.xMax - 210f, rect.y + 4f, 200f, 24f);
+                var prev = GUI.color; GUI.color = Color.gray;
+                Widgets.Label(hintRect, "RimMercenaries_Loadout_BionicsDisabled".Translate());
+                GUI.color = prev;
+            }
+
+            Rect summaryRect = new Rect(rect.x + 4f, title.yMax + 2f, rect.width - 8f, rect.height - (title.yMax - rect.y) - 6f);
+            Widgets.Label(summaryRect, BuildBionicsSummary());
+        }
+
+        private string BuildBionicsSummary()
+        {
+            if (selection.selectedBionics == null || selection.selectedBionics.Count == 0)
+            {
+                return "RimMercenaries_Loadout_BionicsNone".Translate();
+            }
+            var lines = new List<string>();
+            foreach (var sb in selection.selectedBionics)
+            {
+                try
+                {
+                    var hediff = string.IsNullOrEmpty(sb.hediffDefName) ? null : DefDatabase<HediffDef>.GetNamed(sb.hediffDefName, false);
+                    var part = BionicsSelectionUtility.FindPartByPath(offer.pawn, sb.bodyPartPath, sb.bodyPartIndex);
+                    string hediffLabel = hediff?.LabelCap ?? (sb.hediffDefName ?? "");
+                    string partLabel = part?.LabelCap ?? (sb.bodyPartPath ?? "");
+                    if (!string.IsNullOrEmpty(hediffLabel))
+                    {
+                        lines.Add($"• {hediffLabel} ({partLabel})");
+                    }
+                }
+                catch { }
+            }
+            return string.Join("\n", lines);
+        }
+
+        private void OpenBionicsDialog()
+        {
+            var dlg = new Dialog_MercenaryBionics(offer.pawn, selection, () =>
+            {
+                selectionHash = -1; // force preview updates where needed
+            });
+            Find.WindowStack.Add(dlg);
+        }
+
         public void LoadPresetById(string id)
         {
             var preset = MercenaryLoadoutPresetManager.FindById(id);
@@ -1914,6 +1995,7 @@ namespace RimMercenaries
             ThingDef newWeapon = null;
             var newApparelDefs = new List<ThingDef>();
             var newCustomizations = new Dictionary<ThingDef, ApparelCustomizationData>();
+            var newSelectedBionics = new List<SelectedBionic>();
 
             // Weapon
             if (!string.IsNullOrEmpty(preset.weaponDefName))
@@ -2054,6 +2136,29 @@ namespace RimMercenaries
             selection.selectedWeaponDef = newWeapon;
             selection.selectedApparelDefs = newApparelDefs;
             selection.apparelCustomizations = newCustomizations;
+            // Load preset bionics if present
+            if (preset.bionics != null && preset.bionics.Count > 0)
+            {
+                foreach (var line in preset.bionics)
+                {
+                    try
+                    {
+                        if (string.IsNullOrEmpty(line)) continue;
+                        var parts = line.Split('|');
+                        if (parts.Length < 3) continue;
+                        string path = parts[0];
+                        int index = 0; int.TryParse(parts[1], out index);
+                        string defName = parts[2];
+                        var hediffDef = DefDatabase<HediffDef>.GetNamed(defName, false);
+                        if (hediffDef == null) continue;
+                        // Only accept if catalog allows it
+                        if (BionicsCatalog.GetOption(hediffDef) == null) continue;
+                        newSelectedBionics.Add(new SelectedBionic { bodyPartPath = path, bodyPartIndex = index, hediffDefName = defName });
+                    }
+                    catch { }
+                }
+            }
+            selection.selectedBionics = newSelectedBionics;
             // Ensure no invalid or duplicate items remain after applying preset
             SanitizeSelection();
 

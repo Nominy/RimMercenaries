@@ -653,6 +653,34 @@ namespace RimMercenaries
                         }
                     }
                 }
+
+                // Apply selected bionics (hediffs) after equipping gear
+                try
+                {
+                    if (RimMercenariesMod.ActiveSettings.enableBionicsCustomization && loadout.selectedBionics != null && loadout.selectedBionics.Count > 0)
+                    {
+                        foreach (var sb in loadout.selectedBionics)
+                        {
+                            if (sb == null || string.IsNullOrEmpty(sb.hediffDefName) || string.IsNullOrEmpty(sb.bodyPartPath)) continue;
+                            var hediffDef = DefDatabase<HediffDef>.GetNamed(sb.hediffDefName, false);
+                            if (hediffDef == null) continue;
+                            var part = BionicsSelectionUtility.FindPartByPath(pawn, sb.bodyPartPath, sb.bodyPartIndex);
+                            if (part == null) continue;
+                            if (pawn.health?.hediffSet == null) continue;
+
+                            // Avoid duplicates on same part
+                            var existing = pawn.health.hediffSet.hediffs.FirstOrDefault(h => h.def == hediffDef && h.Part == part);
+                            if (existing != null) continue;
+
+                            var hediff = HediffMaker.MakeHediff(hediffDef, pawn, part);
+                            pawn.health.AddHediff(hediff, part);
+                        }
+                    }
+                }
+                catch (System.Exception ex)
+                {
+                    Log.Warning($"[RimMercenaries] Error applying bionics: {ex.Message}");
+                }
             }
             catch (System.Exception ex)
             {

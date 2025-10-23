@@ -1,6 +1,7 @@
 using System;
 using UnityEngine;
 using Verse;
+using System.Collections.Generic;
 
 namespace RimMercenaries
 {
@@ -20,6 +21,9 @@ namespace RimMercenaries
         private string t3PriceMinBuf;
         private string t3PriceMaxBuf;
         private string loadoutPerItemCostBuf;
+        private string bionicsStaticPriceBuf;
+        private string disallowedBionicHediffsBuf;
+        private string disallowedBionicImplantsBuf;
         private Vector2 scrollPos = Vector2.zero;
         private float viewHeight = 3000f;
 
@@ -62,6 +66,9 @@ namespace RimMercenaries
             mercenaryConversionPeriodDaysBuf = this.working.mercenaryConversionPeriodDays.ToString();
             mercenaryConversionChanceBuf = this.working.mercenaryConversionChance.ToString();
             loadoutPerItemCostBuf = this.working.loadoutPerItemCost.ToString();
+            bionicsStaticPriceBuf = this.working.bionicsStaticPrice.ToString();
+            disallowedBionicHediffsBuf = PatternsToBuffer(this.working.disallowedBionicHediffs);
+            disallowedBionicImplantsBuf = PatternsToBuffer(this.working.disallowedBionicImplants);
         }
 
         // No auto-save on close - immediate mode already saves on each change
@@ -189,6 +196,59 @@ namespace RimMercenaries
             if (working.loadoutPerItemCost != beforeI) CommitEdits();
 
             list.GapLine();
+            list.Label("RimMercenaries_BionicsSettings".Translate());
+
+            bool beforeBionicsEnabled = working.enableBionicsCustomization;
+            list.CheckboxLabeled("RimMercenaries_EnableBionicsCustomization".Translate(), ref working.enableBionicsCustomization);
+            if (working.enableBionicsCustomization != beforeBionicsEnabled) CommitEdits();
+
+            list.Label("RimMercenaries_BionicsPricingMode".Translate());
+            var bm = working.bionicsPricingMode;
+            var calcBtn = list.ButtonTextLabeled("RimMercenaries_BionicsPricing_Calculated".Translate(), bm == BionicsPricingMode.Calculated ? "RimMercenaries_Selected".Translate() : "".Translate());
+            if (calcBtn)
+            {
+                working.bionicsPricingMode = BionicsPricingMode.Calculated;
+                CommitEdits();
+            }
+            var staticBtn = list.ButtonTextLabeled("RimMercenaries_BionicsPricing_Static".Translate(), bm == BionicsPricingMode.Static ? "RimMercenaries_Selected".Translate() : "".Translate());
+            if (staticBtn)
+            {
+                working.bionicsPricingMode = BionicsPricingMode.Static;
+                CommitEdits();
+            }
+
+            if (working.bionicsPricingMode == BionicsPricingMode.Static)
+            {
+                int beforeStatic = working.bionicsStaticPrice;
+                list.TextFieldNumericLabeled("RimMercenaries_BionicsStaticPrice".Translate(), ref working.bionicsStaticPrice, ref bionicsStaticPriceBuf, 0, 100000);
+                if (working.bionicsStaticPrice != beforeStatic) CommitEdits();
+            }
+
+            bool beforeArchotech = working.disallowArchotechBionics;
+            list.CheckboxLabeled("RimMercenaries_DisallowArchotechBionics".Translate(), ref working.disallowArchotechBionics);
+            if (working.disallowArchotechBionics != beforeArchotech) CommitEdits();
+
+            list.Label("RimMercenaries_DisallowedBionicHediffs".Translate());
+            Rect hediffRect = list.GetRect(60f);
+            string newHediffBuf = Widgets.TextArea(hediffRect, disallowedBionicHediffsBuf ?? string.Empty);
+            if (newHediffBuf != disallowedBionicHediffsBuf)
+            {
+                disallowedBionicHediffsBuf = newHediffBuf;
+                working.disallowedBionicHediffs = ParsePatternList(disallowedBionicHediffsBuf);
+                CommitEdits();
+            }
+
+            list.Label("RimMercenaries_DisallowedBionicImplants".Translate());
+            Rect implantRect = list.GetRect(60f);
+            string newImplantBuf = Widgets.TextArea(implantRect, disallowedBionicImplantsBuf ?? string.Empty);
+            if (newImplantBuf != disallowedBionicImplantsBuf)
+            {
+                disallowedBionicImplantsBuf = newImplantBuf;
+                working.disallowedBionicImplants = ParsePatternList(disallowedBionicImplantsBuf);
+                CommitEdits();
+            }
+
+            list.GapLine();
 
             list.Label("RimMercenaries_TraitsTier1Disallowed".Translate());
 
@@ -230,6 +290,28 @@ namespace RimMercenaries
             Widgets.EndScrollView(); 
 
             deferred?.Invoke();
+        }
+
+        private string PatternsToBuffer(List<string> patterns)
+        {
+            if (patterns == null || patterns.Count == 0) return string.Empty;
+            return string.Join("\n", patterns);
+        }
+
+        private List<string> ParsePatternList(string buffer)
+        {
+            if (string.IsNullOrWhiteSpace(buffer)) return new List<string>();
+            var list = new List<string>();
+            var lines = buffer.Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
+            foreach (var line in lines)
+            {
+                var trimmed = line.Trim();
+                if (!string.IsNullOrEmpty(trimmed))
+                {
+                    list.Add(trimmed);
+                }
+            }
+            return list;
         }
     }
 }

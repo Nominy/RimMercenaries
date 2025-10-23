@@ -110,6 +110,36 @@
   <RimMercenaries_LoadoutSettings>Loadout settings:</RimMercenaries_LoadoutSettings>
   <RimMercenaries_UseActualItemPrices>Use actual item prices (recommended)</RimMercenaries_UseActualItemPrices>
 
+  <!-- Bionics - Settings and UI -->
+  <RimMercenaries_BionicsSettings>Bionics settings:</RimMercenaries_BionicsSettings>
+  <RimMercenaries_EnableBionicsCustomization>Enable bionics customization</RimMercenaries_EnableBionicsCustomization>
+  <RimMercenaries_BionicsPricingMode>Bionics pricing mode:</RimMercenaries_BionicsPricingMode>
+  <RimMercenaries_BionicsPricing_Calculated>Calculated (use item/recipe market value)</RimMercenaries_BionicsPricing_Calculated>
+  <RimMercenaries_BionicsPricing_Static>Static price per implant</RimMercenaries_BionicsPricing_Static>
+  <RimMercenaries_BionicsStaticPrice>Static price per implant</RimMercenaries_BionicsStaticPrice>
+  <RimMercenaries_DisallowArchotechBionics>Disallow Archotech implants</RimMercenaries_DisallowArchotechBionics>
+  <RimMercenaries_DisallowedBionicHediffs>Disallowed bionic hediffs (one per line; supports * ?)</RimMercenaries_DisallowedBionicHediffs>
+  <RimMercenaries_DisallowedBionicImplants>Disallowed implant things (one per line; supports * ?)</RimMercenaries_DisallowedBionicImplants>
+  <RimMercenaries_Selected>(selected)</RimMercenaries_Selected>
+
+  <!-- Bionics - Loadout Dialog -->
+  <RimMercenaries_Loadout_Bionics>Bionics</RimMercenaries_Loadout_Bionics>
+  <RimMercenaries_Loadout_EditBionics>Edit bionics…</RimMercenaries_Loadout_EditBionics>
+  <RimMercenaries_Loadout_BionicsNone>No bionics selected</RimMercenaries_Loadout_BionicsNone>
+  <RimMercenaries_Loadout_BionicsDisabled>Bionics disabled in settings</RimMercenaries_Loadout_BionicsDisabled>
+
+  <!-- Bionics - Custom Dialog -->
+  <RimMercenaries_BionicsDialog_Title>Bionics for {0}</RimMercenaries_BionicsDialog_Title>
+  <RimMercenaries_BionicsDialog_Parts>Body parts</RimMercenaries_BionicsDialog_Parts>
+  <RimMercenaries_BionicsDialog_Options>Options for: {0}</RimMercenaries_BionicsDialog_Options>
+  <RimMercenaries_BionicsDialog_NoImplant>(no specific implant item)</RimMercenaries_BionicsDialog_NoImplant>
+  <RimMercenaries_BionicsDialog_Value>Value: {0}</RimMercenaries_BionicsDialog_Value>
+  <RimMercenaries_BionicsDialog_Apply>Apply</RimMercenaries_BionicsDialog_Apply>
+  <RimMercenaries_BionicsDialog_Remove>Remove</RimMercenaries_BionicsDialog_Remove>
+  <RimMercenaries_BionicsDialog_NoPart>Select a body part first</RimMercenaries_BionicsDialog_NoPart>
+  <RimMercenaries_BionicsDialog_Applied>Applied {0} to {1}</RimMercenaries_BionicsDialog_Applied>
+  <RimMercenaries_BionicsDialog_Removed>Removed {0}</RimMercenaries_BionicsDialog_Removed>
+
   <!-- Loadout Dialog -->
   <RimMercenaries_Loadout_Title>Customize Loadout</RimMercenaries_Loadout_Title>
   <RimMercenaries_Loadout_Subtitle>Select weapon and apparel for {0}</RimMercenaries_Loadout_Subtitle>

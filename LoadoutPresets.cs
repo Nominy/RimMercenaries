@@ -38,12 +38,14 @@ namespace RimMercenaries
 		public string id;
 		public string weaponDefName;
 		public List<LoadoutApparelPreset> apparels = new List<LoadoutApparelPreset>();
+		public List<string> bionics = new List<string>(); // format: bodyPath|index|hediffDefName
 
 		public void ExposeData()
 		{
 			Scribe_Values.Look(ref id, "id");
 			Scribe_Values.Look(ref weaponDefName, "weaponDefName");
 			Scribe_Collections.Look(ref apparels, "apparels", LookMode.Deep);
+			Scribe_Collections.Look(ref bionics, "bionics", LookMode.Value);
 		}
 	}
 
@@ -236,6 +238,7 @@ namespace RimMercenaries
 			preset.id = id;
 			preset.weaponDefName = selection.selectedWeaponDef?.defName;
 			preset.apparels = new List<LoadoutApparelPreset>();
+			preset.bionics = new List<string>();
 
 			if (selection.selectedApparelDefs != null)
 			{
@@ -265,6 +268,16 @@ namespace RimMercenaries
 					ap.styleDefName = cust?.styleDef?.defName;
 
 					preset.apparels.Add(ap);
+				}
+			}
+
+			// Bionics
+			if (selection.selectedBionics != null)
+			{
+				foreach (var sb in selection.selectedBionics)
+				{
+					if (sb == null || string.IsNullOrEmpty(sb.hediffDefName) || string.IsNullOrEmpty(sb.bodyPartPath)) continue;
+					preset.bionics.Add($"{sb.bodyPartPath}|{sb.bodyPartIndex}|{sb.hediffDefName}");
 				}
 			}
 

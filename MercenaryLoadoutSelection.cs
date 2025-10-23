@@ -125,12 +125,31 @@ namespace RimMercenaries
         }
     }
 
-    public class MercenaryLoadoutSelection
+    public class SelectedBionic : IExposable
+    {
+        public string bodyPartPath;
+        public int bodyPartIndex;
+        public string hediffDefName;
+        public string recipeDefName;
+        public string implantThingDefName;
+
+        public void ExposeData()
+        {
+            Scribe_Values.Look(ref bodyPartPath, "bodyPartPath");
+            Scribe_Values.Look(ref bodyPartIndex, "bodyPartIndex", 0);
+            Scribe_Values.Look(ref hediffDefName, "hediffDefName");
+            Scribe_Values.Look(ref recipeDefName, "recipeDefName");
+            Scribe_Values.Look(ref implantThingDefName, "implantThingDefName");
+        }
+    }
+
+    public class MercenaryLoadoutSelection : IExposable
     {
         public ThingDef selectedWeaponDef;
         public ThingStyleDef selectedWeaponStyle;
         public List<ThingDef> selectedApparelDefs = new List<ThingDef>();
         public Dictionary<ThingDef, ApparelCustomizationData> apparelCustomizations = new Dictionary<ThingDef, ApparelCustomizationData>();
+        public List<SelectedBionic> selectedBionics = new List<SelectedBionic>();
 
         public int SelectedItemCount => (selectedWeaponDef != null ? 1 : 0) + (selectedApparelDefs?.Distinct().Count() ?? 0);
 
@@ -170,11 +189,11 @@ namespace RimMercenaries
             // Use actual item prices if enabled, otherwise use fixed cost
             if (settings != null && settings.useActualItemPrices)
             {
-                return CalculateActualItemCosts(negotiator);
+                return CalculateActualItemCosts(negotiator) + CalculateBionicsCost();
             }
             else
             {
-                return SelectedItemCount * (settings?.loadoutPerItemCost ?? 0);
+                return SelectedItemCount * (settings?.loadoutPerItemCost ?? 0) + CalculateBionicsCost();
             }
         }
 
@@ -202,6 +221,36 @@ namespace RimMercenaries
             }
 
             return totalCost;
+        }
+
+        private int CalculateBionicsCost()
+        {
+            var settings = RimMercenariesMod.ActiveSettings;
+            if (selectedBionics == null || selectedBionics.Count == 0 || settings == null || !settings.enableBionicsCustomization)
+            {
+                return 0;
+            }
+
+            if (settings.bionicsPricingMode == BionicsPricingMode.Static)
+            {
+                return Mathf.Max(0, settings.bionicsStaticPrice) * selectedBionics.Count;
+            }
+
+            int sum = 0;
+            foreach (var b in selectedBionics)
+            {
+                try
+                {
+                    var hediff = string.IsNullOrEmpty(b.hediffDefName) ? null : DefDatabase<HediffDef>.GetNamed(b.hediffDefName, false);
+                    var option = BionicsCatalog.GetOption(hediff);
+                    if (option != null)
+                    {
+                        sum += Mathf.Max(0, Mathf.RoundToInt(option.CalculatedMarketValue));
+                    }
+                }
+                catch { }
+            }
+            return sum;
         }
 
         public int GetItemCost(ThingDef itemDef, Pawn negotiator = null)
@@ -357,6 +406,27 @@ namespace RimMercenaries
             return new ApparelCustomizationData(apparelDef);
         }
 
+        public void ExposeData()
+        {
+            Scribe_Defs.Look(ref selectedWeaponDef, "selectedWeaponDef");
+            Scribe_Defs.Look(ref selectedWeaponStyle, "selectedWeaponStyle");
+            Scribe_Collections.Look(ref selectedApparelDefs, "selectedApparelDefs", LookMode.Def);
+            Scribe_Collections.Look(ref selectedBionics, "selectedBionics", LookMode.Deep);
+            Scribe_Collections.Look(ref apparelCustomizations, "apparelCustomizations", LookMode.Def, LookMode.Deep, ref apparelCustomizationsWorkingKeys, ref apparelCustomizationsWorkingValues);
+
+            if (Scribe.mode == LoadSaveMode.PostLoadInit)
+            {
+                if (selectedApparelDefs == null) selectedApparelDefs = new List<ThingDef>();
+                if (selectedBionics == null) selectedBionics = new List<SelectedBionic>();
+                if (apparelCustomizations == null) apparelCustomizations = new Dictionary<ThingDef, ApparelCustomizationData>();
+                selectedBionics.RemoveAll(b => b == null || string.IsNullOrEmpty(b.bodyPartPath) || string.IsNullOrEmpty(b.hediffDefName));
+                EnsureUniqueApparel();
+            }
+        }
+
+        private List<ThingDef> apparelCustomizationsWorkingKeys;
+        private List<ApparelCustomizationData> apparelCustomizationsWorkingValues;
+
         public MercenaryLoadoutSelection Clone()
         {
             var clone = new MercenaryLoadoutSelection();
@@ -374,6 +444,22 @@ namespace RimMercenaries
                     {
                         clone.apparelCustomizations[kvp.Key] = kvp.Value.Clone();
                     }
+                }
+            }
+            clone.selectedBionics = new List<SelectedBionic>();
+            if (this.selectedBionics != null)
+            {
+                foreach (var b in this.selectedBionics)
+                {
+                    if (b == null) continue;
+                    clone.selectedBionics.Add(new SelectedBionic
+                    {
+                        bodyPartPath = b.bodyPartPath,
+                        bodyPartIndex = b.bodyPartIndex,
+                        hediffDefName = b.hediffDefName,
+                        recipeDefName = b.recipeDefName,
+                        implantThingDefName = b.implantThingDefName
+                    });
                 }
             }
             clone.EnsureUniqueApparel();

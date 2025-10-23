@@ -1,3 +1,5 @@
+using System;
+using System.Collections.Generic;
 using UnityEngine;
 using Verse;
 
@@ -24,6 +26,9 @@ namespace RimMercenaries
         private string mercenaryConversionPeriodDaysBuf = "60";
         private string mercenaryConversionChanceBuf = "0.02";
         private string loadoutPerItemCostBuf = "200";
+        private string bionicsStaticPriceBuf = "1200";
+        private string disallowedBionicHediffsBuf = string.Empty;
+        private string disallowedBionicImplantsBuf = string.Empty;
         public RimMercenariesMod(ModContentPack content) : base(content)
         {   
             Settings = GetSettings<RimMercenariesSettings>();
@@ -40,6 +45,9 @@ namespace RimMercenaries
             mercenaryConversionPeriodDaysBuf = Settings.mercenaryConversionPeriodDays.ToString();
             mercenaryConversionChanceBuf = Settings.mercenaryConversionChance.ToString();
             loadoutPerItemCostBuf = Settings.loadoutPerItemCost.ToString();
+            bionicsStaticPriceBuf = Settings.bionicsStaticPrice.ToString();
+            disallowedBionicHediffsBuf = PatternsToBuffer(Settings.disallowedBionicHediffs);
+            disallowedBionicImplantsBuf = PatternsToBuffer(Settings.disallowedBionicImplants);
         }
 
         public static RimMercenariesSettings ActiveSettings
@@ -99,6 +107,68 @@ namespace RimMercenaries
             list.CheckboxLabeled("RimMercenaries_UseActualItemPrices".Translate(), ref Settings.useActualItemPrices);
             list.TextFieldNumericLabeled("RimMercenaries_LoadoutPerItemCost".Translate(), ref Settings.loadoutPerItemCost, ref loadoutPerItemCostBuf, 0, 100000);
 
+            list.GapLine();
+            list.Label("RimMercenaries_BionicsSettings".Translate());
+            bool beforeBionicsEnabled = Settings.enableBionicsCustomization;
+            list.CheckboxLabeled("RimMercenaries_EnableBionicsCustomization".Translate(), ref Settings.enableBionicsCustomization);
+            if (Settings.enableBionicsCustomization != beforeBionicsEnabled)
+            {
+                Settings.Write();
+            }
+
+            list.Label("RimMercenaries_BionicsPricingMode".Translate());
+            // Safer UI than radio to avoid API/overload issues: two small buttons
+            var bm = Settings.bionicsPricingMode;
+            var calcBtn = list.ButtonTextLabeled("RimMercenaries_BionicsPricing_Calculated".Translate(), bm == BionicsPricingMode.Calculated ? "RimMercenaries_Selected".Translate() : "".Translate());
+            if (calcBtn)
+            {
+                Settings.bionicsPricingMode = BionicsPricingMode.Calculated;
+                Settings.Write();
+            }
+            var staticBtn = list.ButtonTextLabeled("RimMercenaries_BionicsPricing_Static".Translate(), bm == BionicsPricingMode.Static ? "RimMercenaries_Selected".Translate() : "".Translate());
+            if (staticBtn)
+            {
+                Settings.bionicsPricingMode = BionicsPricingMode.Static;
+                Settings.Write();
+            }
+
+            if (Settings.bionicsPricingMode == BionicsPricingMode.Static)
+            {
+                int beforeStatic = Settings.bionicsStaticPrice;
+                list.TextFieldNumericLabeled("RimMercenaries_BionicsStaticPrice".Translate(), ref Settings.bionicsStaticPrice, ref bionicsStaticPriceBuf, 0, 100000);
+                if (Settings.bionicsStaticPrice != beforeStatic)
+                {
+                    Settings.Write();
+                }
+            }
+
+            bool beforeArchotech = Settings.disallowArchotechBionics;
+            list.CheckboxLabeled("RimMercenaries_DisallowArchotechBionics".Translate(), ref Settings.disallowArchotechBionics);
+            if (Settings.disallowArchotechBionics != beforeArchotech)
+            {
+                Settings.Write();
+            }
+
+            list.Label("RimMercenaries_DisallowedBionicHediffs".Translate());
+            Rect hediffRect = list.GetRect(60f);
+            string newHediffBuf = Widgets.TextArea(hediffRect, disallowedBionicHediffsBuf ?? string.Empty);
+            if (newHediffBuf != disallowedBionicHediffsBuf)
+            {
+                disallowedBionicHediffsBuf = newHediffBuf;
+                Settings.disallowedBionicHediffs = ParsePatternList(disallowedBionicHediffsBuf);
+                Settings.Write();
+            }
+
+            list.Label("RimMercenaries_DisallowedBionicImplants".Translate());
+            Rect implantRect = list.GetRect(60f);
+            string newImplantBuf = Widgets.TextArea(implantRect, disallowedBionicImplantsBuf ?? string.Empty);
+            if (newImplantBuf != disallowedBionicImplantsBuf)
+            {
+                disallowedBionicImplantsBuf = newImplantBuf;
+                Settings.disallowedBionicImplants = ParsePatternList(disallowedBionicImplantsBuf);
+                Settings.Write();
+            }
+
             // Dev-only section for additional customization
             if (Prefs.DevMode)
             {
@@ -124,6 +194,9 @@ namespace RimMercenaries
                 mercenaryConversionPeriodDaysBuf = Settings.mercenaryConversionPeriodDays.ToString();
                 mercenaryConversionChanceBuf = Settings.mercenaryConversionChance.ToString();
                 loadoutPerItemCostBuf = Settings.loadoutPerItemCost.ToString();
+                bionicsStaticPriceBuf = Settings.bionicsStaticPrice.ToString();
+                disallowedBionicHediffsBuf = PatternsToBuffer(Settings.disallowedBionicHediffs);
+                disallowedBionicImplantsBuf = PatternsToBuffer(Settings.disallowedBionicImplants);
                 // Note: useActualItemPrices is a boolean, no buffer needed
             }
             list.GapLine();
@@ -160,6 +233,28 @@ namespace RimMercenaries
 
             list.End();
             Widgets.EndScrollView();
+        }
+
+        private string PatternsToBuffer(List<string> patterns)
+        {
+            if (patterns == null || patterns.Count == 0) return string.Empty;
+            return string.Join(Environment.NewLine, patterns);
+        }
+
+        private List<string> ParsePatternList(string buffer)
+        {
+            if (string.IsNullOrWhiteSpace(buffer)) return new List<string>();
+            var list = new List<string>();
+            var lines = buffer.Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
+            foreach (var line in lines)
+            {
+                var trimmed = line.Trim();
+                if (!string.IsNullOrEmpty(trimmed))
+                {
+                    list.Add(trimmed);
+                }
+            }
+            return list;
         }
     }
 }
