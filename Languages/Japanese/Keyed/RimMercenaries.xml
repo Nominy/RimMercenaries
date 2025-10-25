@@ -110,6 +110,36 @@
   <RimMercenaries_LoadoutSettings>装備設定:</RimMercenaries_LoadoutSettings>
   <RimMercenaries_UseActualItemPrices>実際のアイテム価格を使用（推奨）</RimMercenaries_UseActualItemPrices>
 
+  <!-- Bionics - Settings and UI -->
+  <RimMercenaries_BionicsSettings>義体設定:</RimMercenaries_BionicsSettings>
+  <RimMercenaries_EnableBionicsCustomization>義体カスタマイズを有効化</RimMercenaries_EnableBionicsCustomization>
+  <RimMercenaries_BionicsPricingMode>義体の価格設定モード:</RimMercenaries_BionicsPricingMode>
+  <RimMercenaries_BionicsPricing_Calculated>計算（アイテム/レシピの市場価値を使用）</RimMercenaries_BionicsPricing_Calculated>
+  <RimMercenaries_BionicsPricing_Static>インプラントごとの固定価格</RimMercenaries_BionicsPricing_Static>
+  <RimMercenaries_BionicsStaticPrice>インプラントごとの固定価格</RimMercenaries_BionicsStaticPrice>
+  <RimMercenaries_DisallowArchotechBionics>アーコテック義体を禁止</RimMercenaries_DisallowArchotechBionics>
+  <RimMercenaries_DisallowedBionicHediffs>禁止する義体のヘディフ（1行につき1つ；* ? をサポート）</RimMercenaries_DisallowedBionicHediffs>
+  <RimMercenaries_DisallowedBionicImplants>禁止するインプラント（1行につき1つ；* ? をサポート）</RimMercenaries_DisallowedBionicImplants>
+  <RimMercenaries_Selected>（選択中）</RimMercenaries_Selected>
+
+  <!-- Bionics - Loadout Dialog -->
+  <RimMercenaries_Loadout_Bionics>義体</RimMercenaries_Loadout_Bionics>
+  <RimMercenaries_Loadout_EditBionics>義体を編集…</RimMercenaries_Loadout_EditBionics>
+  <RimMercenaries_Loadout_BionicsNone>義体が選択されていません</RimMercenaries_Loadout_BionicsNone>
+  <RimMercenaries_Loadout_BionicsDisabled>設定で義体が無効化されています</RimMercenaries_Loadout_BionicsDisabled>
+
+  <!-- Bionics - Custom Dialog -->
+  <RimMercenaries_BionicsDialog_Title>{0} の義体</RimMercenaries_BionicsDialog_Title>
+  <RimMercenaries_BionicsDialog_Parts>身体部位</RimMercenaries_BionicsDialog_Parts>
+  <RimMercenaries_BionicsDialog_Options>オプション：{0}</RimMercenaries_BionicsDialog_Options>
+  <RimMercenaries_BionicsDialog_NoImplant>（特定のインプラントアイテムなし）</RimMercenaries_BionicsDialog_NoImplant>
+  <RimMercenaries_BionicsDialog_Value>価値：{0}</RimMercenaries_BionicsDialog_Value>
+  <RimMercenaries_BionicsDialog_Apply>適用</RimMercenaries_BionicsDialog_Apply>
+  <RimMercenaries_BionicsDialog_Remove>削除</RimMercenaries_BionicsDialog_Remove>
+  <RimMercenaries_BionicsDialog_NoPart>まず身体部位を選択してください</RimMercenaries_BionicsDialog_NoPart>
+  <RimMercenaries_BionicsDialog_Applied>{0} を {1} に適用しました</RimMercenaries_BionicsDialog_Applied>
+  <RimMercenaries_BionicsDialog_Removed>{0} を削除しました</RimMercenaries_BionicsDialog_Removed>
+
   <RimMercenaries_NoSafeDropLocationFound>傭兵の着陸に安全な場所が見つかりません。雇用をキャンセルしました。</RimMercenaries_NoSafeDropLocationFound>
   <RimMercenaries_HireBudgetReachedTier>これ以上ティア{0}の傭兵を雇うことはできません。残り：{1}</RimMercenaries_HireBudgetReachedTier>
 

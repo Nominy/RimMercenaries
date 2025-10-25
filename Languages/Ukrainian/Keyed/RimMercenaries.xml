@@ -110,6 +110,36 @@
   <RimMercenaries_LoadoutSettings>Налаштування екіпіровки:</RimMercenaries_LoadoutSettings>
   <RimMercenaries_UseActualItemPrices>Використовувати реальні ціни предметів (рекомендовано)</RimMercenaries_UseActualItemPrices>
 
+  <!-- Bionics - Settings and UI -->
+  <RimMercenaries_BionicsSettings>Налаштування імплантів:</RimMercenaries_BionicsSettings>
+  <RimMercenaries_EnableBionicsCustomization>Увімкнути налаштування імплантів</RimMercenaries_EnableBionicsCustomization>
+  <RimMercenaries_BionicsPricingMode>Режим ціноутворення імплантів:</RimMercenaries_BionicsPricingMode>
+  <RimMercenaries_BionicsPricing_Calculated>Розрахунковий (використовувати ринкову вартість предмета/рецепта)</RimMercenaries_BionicsPricing_Calculated>
+  <RimMercenaries_BionicsPricing_Static>Фіксована ціна за імплант</RimMercenaries_BionicsPricing_Static>
+  <RimMercenaries_BionicsStaticPrice>Фіксована ціна за імплант</RimMercenaries_BionicsStaticPrice>
+  <RimMercenaries_DisallowArchotechBionics>Заборонити імпланти архотек</RimMercenaries_DisallowArchotechBionics>
+  <RimMercenaries_DisallowedBionicHediffs>Заборонені стани імплантів (по одному в рядку; підтримує * ?)</RimMercenaries_DisallowedBionicHediffs>
+  <RimMercenaries_DisallowedBionicImplants>Заборонені предмети імплантів (по одному в рядку; підтримує * ?)</RimMercenaries_DisallowedBionicImplants>
+  <RimMercenaries_Selected>(вибрано)</RimMercenaries_Selected>
+
+  <!-- Bionics - Loadout Dialog -->
+  <RimMercenaries_Loadout_Bionics>Імпланти</RimMercenaries_Loadout_Bionics>
+  <RimMercenaries_Loadout_EditBionics>Редагувати імпланти…</RimMercenaries_Loadout_EditBionics>
+  <RimMercenaries_Loadout_BionicsNone>Імпланти не вибрано</RimMercenaries_Loadout_BionicsNone>
+  <RimMercenaries_Loadout_BionicsDisabled>Імпланти вимкнено в налаштуваннях</RimMercenaries_Loadout_BionicsDisabled>
+
+  <!-- Bionics - Custom Dialog -->
+  <RimMercenaries_BionicsDialog_Title>Імпланти для {0}</RimMercenaries_BionicsDialog_Title>
+  <RimMercenaries_BionicsDialog_Parts>Частини тіла</RimMercenaries_BionicsDialog_Parts>
+  <RimMercenaries_BionicsDialog_Options>Параметри для: {0}</RimMercenaries_BionicsDialog_Options>
+  <RimMercenaries_BionicsDialog_NoImplant>(немає конкретного предмета імпланта)</RimMercenaries_BionicsDialog_NoImplant>
+  <RimMercenaries_BionicsDialog_Value>Вартість: {0}</RimMercenaries_BionicsDialog_Value>
+  <RimMercenaries_BionicsDialog_Apply>Застосувати</RimMercenaries_BionicsDialog_Apply>
+  <RimMercenaries_BionicsDialog_Remove>Видалити</RimMercenaries_BionicsDialog_Remove>
+  <RimMercenaries_BionicsDialog_NoPart>Спочатку виберіть частину тіла</RimMercenaries_BionicsDialog_NoPart>
+  <RimMercenaries_BionicsDialog_Applied>Застосовано {0} до {1}</RimMercenaries_BionicsDialog_Applied>
+  <RimMercenaries_BionicsDialog_Removed>Видалено {0}</RimMercenaries_BionicsDialog_Removed>
+
   <RimMercenaries_NoSafeDropLocationFound>Не знайдено безпечного місця для посадки найманця. Найм скасовано.</RimMercenaries_NoSafeDropLocationFound>
   <RimMercenaries_HireBudgetReachedTier>Неможливо найняти більше найманців рівня {0}. Залишилося: {1}</RimMercenaries_HireBudgetReachedTier>
 

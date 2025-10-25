@@ -111,43 +111,34 @@ namespace RimMercenaries
             list.Label("RimMercenaries_BionicsSettings".Translate());
             bool beforeBionicsEnabled = Settings.enableBionicsCustomization;
             list.CheckboxLabeled("RimMercenaries_EnableBionicsCustomization".Translate(), ref Settings.enableBionicsCustomization);
-            if (Settings.enableBionicsCustomization != beforeBionicsEnabled)
-            {
-                Settings.Write();
-            }
 
             list.Label("RimMercenaries_BionicsPricingMode".Translate());
-            // Safer UI than radio to avoid API/overload issues: two small buttons
-            var bm = Settings.bionicsPricingMode;
-            var calcBtn = list.ButtonTextLabeled("RimMercenaries_BionicsPricing_Calculated".Translate(), bm == BionicsPricingMode.Calculated ? "RimMercenaries_Selected".Translate() : "".Translate());
-            if (calcBtn)
+            // Use radio buttons for robust, stateful selection
+            bool calcSelected = Settings.bionicsPricingMode == BionicsPricingMode.Calculated;
+            if (list.RadioButton("RimMercenaries_BionicsPricing_Calculated".Translate(), calcSelected) && !calcSelected)
             {
                 Settings.bionicsPricingMode = BionicsPricingMode.Calculated;
-                Settings.Write();
             }
-            var staticBtn = list.ButtonTextLabeled("RimMercenaries_BionicsPricing_Static".Translate(), bm == BionicsPricingMode.Static ? "RimMercenaries_Selected".Translate() : "".Translate());
-            if (staticBtn)
+            bool staticSelected = Settings.bionicsPricingMode == BionicsPricingMode.Static;
+            if (list.RadioButton("RimMercenaries_BionicsPricing_Static".Translate(), staticSelected) && !staticSelected)
             {
                 Settings.bionicsPricingMode = BionicsPricingMode.Static;
-                Settings.Write();
             }
+            list.Gap(6f);
 
-            if (Settings.bionicsPricingMode == BionicsPricingMode.Static)
+            // Always show static price field to keep layout stable; disable when not applicable
+            bool staticMode = Settings.bionicsPricingMode == BionicsPricingMode.Static;
+            bool prevEnabled = GUI.enabled;
+            GUI.enabled = staticMode;
+            int beforeStatic = Settings.bionicsStaticPrice;
+            list.TextFieldNumericLabeled("RimMercenaries_BionicsStaticPrice".Translate(), ref Settings.bionicsStaticPrice, ref bionicsStaticPriceBuf, 0, 100000);
+            GUI.enabled = prevEnabled;
+            if (Settings.bionicsStaticPrice != beforeStatic)
             {
-                int beforeStatic = Settings.bionicsStaticPrice;
-                list.TextFieldNumericLabeled("RimMercenaries_BionicsStaticPrice".Translate(), ref Settings.bionicsStaticPrice, ref bionicsStaticPriceBuf, 0, 100000);
-                if (Settings.bionicsStaticPrice != beforeStatic)
-                {
-                    Settings.Write();
-                }
             }
 
             bool beforeArchotech = Settings.disallowArchotechBionics;
             list.CheckboxLabeled("RimMercenaries_DisallowArchotechBionics".Translate(), ref Settings.disallowArchotechBionics);
-            if (Settings.disallowArchotechBionics != beforeArchotech)
-            {
-                Settings.Write();
-            }
 
             list.Label("RimMercenaries_DisallowedBionicHediffs".Translate());
             Rect hediffRect = list.GetRect(60f);
@@ -156,7 +147,6 @@ namespace RimMercenaries
             {
                 disallowedBionicHediffsBuf = newHediffBuf;
                 Settings.disallowedBionicHediffs = ParsePatternList(disallowedBionicHediffsBuf);
-                Settings.Write();
             }
 
             list.Label("RimMercenaries_DisallowedBionicImplants".Translate());
@@ -166,7 +156,6 @@ namespace RimMercenaries
             {
                 disallowedBionicImplantsBuf = newImplantBuf;
                 Settings.disallowedBionicImplants = ParsePatternList(disallowedBionicImplantsBuf);
-                Settings.Write();
             }
 
             // Dev-only section for additional customization

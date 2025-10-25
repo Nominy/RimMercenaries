@@ -110,6 +110,36 @@
   <RimMercenaries_LoadoutSettings>裝備設定：</RimMercenaries_LoadoutSettings>
   <RimMercenaries_UseActualItemPrices>使用實際物品價格（推薦）</RimMercenaries_UseActualItemPrices>
 
+  <!-- Bionics - Settings and UI -->
+  <RimMercenaries_BionicsSettings>義體設定：</RimMercenaries_BionicsSettings>
+  <RimMercenaries_EnableBionicsCustomization>啟用義體自訂</RimMercenaries_EnableBionicsCustomization>
+  <RimMercenaries_BionicsPricingMode>義體定價模式：</RimMercenaries_BionicsPricingMode>
+  <RimMercenaries_BionicsPricing_Calculated>計算（使用物品/配方市值）</RimMercenaries_BionicsPricing_Calculated>
+  <RimMercenaries_BionicsPricing_Static>每個植入物固定價格</RimMercenaries_BionicsPricing_Static>
+  <RimMercenaries_BionicsStaticPrice>每個植入物固定價格</RimMercenaries_BionicsStaticPrice>
+  <RimMercenaries_DisallowArchotechBionics>禁止 Archotech 植入物</RimMercenaries_DisallowArchotechBionics>
+  <RimMercenaries_DisallowedBionicHediffs>停用的義體狀態（每行一項；支援 * ?）</RimMercenaries_DisallowedBionicHediffs>
+  <RimMercenaries_DisallowedBionicImplants>停用的植入物（每行一項；支援 * ?）</RimMercenaries_DisallowedBionicImplants>
+  <RimMercenaries_Selected>（已選擇）</RimMercenaries_Selected>
+
+  <!-- Bionics - Loadout Dialog -->
+  <RimMercenaries_Loadout_Bionics>義體</RimMercenaries_Loadout_Bionics>
+  <RimMercenaries_Loadout_EditBionics>編輯義體…</RimMercenaries_Loadout_EditBionics>
+  <RimMercenaries_Loadout_BionicsNone>未選擇義體</RimMercenaries_Loadout_BionicsNone>
+  <RimMercenaries_Loadout_BionicsDisabled>在設定中停用義體</RimMercenaries_Loadout_BionicsDisabled>
+
+  <!-- Bionics - Custom Dialog -->
+  <RimMercenaries_BionicsDialog_Title>{0} 的義體</RimMercenaries_BionicsDialog_Title>
+  <RimMercenaries_BionicsDialog_Parts>身體部位</RimMercenaries_BionicsDialog_Parts>
+  <RimMercenaries_BionicsDialog_Options>{0} 的選項</RimMercenaries_BionicsDialog_Options>
+  <RimMercenaries_BionicsDialog_NoImplant>（無特定植入物物品）</RimMercenaries_BionicsDialog_NoImplant>
+  <RimMercenaries_BionicsDialog_Value>價值：{0}</RimMercenaries_BionicsDialog_Value>
+  <RimMercenaries_BionicsDialog_Apply>套用</RimMercenaries_BionicsDialog_Apply>
+  <RimMercenaries_BionicsDialog_Remove>移除</RimMercenaries_BionicsDialog_Remove>
+  <RimMercenaries_BionicsDialog_NoPart>請先選擇一個身體部位</RimMercenaries_BionicsDialog_NoPart>
+  <RimMercenaries_BionicsDialog_Applied>已將 {0} 套用至 {1}</RimMercenaries_BionicsDialog_Applied>
+  <RimMercenaries_BionicsDialog_Removed>已移除 {0}</RimMercenaries_BionicsDialog_Removed>
+
   <RimMercenaries_NoSafeDropLocationFound>找不到安全的僱傭兵降落地點。僱傭已取消。</RimMercenaries_NoSafeDropLocationFound>
   <RimMercenaries_HireBudgetReachedTier>無法僱傭更多 {0} 級僱傭兵。剩餘：{1}</RimMercenaries_HireBudgetReachedTier>
 

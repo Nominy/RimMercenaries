@@ -200,29 +200,27 @@ namespace RimMercenaries
 
             bool beforeBionicsEnabled = working.enableBionicsCustomization;
             list.CheckboxLabeled("RimMercenaries_EnableBionicsCustomization".Translate(), ref working.enableBionicsCustomization);
-            if (working.enableBionicsCustomization != beforeBionicsEnabled) CommitEdits();
 
             list.Label("RimMercenaries_BionicsPricingMode".Translate());
-            var bm = working.bionicsPricingMode;
-            var calcBtn = list.ButtonTextLabeled("RimMercenaries_BionicsPricing_Calculated".Translate(), bm == BionicsPricingMode.Calculated ? "RimMercenaries_Selected".Translate() : "".Translate());
-            if (calcBtn)
+            bool calcSelected = working.bionicsPricingMode == BionicsPricingMode.Calculated;
+            if (list.RadioButton("RimMercenaries_BionicsPricing_Calculated".Translate(), calcSelected) && !calcSelected)
             {
                 working.bionicsPricingMode = BionicsPricingMode.Calculated;
-                CommitEdits();
             }
-            var staticBtn = list.ButtonTextLabeled("RimMercenaries_BionicsPricing_Static".Translate(), bm == BionicsPricingMode.Static ? "RimMercenaries_Selected".Translate() : "".Translate());
-            if (staticBtn)
+            bool staticSelected = working.bionicsPricingMode == BionicsPricingMode.Static;
+            if (list.RadioButton("RimMercenaries_BionicsPricing_Static".Translate(), staticSelected) && !staticSelected)
             {
                 working.bionicsPricingMode = BionicsPricingMode.Static;
-                CommitEdits();
             }
+            list.Gap(6f);
 
-            if (working.bionicsPricingMode == BionicsPricingMode.Static)
-            {
-                int beforeStatic = working.bionicsStaticPrice;
-                list.TextFieldNumericLabeled("RimMercenaries_BionicsStaticPrice".Translate(), ref working.bionicsStaticPrice, ref bionicsStaticPriceBuf, 0, 100000);
-                if (working.bionicsStaticPrice != beforeStatic) CommitEdits();
-            }
+            // Always display the static price field to avoid scroll/layout jumps; disable when not in static mode
+            bool staticMode = working.bionicsPricingMode == BionicsPricingMode.Static;
+            bool prevEnabled = GUI.enabled;
+            GUI.enabled = staticMode;
+            int beforeStatic = working.bionicsStaticPrice;
+            list.TextFieldNumericLabeled("RimMercenaries_BionicsStaticPrice".Translate(), ref working.bionicsStaticPrice, ref bionicsStaticPriceBuf, 0, 100000);
+            GUI.enabled = prevEnabled;
 
             bool beforeArchotech = working.disallowArchotechBionics;
             list.CheckboxLabeled("RimMercenaries_DisallowArchotechBionics".Translate(), ref working.disallowArchotechBionics);

@@ -109,6 +109,36 @@
   <RimMercenaries_LoadoutSettings>Настройки экипировки:</RimMercenaries_LoadoutSettings>
   <RimMercenaries_UseActualItemPrices>Использовать реальные цены предметов (рекомендуется)</RimMercenaries_UseActualItemPrices>
 
+  <!-- Bionics - Settings and UI -->
+  <RimMercenaries_BionicsSettings>Настройки имплантов:</RimMercenaries_BionicsSettings>
+  <RimMercenaries_EnableBionicsCustomization>Включить настройку имплантов</RimMercenaries_EnableBionicsCustomization>
+  <RimMercenaries_BionicsPricingMode>Режим ценообразования имплантов:</RimMercenaries_BionicsPricingMode>
+  <RimMercenaries_BionicsPricing_Calculated>Расчётный (использовать рыночную стоимость предмета/рецепта)</RimMercenaries_BionicsPricing_Calculated>
+  <RimMercenaries_BionicsPricing_Static>Фиксированная цена за имплант</RimMercenaries_BionicsPricing_Static>
+  <RimMercenaries_BionicsStaticPrice>Фиксированная цена за имплант</RimMercenaries_BionicsStaticPrice>
+  <RimMercenaries_DisallowArchotechBionics>Запретить импланты архотек</RimMercenaries_DisallowArchotechBionics>
+  <RimMercenaries_DisallowedBionicHediffs>Запрещённые хедифы имплантов (по одному на строку; поддерживаются * ?)</RimMercenaries_DisallowedBionicHediffs>
+  <RimMercenaries_DisallowedBionicImplants>Запрещённые предметы имплантов (по одному на строку; поддерживаются * ?)</RimMercenaries_DisallowedBionicImplants>
+  <RimMercenaries_Selected>(выбрано)</RimMercenaries_Selected>
+
+  <!-- Bionics - Loadout Dialog -->
+  <RimMercenaries_Loadout_Bionics>Импланты</RimMercenaries_Loadout_Bionics>
+  <RimMercenaries_Loadout_EditBionics>Редактировать импланты…</RimMercenaries_Loadout_EditBionics>
+  <RimMercenaries_Loadout_BionicsNone>Импланты не выбраны</RimMercenaries_Loadout_BionicsNone>
+  <RimMercenaries_Loadout_BionicsDisabled>Импланты отключены в настройках</RimMercenaries_Loadout_BionicsDisabled>
+
+  <!-- Bionics - Custom Dialog -->
+  <RimMercenaries_BionicsDialog_Title>Импланты для {0}</RimMercenaries_BionicsDialog_Title>
+  <RimMercenaries_BionicsDialog_Parts>Части тела</RimMercenaries_BionicsDialog_Parts>
+  <RimMercenaries_BionicsDialog_Options>Параметры для: {0}</RimMercenaries_BionicsDialog_Options>
+  <RimMercenaries_BionicsDialog_NoImplant>(нет конкретного предмета импланта)</RimMercenaries_BionicsDialog_NoImplant>
+  <RimMercenaries_BionicsDialog_Value>Стоимость: {0}</RimMercenaries_BionicsDialog_Value>
+  <RimMercenaries_BionicsDialog_Apply>Применить</RimMercenaries_BionicsDialog_Apply>
+  <RimMercenaries_BionicsDialog_Remove>Удалить</RimMercenaries_BionicsDialog_Remove>
+  <RimMercenaries_BionicsDialog_NoPart>Сначала выберите часть тела</RimMercenaries_BionicsDialog_NoPart>
+  <RimMercenaries_BionicsDialog_Applied>Применено {0} к {1}</RimMercenaries_BionicsDialog_Applied>
+  <RimMercenaries_BionicsDialog_Removed>Удалён {0}</RimMercenaries_BionicsDialog_Removed>
+
   <RimMercenaries_NoSafeDropLocationFound>Не найдено безопасного места для посадки наёмника. Найм отменён.</RimMercenaries_NoSafeDropLocationFound>
   <RimMercenaries_HireBudgetReachedTier>Невозможно нанять больше наёмников уровня {0}. Осталось: {1}</RimMercenaries_HireBudgetReachedTier>
 
