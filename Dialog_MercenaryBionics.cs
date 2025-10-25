@@ -153,7 +153,11 @@ namespace RimMercenaries
 
             Rect detailRect = new Rect(row.x + 6f, labelRect.yMax, row.width - 12f, 20f);
             string detail = option.ImplantThing != null ? option.ImplantThing.LabelCap : "RimMercenaries_BionicsDialog_NoImplant".Translate();
-            detail += " | " + "RimMercenaries_BionicsDialog_Value".Translate(option.CalculatedMarketValue.ToString("N0"));
+            var settings = RimMercenariesMod.ActiveSettings;
+            int displayValue = (settings != null && settings.bionicsPricingMode == BionicsPricingMode.Static)
+                ? Mathf.Max(0, settings.bionicsStaticPrice)
+                : Mathf.Max(0, Mathf.RoundToInt(option.CalculatedMarketValue));
+            detail += " | " + "RimMercenaries_BionicsDialog_Value".Translate(displayValue.ToString("N0"));
             Widgets.Label(detailRect, detail);
 
             Rect buttonRect = new Rect(row.xMax - 120f, row.y + (row.height - 28f) / 2f, 110f, 28f);
